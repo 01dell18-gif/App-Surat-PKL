@@ -1,0 +1,2324 @@
+[
+  {
+    "no": 1,
+    "guru": "Ida Ayu Agung Endrayani, S.Pd.",
+    "nip": "19670224 198902 2 002",
+    "siswa": "Ni Komang Sri Damayanti",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / SEMARAPURA KLOD",
+    "alamat": "Jl. Rama Ling. Semarapura Kelod, Kel. Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 2,
+    "guru": "Ida Ayu Agung Endrayani, S.Pd.",
+    "nip": "19670224 198902 2 002",
+    "siswa": "Ni Made Sari Astini",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / KUSANEGARA",
+    "alamat": "Jl. Kusanegara Banjar Dinas Bandung, Kel. Gunaksa, Kec. Dawan, Kab. Klungkung"
+  },
+  {
+    "no": 3,
+    "guru": "Ida Ayu Agung Endrayani, S.Pd.",
+    "nip": "19670224 198902 2 002",
+    "siswa": "Ni Nyoman Manik Dalem Maharani",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / KUSANEGARA",
+    "alamat": "Jl. Kusanegara Banjar Dinas Bandung, Kel. Gunaksa, Kec. Dawan, Kab. Klungkung"
+  },
+  {
+    "no": 4,
+    "guru": "Ida Ayu Agung Endrayani, S.Pd.",
+    "nip": "19670224 198902 2 002",
+    "siswa": "Putu Purnamawati",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / SEMARAPURA KLOD",
+    "alamat": "Jl. Rama Ling. Semarapura Kelod, Kel. Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 5,
+    "guru": "Ida Ayu Agung Endrayani, S.Pd.",
+    "nip": "19670224 198902 2 002",
+    "siswa": "I Gede Ari Widnyana",
+    "kelas": "XII TSM",
+    "tempat": "Gemilang Motor",
+    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 6,
+    "guru": "Ida Ayu Agung Endrayani, S.Pd.",
+    "nip": "19670224 198902 2 002",
+    "siswa": "Kadek Angga Trisnawan",
+    "kelas": "XII TSM",
+    "tempat": "Gemilang Motor",
+    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 7,
+    "guru": "Ida Ayu Agung Endrayani, S.Pd.",
+    "nip": "19670224 198902 2 002",
+    "siswa": "Made Adi Mahardika",
+    "kelas": "XII TSM",
+    "tempat": "Gemilang Motor",
+    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 8,
+    "guru": "I Ketut Mutra, S.Pd., M.Pd.",
+    "nip": "19670521 199512 1 005",
+    "siswa": "Ketut Ananta Wardana",
+    "kelas": "XII AK",
+    "tempat": "LPD Desa Pekraman Gelgel",
+    "alamat": "Jl. Watu Renggong, Gelgel, Kec. Klungkung, Kab Klungkung"
+  },
+  {
+    "no": 9,
+    "guru": "I Ketut Mutra, S.Pd., M.Pd.",
+    "nip": "19670521 199512 1 005",
+    "siswa": "Ni Luh Nyoman Tri Githa Pramesti",
+    "kelas": "XII AK",
+    "tempat": "LPD Desa Pekraman Gelgel",
+    "alamat": "Jl. Watu Renggong, Gelgel, kec. Klungkung, Kab Klungkung"
+  },
+  {
+    "no": 10,
+    "guru": "I Ketut Mutra, S.Pd., M.Pd.",
+    "nip": "19670521 199512 1 005",
+    "siswa": "Anisa Safila",
+    "kelas": "XII BD 2",
+    "tempat": "Toko Oneska Digital Store",
+    "alamat": "Jl. Subali II, Br. Siku, Desa Kamasan, Klungkung"
+  },
+  {
+    "no": 11,
+    "guru": "I Ketut Mutra, S.Pd., M.Pd.",
+    "nip": "19670521 199512 1 005",
+    "siswa": "Luh Made Purnama Dewi",
+    "kelas": "XII BD 2",
+    "tempat": "Toko Indrajaya",
+    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung"
+  },
+  {
+    "no": 12,
+    "guru": "I Ketut Mutra, S.Pd., M.Pd.",
+    "nip": "19670521 199512 1 005",
+    "siswa": "Ni Komang Ayu Septianingsih",
+    "kelas": "XII BD 2",
+    "tempat": "Toko Indrajaya",
+    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung"
+  },
+  {
+    "no": 13,
+    "guru": "I Ketut Mutra, S.Pd., M.Pd.",
+    "nip": "19670521 199512 1 005",
+    "siswa": "Komang Ayu Seri Musthikarani",
+    "kelas": "XII MP 1",
+    "tempat": "PT. PLN (PERSERO) ULP KLUNGKUNG",
+    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG"
+  },
+  {
+    "no": 14,
+    "guru": "I Ketut Mutra, S.Pd., M.Pd.",
+    "nip": "19670521 199512 1 005",
+    "siswa": "Made Nitarianti",
+    "kelas": "XII MP 1",
+    "tempat": "PT. PLN (PERSERO) ULP KLUNGKUNG",
+    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG"
+  },
+  {
+    "no": 15,
+    "guru": "I Ketut Mutra, S.Pd., M.Pd.",
+    "nip": "19670521 199512 1 005",
+    "siswa": "Ni Kadek Ika Pradevi",
+    "kelas": "XII MP 1",
+    "tempat": "PT. PLN (PERSERO) ULP KLUNGKUNG",
+    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG"
+  },
+  {
+    "no": 16,
+    "guru": "I Gede Wiraguna, S.Pd.",
+    "nip": "19791024 200312 1 004",
+    "siswa": "Ni Kadek Anggun Putri Pramesti",
+    "kelas": "XII AK",
+    "tempat": "PT. Pegadaian Persero Cabang Klungkung",
+    "alamat": "Jl. Gn. Batukaru No.9, Semarapura Kelod Kangin, Kec. Klungkung"
+  },
+  {
+    "no": 17,
+    "guru": "I Gede Wiraguna, S.Pd.",
+    "nip": "19791024 200312 1 004",
+    "siswa": "Ni Ketut Catur Rahayu",
+    "kelas": "XII AK",
+    "tempat": "PT. Pegadaian Persero Cabang Klungkung",
+    "alamat": "Jl. Gn. Batukaru No.9, Semarapura Kelod Kangin, Kec. Klungkung"
+  },
+  {
+    "no": 18,
+    "guru": "I Gede Wiraguna, S.Pd.",
+    "nip": "19791024 200312 1 004",
+    "siswa": "Ni Putu Anggik Deswandari",
+    "kelas": "XII AK",
+    "tempat": "PT. Pegadaian Persero Cabang Klungkung",
+    "alamat": "Jl. Gn. Batukaru No.9, Semarapura Kelod Kangin, Kec. Klungkung"
+  },
+  {
+    "no": 19,
+    "guru": "I Gede Wiraguna, S.Pd.",
+    "nip": "19791024 200312 1 004",
+    "siswa": "Ni Made Ari Diana Sari",
+    "kelas": "XII LPB",
+    "tempat": "PT. BRI Persero, Tbk. Cabang Klungkung",
+    "alamat": "Jl. Gunung Batukaru, No. 7, Semarapura Kelod Kangin, Kec. Klungkung"
+  },
+  {
+    "no": 20,
+    "guru": "I Made Miasa, S.Pd., M.Pd.",
+    "nip": "19721231 200312 1 031",
+    "siswa": "I Komang Sucitra",
+    "kelas": "XII BD 2",
+    "tempat": "UD Merta Sari",
+    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung"
+  },
+  {
+    "no": 21,
+    "guru": "I Made Miasa, S.Pd., M.Pd.",
+    "nip": "19721231 200312 1 031",
+    "siswa": "I Made Windya Arsana",
+    "kelas": "XII BD 2",
+    "tempat": "UD Merta Sari",
+    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung"
+  },
+  {
+    "no": 22,
+    "guru": "Anak Agung Istri Anom Kencananingsih, S.St.",
+    "nip": "19670329 200604 2 001",
+    "siswa": "Ni Kadek Ayu Dwipayani",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / BANJARANGKAN",
+    "alamat": "Jl. Ida Bagus Puja Takmung, Kec. Bajarangkan Klungkung"
+  },
+  {
+    "no": 23,
+    "guru": "Anak Agung Istri Anom Kencananingsih, S.St.",
+    "nip": "19670329 200604 2 001",
+    "siswa": "Ni Kadek Widiantari",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / GAJAH MADA KLUNGKUNG",
+    "alamat": "Jl. Gajah Mada Nomor 35B, Lingkungan Bendul, Kel. Semarapura Tengah,.Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 24,
+    "guru": "Anak Agung Istri Anom Kencananingsih, S.St.",
+    "nip": "19670329 200604 2 001",
+    "siswa": "Ni Putu Sariasih",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / GAJAH MADA KLUNGKUNG",
+    "alamat": "Jl. Gajah Mada Nomor 35B, Lingkungan Bendul, Kel. Semarapura Tengah,.Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 25,
+    "guru": "Anak Agung Istri Anom Kencananingsih, S.St.",
+    "nip": "19670329 200604 2 001",
+    "siswa": "I Gede Sutawan",
+    "kelas": "XII BD 2",
+    "tempat": "Toko Indrajaya",
+    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung"
+  },
+  {
+    "no": 26,
+    "guru": "Anak Agung Istri Anom Kencananingsih, S.St.",
+    "nip": "19670329 200604 2 001",
+    "siswa": "Galang Damai Dinata",
+    "kelas": "XII BD 2",
+    "tempat": "Toko Indrajaya",
+    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung"
+  },
+  {
+    "no": 27,
+    "guru": "Anak Agung Istri Anom Kencananingsih, S.St.",
+    "nip": "19670329 200604 2 001",
+    "siswa": "I Komang Pebri Andika Saputra",
+    "kelas": "XII TSM",
+    "tempat": "PT. Nusantara Surya Sakti (NSS)",
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 28,
+    "guru": "Ni Luh Ekarini Suryaningsih Hadisaputri, SE.",
+    "nip": "19800103 200803 2 001",
+    "siswa": "Anak Agung Istri Prima Pebrianti",
+    "kelas": "XII LPB",
+    "tempat": "PT. BPR Tridarma Putri Klungkung",
+    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec.Klungkung"
+  },
+  {
+    "no": 29,
+    "guru": "Ni Luh Ekarini Suryaningsih Hadisaputri, SE.",
+    "nip": "19800103 200803 2 001",
+    "siswa": "Gede Risky Adi Permana",
+    "kelas": "XII LPB",
+    "tempat": "Tefa Bank Mini SMK N 1 Klungkung",
+    "alamat": "Jl Subali II Br Siku Desa Kamasan Klungkung"
+  },
+  {
+    "no": 30,
+    "guru": "Ni Luh Ekarini Suryaningsih Hadisaputri, SE.",
+    "nip": "19800103 200803 2 001",
+    "siswa": "I Gusti Made Diah Purnama Sari",
+    "kelas": "XII LPB",
+    "tempat": "PT. BPR Tridarma Putri Klungkung",
+    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec.Klungkung"
+  },
+  {
+    "no": 31,
+    "guru": "I Ketut Sudarsana, S.Pd.",
+    "nip": "19690805 200902 1 001",
+    "siswa": "I Gede Resa Pradnya Andika",
+    "kelas": "XII TSM",
+    "tempat": "Ahas Cemerlang Motor",
+    "alamat": "Jl Flamboyan 66 Klungkung"
+  },
+  {
+    "no": 32,
+    "guru": "I Ketut Sudarsana, S.Pd.",
+    "nip": "19690805 200902 1 001",
+    "siswa": "I Gusti Ngurah Sathya Dananjaya",
+    "kelas": "XII TSM",
+    "tempat": "SS 21 S Honda Motor",
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 33,
+    "guru": "I Ketut Sudarsana, S.Pd.",
+    "nip": "19690805 200902 1 001",
+    "siswa": "I Kadek Kusuma Cahyadi",
+    "kelas": "XII TSM",
+    "tempat": "SS 21 S Honda Motor",
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 34,
+    "guru": "I Ketut Sudarsana, S.Pd.",
+    "nip": "19690805 200902 1 001",
+    "siswa": "I Ketut Catur Yoga Saputra",
+    "kelas": "XII TSM",
+    "tempat": "SS 21 S Honda Motor",
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 35,
+    "guru": "I Ketut Sudarsana, S.Pd.",
+    "nip": "19690805 200902 1 001",
+    "siswa": "I Putu Pande Sedaya Tana",
+    "kelas": "XII TSM",
+    "tempat": "SS 21 S Honda Motor",
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 36,
+    "guru": "I Ketut Sudarsana, S.Pd.",
+    "nip": "19690805 200902 1 001",
+    "siswa": "I Wayan Surya Nanta",
+    "kelas": "XII TSM",
+    "tempat": "Ahas Cemerlang Motor",
+    "alamat": "Jl Flamboyan 66 Klungkung"
+  },
+  {
+    "no": 37,
+    "guru": "I Ketut Sudarsana, S.Pd.",
+    "nip": "19690805 200902 1 001",
+    "siswa": "Muhammad Azizul Hakim",
+    "kelas": "XII TSM",
+    "tempat": "SS 21 S Honda Motor",
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 38,
+    "guru": "I Ketut Sudarsana, S.Pd.",
+    "nip": "19690805 200902 1 001",
+    "siswa": "Yusuf Ardiansyah",
+    "kelas": "XII TSM",
+    "tempat": "SS 21 S Honda Motor",
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 39,
+    "guru": "I Ketut Sudarsana, S.Pd.",
+    "nip": "19690805 200902 1 001",
+    "siswa": "Roberto Christiano",
+    "kelas": "XII TSM",
+    "tempat": "SS 21 S Honda Motor",
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 40,
+    "guru": "Ni Made Ari Naswati, ST",
+    "nip": "19830802 201001 2 026",
+    "siswa": "Ni Putu Dian Cahyani",
+    "kelas": "XII DKV",
+    "tempat": "Mandala Gold",
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kab. Klungkung"
+  },
+  {
+    "no": 41,
+    "guru": "I Putu Arnawa Putra, S.Pd.",
+    "nip": "19800903 200604 1 010",
+    "siswa": "Ni Komang Ayu Intan Pratiwi",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / LEBIH",
+    "alamat": "Jl. By Pass IB Mantra Kel. Lebih Beten Klod, Kec. Lebih, Kab. Gianyar"
+  },
+  {
+    "no": 42,
+    "guru": "I Putu Arnawa Putra, S.Pd.",
+    "nip": "19800903 200604 1 010",
+    "siswa": "Ni Komang Purnama Sari",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / LEBIH",
+    "alamat": "Jl. By Pass IB Mantra Kel. Lebih Beten Klod, Kec. Lebih, Kab. Gianyar"
+  },
+  {
+    "no": 43,
+    "guru": "I Putu Arnawa Putra, S.Pd.",
+    "nip": "19800903 200604 1 010",
+    "siswa": "Ni Kadek Putri Jayanti",
+    "kelas": "XII BD 2",
+    "tempat": "Koperasi Nirmala",
+    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung"
+  },
+  {
+    "no": 44,
+    "guru": "I Putu Arnawa Putra, S.Pd.",
+    "nip": "19800903 200604 1 010",
+    "siswa": "Ni Nengah Febriani",
+    "kelas": "XII BD 2",
+    "tempat": "Koperasi Nirmala",
+    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung"
+  },
+  {
+    "no": 45,
+    "guru": "Ketut Widisila, S.T., M.Pd.",
+    "nip": "19790610 201001 1 023",
+    "siswa": "Redno Fedrianzah",
+    "kelas": "XII TSM",
+    "tempat": "PT. Nusantara Surya Sakti (NSS)",
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 46,
+    "guru": "Anak Agung Ayu Puspa Kusuma Dhari, ST",
+    "nip": "19781004 200902 2 007",
+    "siswa": "Ni Putu Novi Armatiana",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Lestari",
+    "alamat": "Jln. Flamboyan No.56, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung"
+  },
+  {
+    "no": 47,
+    "guru": "Anak Agung Ayu Puspa Kusuma Dhari, ST",
+    "nip": "19781004 200902 2 007",
+    "siswa": "Ni Putu Indah Muliarni",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Visual Farma II",
+    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung"
+  },
+  {
+    "no": 48,
+    "guru": "Luh Desy Dianayanti, S.Pd., M.Pd",
+    "nip": "19841213 200902 2 009",
+    "siswa": "Kadek Gita Anindita Kemulan",
+    "kelas": "XII DKV",
+    "tempat": "E Sanctuary Ubud",
+    "alamat": "Jl. Raya Br. Tunon, Singakerta, Kecamatan Ubud, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 49,
+    "guru": "Luh Desy Dianayanti, S.Pd., M.Pd",
+    "nip": "19841213 200902 2 009",
+    "siswa": "Ni Kadek Ita Sutriani",
+    "kelas": "XII DKV",
+    "tempat": "E Sanctuary Ubud",
+    "alamat": "Jl. Raya Br. Tunon, Singakerta, Kecamatan Ubud, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 50,
+    "guru": "I Putu Arya Padang Arnawa, S.Sn.",
+    "nip": "19841213 200902 2 009",
+    "siswa": "Arkananta Maulana Putra Apriliansyah",
+    "kelas": "XII TSM",
+    "tempat": "Karisma Motor",
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 51,
+    "guru": "I Putu Arya Padang Arnawa, S.Sn.",
+    "nip": "19841213 200902 2 009",
+    "siswa": "I Kadek Ipan Junata",
+    "kelas": "XII TSM",
+    "tempat": "Karisma Motor",
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 52,
+    "guru": "I Putu Arya Padang Arnawa, S.Sn.",
+    "nip": "19841213 200902 2 009",
+    "siswa": "I Putu Bayu Saputra",
+    "kelas": "XII TSM",
+    "tempat": "Karisma Motor",
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 53,
+    "guru": "I Nengah Sudarsana, S.Pd.",
+    "nip": "19820523 200902 1 003",
+    "siswa": "Ida Ayu Sinta Dewi",
+    "kelas": "XII LPB",
+    "tempat": "PT. BPD Cabang Klungkung",
+    "alamat": "Jl. Gajah Mada, Semarapura Kelod Kangin, Kec. Klungkung"
+  },
+  {
+    "no": 54,
+    "guru": "I Nengah Sudarsana, S.Pd.",
+    "nip": "19820523 200902 1 003",
+    "siswa": "Ni Kadek Intan Satrya Wati",
+    "kelas": "XII LPB",
+    "tempat": "PT. BPD Cabang Klungkung",
+    "alamat": "Jl. Gajah Mada, Semarapura Kelod Kangin, Kec. Klungkung"
+  },
+  {
+    "no": 55,
+    "guru": "I Nengah Sudarsana, S.Pd.",
+    "nip": "19820523 200902 1 003",
+    "siswa": "Desak Nyoman Widya Sari",
+    "kelas": "XII MP 1",
+    "tempat": "PT.SUMBER ALFARIA TRIJAYA TBK.",
+    "alamat": "Jalan. Prof Ida Bagus Mantra, Lingkungan Siut, Desa Tulikup, Gianyar"
+  },
+  {
+    "no": 56,
+    "guru": "I Nengah Sudarsana, S.Pd.",
+    "nip": "19820523 200902 1 003",
+    "siswa": "Ni Komang Rini Cahyani",
+    "kelas": "XII MP 1",
+    "tempat": "PT.SUMBER ALFARIA TRIJAYA TBK.",
+    "alamat": "Jalan. Prof Ida Bagus Mantra, Lingkungan Siut, Desa Tulikup, Gianyar"
+  },
+  {
+    "no": 57,
+    "guru": "I Nengah Sudarsana, S.Pd.",
+    "nip": "19820523 200902 1 003",
+    "siswa": "Ni Kadek Ayu Aprilia Dewi",
+    "kelas": "XII MP 2",
+    "tempat": "BADAN PUSAT STATISTIK KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Gajah Mada, Akah, Kec. Klungkung, Kabupaten Klungkung, Bali 80714"
+  },
+  {
+    "no": 58,
+    "guru": "I Nengah Sudarsana, S.Pd.",
+    "nip": "19820523 200902 1 003",
+    "siswa": "Ni Komang Listia Dewi",
+    "kelas": "XII MP 2",
+    "tempat": "BADAN PUSAT STATISTIK KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Gajah Mada, Akah, Kec. Klungkung, Kabupaten Klungkung, Bali 80714"
+  },
+  {
+    "no": 59,
+    "guru": "I Nengah Sudarsana, S.Pd.",
+    "nip": "19820523 200902 1 003",
+    "siswa": "Ni Komang Triana Pusparani",
+    "kelas": "XII MP 2",
+    "tempat": "BADAN PUSAT STATISTIK KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Gajah Mada, Akah, Kec. Klungkung, Kabupaten Klungkung, Bali 80714"
+  },
+  {
+    "no": 60,
+    "guru": "Komang Ari Martini, S.Pd.",
+    "nip": "19880525 201101 2 020",
+    "siswa": "Ni Kadek Aprilia Lestari",
+    "kelas": "XII MP 1",
+    "tempat": "BPJS KESEHATAN KLUNGKUNG",
+    "alamat": "Jl. Gajah Mada No.55, Kec. Klungkung, Kabupaten Klungkung"
+  },
+  {
+    "no": 61,
+    "guru": "Komang Ari Martini, S.Pd.",
+    "nip": "19880525 201101 2 020",
+    "siswa": "Ni Kadek Sintia Wati",
+    "kelas": "XII MP 1",
+    "tempat": "BPJS KESEHATAN KLUNGKUNG",
+    "alamat": "Jl. Gajah Mada No.55, Kec. Klungkung, Kabupaten Klungkung"
+  },
+  {
+    "no": 62,
+    "guru": "Komang Ari Martini, S.Pd.",
+    "nip": "19880525 201101 2 020",
+    "siswa": "Ida Bagus Yuda Pratama",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+  },
+  {
+    "no": 63,
+    "guru": "Komang Ari Martini, S.Pd.",
+    "nip": "19880525 201101 2 020",
+    "siswa": "Irsyad Adiba Hafas Zidansyah",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+  },
+  {
+    "no": 64,
+    "guru": "Komang Ari Martini, S.Pd.",
+    "nip": "19880525 201101 2 020",
+    "siswa": "Ni Kadek Sriyanti",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+  },
+  {
+    "no": 65,
+    "guru": "Komang Ari Martini, S.Pd.",
+    "nip": "19880525 201101 2 020",
+    "siswa": "Ni Komang Sutri Prantini",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+  },
+  {
+    "no": 66,
+    "guru": "Ni Made Sunariani, SE",
+    "nip": "19760411 201001 2 008",
+    "siswa": "I Dewa Ayu Meira Dianra Sari",
+    "kelas": "XII AK",
+    "tempat": "Koperasi Surya Artha Sedana Klungkung",
+    "alamat": "Jl. Sahadewa, Semarapura Kangin, Klungkung"
+  },
+  {
+    "no": 67,
+    "guru": "Ni Made Sunariani, SE",
+    "nip": "19760411 201001 2 008",
+    "siswa": "Ni Putu Ayu Krisna Candra Dewi",
+    "kelas": "XII AK",
+    "tempat": "Koperasi Surya Artha Sedana Klungkung",
+    "alamat": "Jl. Sahadewa, Semarapura Kangin, Klungkung"
+  },
+  {
+    "no": 68,
+    "guru": "Ni Made Sunariani, SE",
+    "nip": "19760411 201001 2 008",
+    "siswa": "Ni Putu Diah Darmayanti",
+    "kelas": "XII AK",
+    "tempat": "PT. BRI Persero, Tbk. Cabang Klungkung",
+    "alamat": "Jl. Gunung Batukaru, No. 7, Semarapura Kelod Kangin, Kec. Klungkung"
+  },
+  {
+    "no": 69,
+    "guru": "Ni Made Sunariani, SE",
+    "nip": "19760411 201001 2 008",
+    "siswa": "Ni Wayan Chandra Rusita Devi",
+    "kelas": "XII AK",
+    "tempat": "Koperasi Surya Artha Sedana Klungkung",
+    "alamat": "Jl. Sahadewa, Semarapura Kangin, Klungkung"
+  },
+  {
+    "no": 70,
+    "guru": "Ni Made Sunariani, SE",
+    "nip": "19760411 201001 2 008",
+    "siswa": "I Gusti Ngurah Agus Januarta",
+    "kelas": "XII MP 1",
+    "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+  },
+  {
+    "no": 71,
+    "guru": "Ni Made Sunariani, SE",
+    "nip": "19760411 201001 2 008",
+    "siswa": "Ni Nengah Septia Dewi",
+    "kelas": "XII MP 1",
+    "tempat": "CV. MANGGALA SURYA GEMILANG KLUNGKUNG",
+    "alamat": "Jalan Flamboyan 55X Klungkung"
+  },
+  {
+    "no": 72,
+    "guru": "Ni Made Sunariani, SE",
+    "nip": "19760411 201001 2 008",
+    "siswa": "Ni Putu Eka Pramita Sari",
+    "kelas": "XII MP 1",
+    "tempat": "CV. MANGGALA SURYA GEMILANG KLUNGKUNG",
+    "alamat": "Jalan Flamboyan 55X Klungkung"
+  },
+  {
+    "no": 73,
+    "guru": "Ni Nengah Sumiartini, S.Pd.",
+    "nip": "19880424 201101 2 020",
+    "siswa": "I Gusti Ayu Wika Ariestari",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / SIYUT",
+    "alamat": "Jl. By Pass I.B Mantra Lingk. Siyut, Kel. Tulikup, Kec. Gianyar"
+  },
+  {
+    "no": 74,
+    "guru": "Ni Nengah Sumiartini, S.Pd.",
+    "nip": "19880424 201101 2 020",
+    "siswa": "Kadek Suki Oktami",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / SIYUT",
+    "alamat": "Jl. By Pass I.B Mantra Lingk. Siyut, Kel. Tulikup, Kec. Gianyar"
+  },
+  {
+    "no": 75,
+    "guru": "Ni Nengah Sumiartini, S.Pd.",
+    "nip": "19880424 201101 2 020",
+    "siswa": "Putu Agus Mahendra",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM SARI BUWANA",
+    "alamat": "Jl. By Pass Ida Bagus Mantra Banjar Rangkan, Kelurahan Ketewel, Kec. Sukawati, Kab. Gianyar"
+  },
+  {
+    "no": 76,
+    "guru": "Ni Nengah Sumiartini, S.Pd.",
+    "nip": "19880424 201101 2 020",
+    "siswa": "Rizki Ananta Ramadhani",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM SARI BUWANA",
+    "alamat": "Jl. By Pass Ida Bagus Mantra Banjar Rangkan, Kelurahan Ketewel, Kec. Sukawati, Kab. Gianyar"
+  },
+  {
+    "no": 77,
+    "guru": "Ni Nengah Sumiartini, S.Pd.",
+    "nip": "19880424 201101 2 020",
+    "siswa": "Ni Pande Wayan Yonika Damayani",
+    "kelas": "XII BD 2",
+    "tempat": "Mini Mart El Mart",
+    "alamat": "Jl. Rama Klungkung"
+  },
+  {
+    "no": 78,
+    "guru": "Ni Nengah Sumiartini, S.Pd.",
+    "nip": "19880424 201101 2 020",
+    "siswa": "Ni Putu Lia Trisnayanti",
+    "kelas": "XII BD 2",
+    "tempat": "Mini Mart El Mart",
+    "alamat": "Jl. Rama Klungkung"
+  },
+  {
+    "no": 79,
+    "guru": "Ni Putu Eka Wulandari, S.Pd.",
+    "nip": "19881223 201101 2 021",
+    "siswa": "I Wayan Wira Pradnyana",
+    "kelas": "XII DKV",
+    "tempat": "Kenak Medika Hospital Ubud",
+    "alamat": "Mas, Kecamatan Ubud, Kabupaten Gianyar, Bali"
+  },
+  {
+    "no": 80,
+    "guru": "Ni Putu Eka Wulandari, S.Pd.",
+    "nip": "19881223 201101 2 021",
+    "siswa": "Ni Putu Selpi",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM BETEN KELOD",
+    "alamat": "Jl. I.B Mantra Br. Lebih Beten Klod, Kel. Lebih, Kec.Gianyar, Kab. Gianyar"
+  },
+  {
+    "no": 81,
+    "guru": "Ni Putu Eka Wulandari, S.Pd.",
+    "nip": "19881223 201101 2 021",
+    "siswa": "Ni Putu Sinta Purnama Yanti",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM BETEN KELOD",
+    "alamat": "Jl. I.B Mantra Br. Lebih Beten Klod, Kel. Lebih, Kec.Gianyar, Kab. Gianyar"
+  },
+  {
+    "no": 82,
+    "guru": "Ni Putu Eka Wulandari, S.Pd.",
+    "nip": "19881223 201101 2 021",
+    "siswa": "I Gede Candra Wiguna",
+    "kelas": "XII TSM",
+    "tempat": "Karisma Motor",
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 83,
+    "guru": "I Made Yuda Adi Putra, S.T.",
+    "nip": "19800119 201403 1 001",
+    "siswa": "Aldo Valentino",
+    "kelas": "XII TSM",
+    "tempat": "Ahas Cemerlang Motor",
+    "alamat": "Jl Flamboyan 66 Klungkung"
+  },
+  {
+    "no": 84,
+    "guru": "I Made Yuda Adi Putra, S.T.",
+    "nip": "19800119 201403 1 001",
+    "siswa": "I Kadek Angga Aditya Putra",
+    "kelas": "XII TSM",
+    "tempat": "Aries 1 Motor",
+    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 85,
+    "guru": "I Made Yuda Adi Putra, S.T.",
+    "nip": "19800119 201403 1 001",
+    "siswa": "I Kadek Dwi Adi Darma Yudhi",
+    "kelas": "XII TSM",
+    "tempat": "Gemilang Motor",
+    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 86,
+    "guru": "I Made Yuda Adi Putra, S.T.",
+    "nip": "19800119 201403 1 001",
+    "siswa": "I Ketut Rianta",
+    "kelas": "XII TSM",
+    "tempat": "Ahas Cemerlang Motor",
+    "alamat": "Jl Flamboyan 66 Klungkung"
+  },
+  {
+    "no": 87,
+    "guru": "I Made Yuda Adi Putra, S.T.",
+    "nip": "19800119 201403 1 001",
+    "siswa": "I Made Div Aditya Pramana",
+    "kelas": "XII TSM",
+    "tempat": "Aries 1 Motor",
+    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 88,
+    "guru": "I Made Yuda Adi Putra, S.T.",
+    "nip": "19800119 201403 1 001",
+    "siswa": "I Ngurah Komang Ari Artana",
+    "kelas": "XII TSM",
+    "tempat": "Ahas Cemerlang Motor",
+    "alamat": "Jl Flamboyan 66 Klungkung"
+  },
+  {
+    "no": 89,
+    "guru": "I Made Yuda Adi Putra, S.T.",
+    "nip": "19800119 201403 1 001",
+    "siswa": "Juliantara Putra",
+    "kelas": "XII TSM",
+    "tempat": "Aries 1 Motor",
+    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 90,
+    "guru": "I Made Yuda Adi Putra, S.T.",
+    "nip": "19800119 201403 1 001",
+    "siswa": "Wiranto Sanjaya",
+    "kelas": "XII TSM",
+    "tempat": "Aries 1 Motor",
+    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 91,
+    "guru": "Faris Azka, S.Pd.",
+    "nip": "19941008 201903 1 008",
+    "siswa": "I Putu Juniarta",
+    "kelas": "XII AK",
+    "tempat": "PT. BPR Tridarma Putri Klungkung",
+    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec.Klungkung"
+  },
+  {
+    "no": 92,
+    "guru": "Faris Azka, S.Pd.",
+    "nip": "19941008 201903 1 008",
+    "siswa": "Ni Kadek Ratih Sancikadewi",
+    "kelas": "XII AK",
+    "tempat": "PT. BPR Tridarma Putri Klungkung",
+    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec. Klungkung"
+  },
+  {
+    "no": 93,
+    "guru": "Faris Azka, S.Pd.",
+    "nip": "19941008 201903 1 008",
+    "siswa": "Ni Kadek Santiasih",
+    "kelas": "XII AK",
+    "tempat": "PT. BPR Tridarma Putri Klungkung",
+    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec. Klungkung"
+  },
+  {
+    "no": 94,
+    "guru": "Faris Azka, S.Pd.",
+    "nip": "19941008 201903 1 008",
+    "siswa": "I Gusti Ayu Putu Candra Widiantari",
+    "kelas": "XII LPB",
+    "tempat": "PT. BPR Sari Jaya Sedana Sampalan Klungkung",
+    "alamat": "JL. Raya Sampalan,No. 88x,Dawan Klungkung"
+  },
+  {
+    "no": 95,
+    "guru": "Faris Azka, S.Pd.",
+    "nip": "19941008 201903 1 008",
+    "siswa": "Ida Ayu Indah Gangga Swari",
+    "kelas": "XII LPB",
+    "tempat": "PT. BPR Sari Jaya Sedana Sampalan Klungkung",
+    "alamat": "JL. Raya Sampalan,No. 88x,Dawan Klungkung"
+  },
+  {
+    "no": 96,
+    "guru": "Arik Ardana, S.Pd.",
+    "nip": "19860314 201903 1 012",
+    "siswa": "I Gusti Ayu Diana Kristiani",
+    "kelas": "XII MP 1",
+    "tempat": "BPJS TENAGA KERJA KAB.GIANYAR",
+    "alamat": "Jalan Dharma Giri, Bypass Buruan, Gianyar, Bali 80581"
+  },
+  {
+    "no": 97,
+    "guru": "Arik Ardana, S.Pd.",
+    "nip": "19860314 201903 1 012",
+    "siswa": "Ni Kadek Darma Yanti",
+    "kelas": "XII MP 1",
+    "tempat": "DINAS PEKERJAAN UMUM, PENATAAN RUANG PERUMAHAN DAN KAWASAN PEMUKIMAN KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Gajah Mada No.47, Semarapura Tengah, Kec. Klungkung, Kabupaten Klungkung"
+  },
+  {
+    "no": 98,
+    "guru": "Arik Ardana, S.Pd.",
+    "nip": "19860314 201903 1 012",
+    "siswa": "Ni Komang Diah Anandita Permata",
+    "kelas": "XII MP 1",
+    "tempat": "DINAS PEKERJAAN UMUM, PENATAAN RUANG PERUMAHAN DAN KAWASAN PEMUKIMAN KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Gajah Mada No.47, Semarapura Tengah, Kec. Klungkung, Kabupaten Klungkung"
+  },
+  {
+    "no": 99,
+    "guru": "Arik Ardana, S.Pd.",
+    "nip": "19860314 201903 1 012",
+    "siswa": "Ni Luh Sri Nadi",
+    "kelas": "XII MP 1",
+    "tempat": "DINAS PEKERJAAN UMUM, PENATAAN RUANG PERUMAHAN DAN KAWASAN PEMUKIMAN KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Gajah Mada No.47, Semarapura Tengah, Kec. Klungkung, Kabupaten Klungkung"
+  },
+  {
+    "no": 100,
+    "guru": "Arik Ardana, S.Pd.",
+    "nip": "19860314 201903 1 012",
+    "siswa": "Anak Agung Istri Amira Vebriani",
+    "kelas": "XII MP 2",
+    "tempat": "( MPP) PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Gajah Mada No.50 Semarapura"
+  },
+  {
+    "no": 101,
+    "guru": "Arik Ardana, S.Pd.",
+    "nip": "19860314 201903 1 012",
+    "siswa": "Ni Kadek Ayu Larasati",
+    "kelas": "XII MP 2",
+    "tempat": "( MPP) PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Gajah Mada No.50 Semarapura"
+  },
+  {
+    "no": 102,
+    "guru": "Arik Ardana, S.Pd.",
+    "nip": "19860314 201903 1 012",
+    "siswa": "Ni Komang Padmawati",
+    "kelas": "XII MP 2",
+    "tempat": "( MPP) PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Gajah Mada No.50 Semarapura"
+  },
+  {
+    "no": 103,
+    "guru": "Arik Ardana, S.Pd.",
+    "nip": "19860314 201903 1 012",
+    "siswa": "Ni Luh Vika Widyawati",
+    "kelas": "XII MP 2",
+    "tempat": "( MPP) PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Gajah Mada No.50 Semarapura"
+  },
+  {
+    "no": 104,
+    "guru": "Arik Ardana, S.Pd.",
+    "nip": "19860314 201903 1 012",
+    "siswa": "Ni Putu Eka Widiantari",
+    "kelas": "XII MP 2",
+    "tempat": "( MPP) PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Gajah Mada No.50 Semarapura"
+  },
+  {
+    "no": 105,
+    "guru": "Ni Ketut Budiati, S.Pd.",
+    "nip": "19800810 202221 2 005",
+    "siswa": "I Gede Ary Sudiantara",
+    "kelas": "XII MP 1",
+    "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+  },
+  {
+    "no": 106,
+    "guru": "Ni Ketut Budiati, S.Pd.",
+    "nip": "19800810 202221 2 005",
+    "siswa": "I Gede Nesa Wira Arsana",
+    "kelas": "XII MP 1",
+    "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+  },
+  {
+    "no": 107,
+    "guru": "Ni Ketut Budiati, S.Pd.",
+    "nip": "19800810 202221 2 005",
+    "siswa": "I Gede Tri Jaya Winnata",
+    "kelas": "XII MP 2",
+    "tempat": "SMK NEGERI 1 KLUNGKUNG",
+    "alamat": "Jalan Subali II , Banjar Siku Desa Kamasan,Klungkung"
+  },
+  {
+    "no": 108,
+    "guru": "Ni Ketut Budiati, S.Pd.",
+    "nip": "19800810 202221 2 005",
+    "siswa": "Sang Made Arta Mahendra",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+  },
+  {
+    "no": 109,
+    "guru": "Eka Hikmahyanti, SE",
+    "nip": "19840111 202221 2 002",
+    "siswa": "Afrilia",
+    "kelas": "XII LPB",
+    "tempat": "PT. BPR Nusamba Manggis Klungkung",
+    "alamat": "Jl. Untung Surapati No. 14. Semarapura, Kec. Klungkung"
+  },
+  {
+    "no": 110,
+    "guru": "Eka Hikmahyanti, SE",
+    "nip": "19840111 202221 2 002",
+    "siswa": "Ida Ayu Nyoman Reditya Oktaviani",
+    "kelas": "XII LPB",
+    "tempat": "PT. BPR Tata Anjungsari Klungkung",
+    "alamat": "Jl. Darmawangsa, No. 05 Semarapura"
+  },
+  {
+    "no": 111,
+    "guru": "Eka Hikmahyanti, SE",
+    "nip": "19840111 202221 2 002",
+    "siswa": "Rina Agustina",
+    "kelas": "XII LPB",
+    "tempat": "PT. BPR Nusamba Manggis Klungkung",
+    "alamat": "Jl. Untung Surapati No. 14. Semarapura, Kec. Klungkung"
+  },
+  {
+    "no": 112,
+    "guru": "Eka Hikmahyanti, SE",
+    "nip": "19840111 202221 2 002",
+    "siswa": "Meisya Fazrina",
+    "kelas": "XII MP 1",
+    "tempat": "PT. PLN (PERSERO) UP3 BALI TIMUR",
+    "alamat": "Jalan Batu Tabih 53 Semarapura Klungkung"
+  },
+  {
+    "no": 113,
+    "guru": "Eka Hikmahyanti, SE",
+    "nip": "19840111 202221 2 002",
+    "siswa": "Ni Komang Ayu Widiantari",
+    "kelas": "XII MP 1",
+    "tempat": "BPJS TENAGA KERJA KAB.GIANYAR",
+    "alamat": "Jalan Dharma Giri, Bypass Buruan, Gianyar, Bali 80581"
+  },
+  {
+    "no": 114,
+    "guru": "Eka Hikmahyanti, SE",
+    "nip": "19840111 202221 2 002",
+    "siswa": "Ni Luh Ayu Purnama Dewi",
+    "kelas": "XII MP 1",
+    "tempat": "PT. PLN (PERSERO) ULP KLUNGKUNG",
+    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG"
+  },
+  {
+    "no": 115,
+    "guru": "Eka Hikmahyanti, SE",
+    "nip": "19840111 202221 2 002",
+    "siswa": "Ni Putu Ayu Bintang",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+  },
+  {
+    "no": 116,
+    "guru": "Eka Hikmahyanti, SE",
+    "nip": "19840111 202221 2 002",
+    "siswa": "Ni Putu Diah Arthasari",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+  },
+  {
+    "no": 117,
+    "guru": "Eka Hikmahyanti, SE",
+    "nip": "19840111 202221 2 002",
+    "siswa": "Pande Putu Galuh Risanti Indira Yunika",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+  },
+  {
+    "no": 118,
+    "guru": "Ni Kadek Winastri, S.Pd.",
+    "nip": "19841122 202221 2 004",
+    "siswa": "Luh Desiyani",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / BANJARANGKAN",
+    "alamat": "Jl. Ida Bagus Puja Takmung, Kec. Bajarangkan Klungkung"
+  },
+  {
+    "no": 119,
+    "guru": "Ni Kadek Winastri, S.Pd.",
+    "nip": "19841122 202221 2 004",
+    "siswa": "Dewa Ayu Raras Variati",
+    "kelas": "XII BD 2",
+    "tempat": "Toko Bisma",
+    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung"
+  },
+  {
+    "no": 120,
+    "guru": "Ni Kadek Winastri, S.Pd.",
+    "nip": "19841122 202221 2 004",
+    "siswa": "I Kadek Purnawirawan",
+    "kelas": "XII BD 2",
+    "tempat": "Toko Bisma",
+    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung"
+  },
+  {
+    "no": 121,
+    "guru": "Ni Kadek Winastri, S.Pd.",
+    "nip": "19841122 202221 2 004",
+    "siswa": "Ni Kadek Meta Febriantari",
+    "kelas": "XII BD 2",
+    "tempat": "Toko Bisma",
+    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung"
+  },
+  {
+    "no": 122,
+    "guru": "Kadek Sari Cuciati, S.Farm.",
+    "nip": "19880624 202221 2 001",
+    "siswa": "Ida Ayu Putu Diah Kamiswari",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Sinar Santi",
+    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung"
+  },
+  {
+    "no": 123,
+    "guru": "Kadek Sari Cuciati, S.Farm.",
+    "nip": "19880624 202221 2 001",
+    "siswa": "Luh Ade Galuh Pratiwi",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Sinar Santi",
+    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung"
+  },
+  {
+    "no": 124,
+    "guru": "Kadek Sari Cuciati, S.Farm.",
+    "nip": "19880624 202221 2 001",
+    "siswa": "Ni Wayan Nanda Pradnya Suari",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Tirta Farma",
+    "alamat": "Jln. Raya Gelgel, Desa Gelgel, Kec Klungkung, Kab.Klungkung"
+  },
+  {
+    "no": 125,
+    "guru": "Kadek Sari Cuciati, S.Farm.",
+    "nip": "19880624 202221 2 001",
+    "siswa": "Elyska Kirana Putri",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Galiran",
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+  },
+  {
+    "no": 126,
+    "guru": "Kadek Sari Cuciati, S.Farm.",
+    "nip": "19880624 202221 2 001",
+    "siswa": "Mauli Diana Rahayu Putri",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Galiran",
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+  },
+  {
+    "no": 127,
+    "guru": "Kadek Sari Cuciati, S.Farm.",
+    "nip": "19880624 202221 2 001",
+    "siswa": "Ni Komang Sri Diah Lastari",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Galiran",
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+  },
+  {
+    "no": 128,
+    "guru": "Kadek Sari Cuciati, S.Farm.",
+    "nip": "19880624 202221 2 001",
+    "siswa": "Ni Putu Widya Wulandari",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Galiran",
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+  },
+  {
+    "no": 129,
+    "guru": "Ida Bagus Gde Agung Raditya Eka Putra, S.Fa",
+    "nip": "19890205 202221 1 002",
+    "siswa": "Ni Kadek Dian Candra Pratiwi",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Permata Farma",
+    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung"
+  },
+  {
+    "no": 130,
+    "guru": "Ida Bagus Gde Agung Raditya Eka Putra, S.Fa",
+    "nip": "19890205 202221 1 002",
+    "siswa": "Ni Komang Widya Krista Yanti",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Permata Farma",
+    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung"
+  },
+  {
+    "no": 131,
+    "guru": "Ida Bagus Gde Agung Raditya Eka Putra, S.Fa",
+    "nip": "19890205 202221 1 002",
+    "siswa": "Ni Wayan Ani Arthayasih",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Permata Farma",
+    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung"
+  },
+  {
+    "no": 132,
+    "guru": "Ida Bagus Gde Agung Raditya Eka Putra, S.Fa",
+    "nip": "19890205 202221 1 002",
+    "siswa": "Yoneda Yebleb",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Permata Farma",
+    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung"
+  },
+  {
+    "no": 133,
+    "guru": "Ida Bagus Gde Agung Raditya Eka Putra, S.Fa",
+    "nip": "19890205 202221 1 002",
+    "siswa": "I Gusti Ayu Indah Pertiwi",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Sekar Sari",
+    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung"
+  },
+  {
+    "no": 134,
+    "guru": "Ida Bagus Gde Agung Raditya Eka Putra, S.Fa",
+    "nip": "19890205 202221 1 002",
+    "siswa": "Ni Komang Leges Aria Sentani",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Sekar Sari",
+    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung"
+  },
+  {
+    "no": 135,
+    "guru": "Ida Bagus Gde Agung Raditya Eka Putra, S.Fa",
+    "nip": "19890205 202221 1 002",
+    "siswa": "Ni Luh Komang Divya Santhi",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Sekar Sari",
+    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung"
+  },
+  {
+    "no": 136,
+    "guru": "Ida Bagus Gde Agung Raditya Eka Putra, S.Fa",
+    "nip": "19890205 202221 1 002",
+    "siswa": "Ni Putu Galih Pratiwi Setiawan",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Sekar Sari",
+    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung"
+  },
+  {
+    "no": 137,
+    "guru": "I Wayan Warjana, S.Pd.",
+    "nip": "19900604 202221 1 002",
+    "siswa": "Dwi Retno Ayu Ningrum",
+    "kelas": "XII TKJ",
+    "tempat": "PT. GAYA MASA TEKNIKA",
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+  },
+  {
+    "no": 138,
+    "guru": "Anak Agung Istri Eka Putri Sadiningtyas, S.Pd",
+    "nip": "19910502 202221 2 005",
+    "siswa": "I Gede Adi Putra",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM SUKAWATI",
+    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Gelumpang, Desa Sukawati, Kec. Sukawati, Kab. Gianyar"
+  },
+  {
+    "no": 139,
+    "guru": "Anak Agung Istri Eka Putri Sadiningtyas, S.Pd",
+    "nip": "19910502 202221 2 005",
+    "siswa": "Ni Komang Trisna Yuni Astari",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM SUKAWATI",
+    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Gelumpang, Desa Sukawati, Kec. Sukawati, Kab. Gianyar"
+  },
+  {
+    "no": 140,
+    "guru": "Anak Agung Istri Eka Putri Sadiningtyas, S.Pd",
+    "nip": "19910502 202221 2 005",
+    "siswa": "I Ketut Alit Rupawan",
+    "kelas": "XII BD 2",
+    "tempat": "Koperasi Nirmala",
+    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung"
+  },
+  {
+    "no": 141,
+    "guru": "I Gede Adi Wirapradnyana, S.Pd.",
+    "nip": "19910522 202221 1 002",
+    "siswa": "Ni Komang Bintang Triasih",
+    "kelas": "XII AK",
+    "tempat": "Hotel Komune -Gianyar",
+    "alamat": "Jl Pantai Keramas Gianyar"
+  },
+  {
+    "no": 142,
+    "guru": "I Gede Adi Wirapradnyana, S.Pd.",
+    "nip": "19910522 202221 1 002",
+    "siswa": "Pande Made Shasmita Aurellia Putri",
+    "kelas": "XII AK",
+    "tempat": "Maua Olea Ubud",
+    "alamat": "Jl. Raya Pengosekan, Mas, Kecamatan Ubud, Kabupaten Gianyar, Bali 80571"
+  },
+  {
+    "no": 143,
+    "guru": "Dewa Ayu Putu Putri Sanjani, S.Pd.",
+    "nip": "19920407 202221 2 004",
+    "siswa": "Akbar Alfiansah",
+    "kelas": "XII TKJ",
+    "tempat": "CV. BALI MEDIA COMPUTAMA (BMC)",
+    "alamat": "Jl. Pantai Purnama, Sukawati, Kec. Sukawati, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 144,
+    "guru": "Dewa Ayu Putu Putri Sanjani, S.Pd.",
+    "nip": "19920407 202221 2 004",
+    "siswa": "I Gede Adtya Wedha Paramartha",
+    "kelas": "XII TKJ",
+    "tempat": "CV. BALI MEDIA COMPUTAMA (BMC)",
+    "alamat": "Jl. Pantai Purnama, Sukawati, Kec. Sukawati, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 145,
+    "guru": "Dewa Ayu Putu Putri Sanjani, S.Pd.",
+    "nip": "19920407 202221 2 004",
+    "siswa": "Made Pradnya Wahyu Radheya",
+    "kelas": "XII TKJ",
+    "tempat": "CV. BALI MEDIA COMPUTAMA (BMC)",
+    "alamat": "Jl. Pantai Purnama, Sukawati, Kec. Sukawati, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 146,
+    "guru": "Dewa Ayu Putu Putri Sanjani, S.Pd.",
+    "nip": "19920407 202221 2 004",
+    "siswa": "I Komang Giri Artawan",
+    "kelas": "XII TKJ",
+    "tempat": "PT. NANDIKA INTI GLOBAL",
+    "alamat": "Jalan Matahari X, Desa Satra, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 147,
+    "guru": "Dewa Ayu Putu Putri Sanjani, S.Pd.",
+    "nip": "19920407 202221 2 004",
+    "siswa": "Rizky Adib Irlan Syah",
+    "kelas": "XII TKJ",
+    "tempat": "PT. NANDIKA INTI GLOBAL",
+    "alamat": "Jalan Matahari X, Desa Satra, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 148,
+    "guru": "Dewa Ayu Putu Putri Sanjani, S.Pd.",
+    "nip": "19920407 202221 2 004",
+    "siswa": "Rizqy Al Farraby",
+    "kelas": "XII TKJ",
+    "tempat": "PT. NANDIKA INTI GLOBAL",
+    "alamat": "Jalan Matahari X, Desa Satra, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 149,
+    "guru": "Sri Reswati, S.Farm.",
+    "nip": "19920422 202221 2 003",
+    "siswa": "Ni Kadek Bintang Nopiani",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Banjarangkan Farma",
+    "alamat": "Jln. Raya Banjarangkan No.36 Kec. Banjarangkan Kab. Klungkung"
+  },
+  {
+    "no": 150,
+    "guru": "Sri Reswati, S.Farm.",
+    "nip": "19920422 202221 2 003",
+    "siswa": "Ni Komang Anggraeni",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Banjarangkan Farma",
+    "alamat": "Jln. Raya Banjarangkan No.36 Kec. Banjarangkan Kab. Klungkung"
+  },
+  {
+    "no": 151,
+    "guru": "Sri Reswati, S.Farm.",
+    "nip": "19920422 202221 2 003",
+    "siswa": "Ni Wayan Novi Lestari",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Visual Farma II",
+    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung"
+  },
+  {
+    "no": 152,
+    "guru": "Sri Reswati, S.Farm.",
+    "nip": "19920422 202221 2 003",
+    "siswa": "Gusti Ayu Putu Alita Bintang Lestari",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Banjarangkan Farma",
+    "alamat": "Jln. Raya Banjarangkan No.36 Kec. Banjarangkan Kab. Klungkung"
+  },
+  {
+    "no": 153,
+    "guru": "Putu Sri Satri Dewi, S.Pd.",
+    "nip": "19940427 202221 2 002",
+    "siswa": "Pande Ni Putu Adisty Kusuma Jati",
+    "kelas": "XII MP 1",
+    "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+  },
+  {
+    "no": 154,
+    "guru": "Putu Sri Satri Dewi, S.Pd.",
+    "nip": "19940427 202221 2 002",
+    "siswa": "Ni Made Suci Manik Astari",
+    "kelas": "XII MP 2",
+    "tempat": "UPTD PPRD KABUPATEN KLUNGKUNG (SAMSAT KLUNGKUNG)",
+    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711"
+  },
+  {
+    "no": 155,
+    "guru": "Putu Sri Satri Dewi, S.Pd.",
+    "nip": "19940427 202221 2 002",
+    "siswa": "Ni Putu Mei Wulandari",
+    "kelas": "XII MP 2",
+    "tempat": "UPTD PPRD KABUPATEN KLUNGKUNG (SAMSAT KLUNGKUNG)",
+    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711"
+  },
+  {
+    "no": 156,
+    "guru": "Ni Komang Martini, S.Pd.",
+    "nip": "19750501 202221 2 004",
+    "siswa": "Ni Kadek Ayu Melani Ratna Dewi",
+    "kelas": "XII DKV",
+    "tempat": "Satya Studio Digital Printing",
+    "alamat": "Jl. Ngurah Rai, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 157,
+    "guru": "Ni Komang Martini, S.Pd.",
+    "nip": "19750501 202221 2 004",
+    "siswa": "I Dewa Ayu Awidiya Sari",
+    "kelas": "XII AK",
+    "tempat": "KUD Panca Satya Dawan",
+    "alamat": "Jl. Sawo Kabeh, Desa Dawan Kelod, Kec. Dawan, Klungkung"
+  },
+  {
+    "no": 158,
+    "guru": "Ni Komang Martini, S.Pd.",
+    "nip": "19750501 202221 2 004",
+    "siswa": "Ni Luh Putu Candra Cahyani",
+    "kelas": "XII AK",
+    "tempat": "KPP Pratama Gianyar",
+    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec.Blahbatuh, Buruan, Kec. Gianyar"
+  },
+  {
+    "no": 159,
+    "guru": "I Dewa Gede Sudiana, S.Pd.",
+    "nip": "19820227 202221 1 010",
+    "siswa": "I Wayan Kartika Adi Putra",
+    "kelas": "XII TKJ",
+    "tempat": "PT. GAYA MASA TEKNIKA",
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+  },
+  {
+    "no": 160,
+    "guru": "I Dewa Gede Sudiana, S.Pd.",
+    "nip": "19820227 202221 1 010",
+    "siswa": "Agus Billy Fedrico",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Tirta Farma",
+    "alamat": "Jln. Raya Gelgel, Desa Gelgel, Kec Klungkung, Kab.Klungkung"
+  },
+  {
+    "no": 161,
+    "guru": "I Dewa Gede Sudiana, S.Pd.",
+    "nip": "19820227 202221 1 010",
+    "siswa": "Agus Eka Widya Pradnyana",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Tirta Farma",
+    "alamat": "Jln. Raya Gelgel, Desa Gelgel, Kec Klungkung, Kab.Klungkung"
+  },
+  {
+    "no": 162,
+    "guru": "I Dewa Gede Sudiana, S.Pd.",
+    "nip": "19820227 202221 1 010",
+    "siswa": "Ni Putu Martini Lestari",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Visual Farma II",
+    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung"
+  },
+  {
+    "no": 163,
+    "guru": "I Dewa Gede Sudiana, S.Pd.",
+    "nip": "19820227 202221 1 010",
+    "siswa": "I Made Agus Bayu Widi",
+    "kelas": "XII TSM",
+    "tempat": "PT. Nusantara Surya Sakti (NSS)",
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 164,
+    "guru": "I Dewa Gede Sudiana, S.Pd.",
+    "nip": "19820227 202221 1 010",
+    "siswa": "Lorensius Kaka Lalo",
+    "kelas": "XII TSM",
+    "tempat": "PT. Nusantara Surya Sakti (NSS)",
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 165,
+    "guru": "I Gusti Ayu Made Sri Rahayu, S.Pd.",
+    "nip": "19900218 202221 2 022",
+    "siswa": "I Putu Agus Pratama Putra",
+    "kelas": "XII TKJ",
+    "tempat": "ARIK COMPUTER",
+    "alamat": "Jl. Ahmad Yani, Semarapura Kaja, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 166,
+    "guru": "I Gusti Ayu Made Sri Rahayu, S.Pd.",
+    "nip": "19900218 202221 2 022",
+    "siswa": "I Kadek Dodik Ramayoga",
+    "kelas": "XII TSM",
+    "tempat": "PT. Nusantara Surya Sakti (NSS)",
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 167,
+    "guru": "I Gusti Ayu Made Sri Rahayu, S.Pd.",
+    "nip": "19900218 202221 2 022",
+    "siswa": "I Komang Bayu Septi Permana",
+    "kelas": "XII TSM",
+    "tempat": "PT. Nusantara Surya Sakti (NSS)",
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kabupaten Klungkung, Bali"
+  },
+  {
+    "no": 168,
+    "guru": "A.A. Istri Raka Yuliantari, S.Pd.",
+    "nip": "19900225 202221 2 027",
+    "siswa": "I Putu Rendy Galang Permana",
+    "kelas": "XII DKV",
+    "tempat": "Bali Stars Promosindo Ubud",
+    "alamat": "Jl. Cok Rai Pudak, Mas, Kecamatan Ubud, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 169,
+    "guru": "A.A. Istri Raka Yuliantari, S.Pd.",
+    "nip": "19900225 202221 2 027",
+    "siswa": "Ni Putu Ghina Anastasia Putri",
+    "kelas": "XII DKV",
+    "tempat": "Bali Stars Promosindo Ubud",
+    "alamat": "Jl. Cok Rai Pudak, Mas, Kecamatan Ubud, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 170,
+    "guru": "A.A. Istri Raka Yuliantari, S.Pd.",
+    "nip": "19900225 202221 2 027",
+    "siswa": "Ni Putu Dewik",
+    "kelas": "XII AK",
+    "tempat": "Koperasi Serba Usaha Nirmala Klungkung",
+    "alamat": "Jl. Bypass. Prof Ida Bagus Mantra, Dusun Lepang, Desa Takmung Klungkung"
+  },
+  {
+    "no": 171,
+    "guru": "A.A. Istri Raka Yuliantari, S.Pd.",
+    "nip": "19900225 202221 2 027",
+    "siswa": "Ni Putu Dian Ambarwati",
+    "kelas": "XII AK",
+    "tempat": "Koperasi Serba Usaha Nirmala Klungkung",
+    "alamat": "Jl. Bypass. Prof Ida Bagus Mantra, Dusun Lepang, Desa Takmung Klungkung"
+  },
+  {
+    "no": 172,
+    "guru": "I Made Juniarta, S.Pd.",
+    "nip": "19900604 202221 1 018",
+    "siswa": "Ni Komang Ayu Santika",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Visual Farma II",
+    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung"
+  },
+  {
+    "no": 173,
+    "guru": "I Nyoman Anom Widyadarma, S.Kom.",
+    "nip": "19830913 202321 1 009",
+    "siswa": "I Made Sugiarta",
+    "kelas": "XII TKJ",
+    "tempat": "PT. GAYA MASA TEKNIKA",
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+  },
+  {
+    "no": 174,
+    "guru": "I Nyoman Anom Widyadarma, S.Kom.",
+    "nip": "19830913 202321 1 009",
+    "siswa": "I Putu Adi Ari Endrawan",
+    "kelas": "XII TKJ",
+    "tempat": "PT. GAYA MASA TEKNIKA",
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+  },
+  {
+    "no": 175,
+    "guru": "I Nyoman Anom Widyadarma, S.Kom.",
+    "nip": "19830913 202321 1 009",
+    "siswa": "Komang Jano Artha",
+    "kelas": "XII TKJ",
+    "tempat": "PT. GAYA MASA TEKNIKA",
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+  },
+  {
+    "no": 176,
+    "guru": "I Nyoman Anom Widyadarma, S.Kom.",
+    "nip": "19830913 202321 1 009",
+    "siswa": "Ni Ketut Sinta",
+    "kelas": "XII TKJ",
+    "tempat": "PT. GAYA MASA TEKNIKA",
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+  },
+  {
+    "no": 177,
+    "guru": "I Nyoman Anom Widyadarma, S.Kom.",
+    "nip": "19830913 202321 1 009",
+    "siswa": "Ni Komang Sila Triana Sari",
+    "kelas": "XII TKJ",
+    "tempat": "PT. GAYA MASA TEKNIKA",
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+  },
+  {
+    "no": 178,
+    "guru": "I Nyoman Anom Widyadarma, S.Kom.",
+    "nip": "19830913 202321 1 009",
+    "siswa": "I Putu Gede Eka Yogantara Pratmaja",
+    "kelas": "XII DKV",
+    "tempat": "Gede Duta Visual",
+    "alamat": "Gg. Sari Indah No.4, Tonja, Kec. Denpasar Utara, Kota Denpasar, Bali"
+  },
+  {
+    "no": 179,
+    "guru": "I Nyoman Anom Widyadarma, S.Kom.",
+    "nip": "19830913 202321 1 009",
+    "siswa": "Raditya Nugraha",
+    "kelas": "XII DKV",
+    "tempat": "Gede Duta Visual",
+    "alamat": "Gg. Sari Indah No.4, Tonja, Kec. Denpasar Utara, Kota Denpasar, Bali"
+  },
+  {
+    "no": 180,
+    "guru": "I Dewa Ayu Ketut Candrayani, S.Pd.H",
+    "nip": "19850225 202321 2 016",
+    "siswa": "M. Afgansyah Al-Maghfirah",
+    "kelas": "XII TKJ",
+    "tempat": "UD. PRIMA COMPUTER",
+    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 181,
+    "guru": "I Dewa Ayu Ketut Candrayani, S.Pd.H",
+    "nip": "19850225 202321 2 016",
+    "siswa": "I Desak Ketut Patniki Astuti",
+    "kelas": "XII AK",
+    "tempat": "Hotel Whyndham Tamansari Jivva Resort Klungkung",
+    "alamat": "Pantai Lepang, Jl. Subak Lepang No.16, Takmung, Kec. Banjarangkan"
+  },
+  {
+    "no": 182,
+    "guru": "I Dewa Ayu Ketut Candrayani, S.Pd.H",
+    "nip": "19850225 202321 2 016",
+    "siswa": "Ni Putu Dian Maharani",
+    "kelas": "XII AK",
+    "tempat": "Hotel Whyndham Tamansari Jivva Resort Klungkung",
+    "alamat": "Pantai Lepang, Jl. Subak Lepang No.16, Takmung, Kec. Banjarangkan"
+  },
+  {
+    "no": 183,
+    "guru": "I Dewa Ayu Ketut Candrayani, S.Pd.H",
+    "nip": "19850225 202321 2 016",
+    "siswa": "Ketut Mahardika",
+    "kelas": "XII TSM",
+    "tempat": "Karisma Motor",
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 184,
+    "guru": "I Dewa Ayu Ketut Candrayani, S.Pd.H",
+    "nip": "19850225 202321 2 016",
+    "siswa": "Nyoman Yudhi Triananda Wibawa",
+    "kelas": "XII TSM",
+    "tempat": "Karisma Motor",
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 185,
+    "guru": "Ni Komang Ayu Widyaningsih, S.Pd",
+    "nip": "19860123 202321 2 013",
+    "siswa": "Nabila Tusak Diah",
+    "kelas": "XII LPB",
+    "tempat": "PT. BPR Tata Anjungsari Klungkung",
+    "alamat": "Jl. Darmawangsa, No. 05 Semarapura"
+  },
+  {
+    "no": 186,
+    "guru": "Putu Doantara Yasa, S.Pd.",
+    "nip": "19860317 202321 1 012",
+    "siswa": "Agustinus Poka Mete",
+    "kelas": "XII TKJ",
+    "tempat": "CV. MELODY INDAH COMPUTER",
+    "alamat": "Jl. Ngurah Rai Pertokoan Pasar Gianyar Blok III No 14 Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 187,
+    "guru": "Putu Doantara Yasa, S.Pd.",
+    "nip": "19860317 202321 1 012",
+    "siswa": "I Putu Pasek Prawira Putra",
+    "kelas": "XII TKJ",
+    "tempat": "CV. MELODY INDAH COMPUTER",
+    "alamat": "Jl. Ngurah Rai Pertokoan Pasar Gianyar Blok III No 14 Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 188,
+    "guru": "Putu Doantara Yasa, S.Pd.",
+    "nip": "19860317 202321 1 012",
+    "siswa": "I Komang Raka Danaswara",
+    "kelas": "XII DKV",
+    "tempat": "Bali Stars Promosindo Gianyar",
+    "alamat": "Jl. Dharma Giri, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 189,
+    "guru": "Putu Doantara Yasa, S.Pd.",
+    "nip": "19860317 202321 1 012",
+    "siswa": "I Made Dharma Mahardika",
+    "kelas": "XII DKV",
+    "tempat": "Bali Stars Promosindo Gianyar",
+    "alamat": "Jl. Dharma Giri, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 190,
+    "guru": "Putu Doantara Yasa, S.Pd.",
+    "nip": "19860317 202321 1 012",
+    "siswa": "Komang Aditya",
+    "kelas": "XII DKV",
+    "tempat": "Bali Stars Promosindo Gianyar",
+    "alamat": "Jl. Dharma Giri, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 191,
+    "guru": "Putu Doantara Yasa, S.Pd.",
+    "nip": "19860317 202321 1 012",
+    "siswa": "Ni Kadek Ranita Dewi",
+    "kelas": "XII DKV",
+    "tempat": "Marvella",
+    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 192,
+    "guru": "Putu Doantara Yasa, S.Pd.",
+    "nip": "19860317 202321 1 012",
+    "siswa": "Ni Putu Rismayani Darma Swari",
+    "kelas": "XII DKV",
+    "tempat": "Marvella",
+    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 193,
+    "guru": "Putu Doantara Yasa, S.Pd.",
+    "nip": "19860317 202321 1 012",
+    "siswa": "Wayan Satya Dharma",
+    "kelas": "XII DKV",
+    "tempat": "Satya Studio Digital Printing",
+    "alamat": "Jl. Ngurah Rai, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 194,
+    "guru": "Ni Kadek Dewi Sutarini, S.Pd.",
+    "nip": "19890518 202321 2 017",
+    "siswa": "Dewa Ayu Made Dwi Artika Darmayanti",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM NEGARI",
+    "alamat": "Jl. By Pass Profesor Ida Bagus Mantra Lingk Negari, Kel. Negari, Kec. Banjarangkan, Kab. Klungkung"
+  },
+  {
+    "no": 195,
+    "guru": "Ni Kadek Dewi Sutarini, S.Pd.",
+    "nip": "19890518 202321 2 017",
+    "siswa": "Ni Komang Henny Herdi Yani",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM NEGARI",
+    "alamat": "Jl. By Pass Profesor Ida Bagus Mantra Lingk Negari, Kel. Negari, Kec. Banjarangkan, Kab. Klungkung"
+  },
+  {
+    "no": 196,
+    "guru": "Ni Kadek Dewi Sutarini, S.Pd.",
+    "nip": "19890518 202321 2 017",
+    "siswa": "Ni Made Sukma Yanti",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / BATU TABIH",
+    "alamat": "Jl. Batu Tabih Ling Takmung Desa Takmung Kec. Banjarangkan, Kab. Klungkung"
+  },
+  {
+    "no": 197,
+    "guru": "Ni Kadek Dewi Sutarini, S.Pd.",
+    "nip": "19890518 202321 2 017",
+    "siswa": "Putu Aryadinata",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / BATU TABIH",
+    "alamat": "Jl. Batu Tabih Ling Takmung Desa Takmung Kec. Banjarangkan, Kab. Klungkung"
+  },
+  {
+    "no": 198,
+    "guru": "Ni Kadek Dewi Sutarini, S.Pd.",
+    "nip": "19890518 202321 2 017",
+    "siswa": "Kadek Agus Apriana Bajesti Putra",
+    "kelas": "XII BD 2",
+    "tempat": "Koperasi Nirmala",
+    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung"
+  },
+  {
+    "no": 199,
+    "guru": "Kadek Hariasih, S.Fil.H",
+    "nip": "19900102 202321 2 024",
+    "siswa": "Ni Luh Putu Frema Sugi Maharani",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / PESINGGAHAN",
+    "alamat": "Jl. Raya Goa Lawah Link. Suwitra Yasa, Desa Pesinggahan, Kec. Dawan, Kab. Klungkung"
+  },
+  {
+    "no": 200,
+    "guru": "Kadek Hariasih, S.Fil.H",
+    "nip": "19900102 202321 2 024",
+    "siswa": "Ni Putu Sari Astuti",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / PESINGGAHAN",
+    "alamat": "Jl. Raya Goa Lawah Link. Suwitra Yasa, Desa Pesinggahan, Kec. Dawan, Kab. Klungkung"
+  },
+  {
+    "no": 201,
+    "guru": "Kadek Hariasih, S.Fil.H",
+    "nip": "19900102 202321 2 024",
+    "siswa": "I Putu Aditya Suputra",
+    "kelas": "XII BD 2",
+    "tempat": "Toko Bisma",
+    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung"
+  },
+  {
+    "no": 202,
+    "guru": "Kadek Hariasih, S.Fil.H",
+    "nip": "19900102 202321 2 024",
+    "siswa": "Ni Putu Intan Merliani Putri",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Galiran",
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+  },
+  {
+    "no": 203,
+    "guru": "Kadek Hariasih, S.Fil.H",
+    "nip": "19900102 202321 2 024",
+    "siswa": "Ni Kadek Winda Wulandewi",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Galiran",
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+  },
+  {
+    "no": 204,
+    "guru": "Luh Nyoman Satria Purnama Dewi, S.Pd.H",
+    "nip": "19910429 202321 2 012",
+    "siswa": "Gek Danaya Anindia",
+    "kelas": "XII DKV",
+    "tempat": "Mandala Gold",
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kab. Klungkung"
+  },
+  {
+    "no": 205,
+    "guru": "Luh Nyoman Satria Purnama Dewi, S.Pd.H",
+    "nip": "19910429 202321 2 012",
+    "siswa": "Ni Luh Putu Sekar Darma Yanti",
+    "kelas": "XII DKV",
+    "tempat": "Mandala Gold",
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kab. Klungkung"
+  },
+  {
+    "no": 206,
+    "guru": "Luh Nyoman Satria Purnama Dewi, S.Pd.H",
+    "nip": "19910429 202321 2 012",
+    "siswa": "Ni Kadek Sinta Widyantini",
+    "kelas": "XII AK",
+    "tempat": "KUD Panca Satya Dawan",
+    "alamat": "Jl. Sawo Kabeh, Desa Dawan Kelod, Kec. Dawan, Klungkung"
+  },
+  {
+    "no": 207,
+    "guru": "Luh Nyoman Satria Purnama Dewi, S.Pd.H",
+    "nip": "19910429 202321 2 012",
+    "siswa": "Ni Kadek Sanjiani",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / NGURAH RAI KLUNGKUNG",
+    "alamat": "Jl. Ngurah Rai Ling. Pegending Kel. Semarapura Kauh, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 208,
+    "guru": "Luh Nyoman Satria Purnama Dewi, S.Pd.H",
+    "nip": "19910429 202321 2 012",
+    "siswa": "Ni Putu Eka Candra Dewi",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / NGURAH RAI KLUNGKUNG",
+    "alamat": "Jl. Ngurah Rai Ling. Pegending Kel. Semarapura Kauh, Kec. Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 209,
+    "guru": "Luh Nyoman Satria Purnama Dewi, S.Pd.H",
+    "nip": "19910429 202321 2 012",
+    "siswa": "I Kadek Desta Prawira",
+    "kelas": "XII BD 2",
+    "tempat": "Koperasi Nirmala",
+    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung"
+  },
+  {
+    "no": 210,
+    "guru": "Ni Luh Ririn Liana Dewi, S.Pd.",
+    "nip": "19930523 202321 2 034",
+    "siswa": "I Gusti Ngurah Wijana",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM KETEWEL",
+    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Subur, Kel. Ketewel, Kec. Sukawati, Kab. Gianyar"
+  },
+  {
+    "no": 211,
+    "guru": "Ni Luh Ririn Liana Dewi, S.Pd.",
+    "nip": "19930523 202321 2 034",
+    "siswa": "I Kadek Yogi Iswara",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / KETEWEL GIANYAR",
+    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Subur, Kel. Ketewel, Kec. Sukawati, Kab. Gianyar"
+  },
+  {
+    "no": 212,
+    "guru": "Ni Luh Ririn Liana Dewi, S.Pd.",
+    "nip": "19930523 202321 2 034",
+    "siswa": "I Nyoman Candra Paranarta",
+    "kelas": "XII BD 1",
+    "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM KETEWEL",
+    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Subur, Kel. Ketewel, Kec. Sukawati, Kab. Gianyar"
+  },
+  {
+    "no": 213,
+    "guru": "Ni Luh Ririn Liana Dewi, S.Pd.",
+    "nip": "19930523 202321 2 034",
+    "siswa": "Ni Luh Nova Sinta Riari",
+    "kelas": "XII BD 2",
+    "tempat": "UD Merta Sari",
+    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung"
+  },
+  {
+    "no": 214,
+    "guru": "Ni Luh Ririn Liana Dewi, S.Pd.",
+    "nip": "19930523 202321 2 034",
+    "siswa": "Putu Vera Agustin",
+    "kelas": "XII BD 2",
+    "tempat": "UD Merta Sari",
+    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung"
+  },
+  {
+    "no": 215,
+    "guru": "I Wayan Suteja, S.Pd.",
+    "nip": "19741025 202321 1 002",
+    "siswa": "I Dewa Ayu Juniantari",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS SOSIAL PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK",
+    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung"
+  },
+  {
+    "no": 216,
+    "guru": "I Wayan Suteja, S.Pd.",
+    "nip": "19741025 202321 1 002",
+    "siswa": "Ni Kadek Puspa Aryanti",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS SOSIAL PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK",
+    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung"
+  },
+  {
+    "no": 217,
+    "guru": "Bambang Hadi Subrata, S.Pd.",
+    "nip": "19871202 202321 1 008",
+    "siswa": "Radit",
+    "kelas": "XII TKJ",
+    "tempat": "UD. PRIMA COMPUTER",
+    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 218,
+    "guru": "Bambang Hadi Subrata, S.Pd.",
+    "nip": "19871202 202321 1 008",
+    "siswa": "Rizka Nurdiandari",
+    "kelas": "XII TKJ",
+    "tempat": "UD. PRIMA COMPUTER",
+    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 219,
+    "guru": "Ida Ayu Desi Lestari, SH., M.Ag",
+    "nip": "19811218 200604 2 016",
+    "siswa": "I Gede Putra Sang Pajar",
+    "kelas": "XII TKJ",
+    "tempat": "UD. PRIMA COMPUTER",
+    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali"
+  },
+  {
+    "no": 220,
+    "guru": "Ida Ayu Desi Lestari, SH., M.Ag",
+    "nip": "19811218 200604 2 016",
+    "siswa": "Anak Agung Dewi Suryaningrat",
+    "kelas": "XII MP 1",
+    "tempat": "KEMENTRIAN AGAMA KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Gajah Mada No 72 Semarapura"
+  },
+  {
+    "no": 221,
+    "guru": "Ida Ayu Desi Lestari, SH., M.Ag",
+    "nip": "19811218 200604 2 016",
+    "siswa": "I Dewa Ayu Bulan Sriasih",
+    "kelas": "XII MP 1",
+    "tempat": "KEMENTRIAN AGAMA KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Gajah Mada No 72 Semarapura"
+  },
+  {
+    "no": 222,
+    "guru": "Ida Ayu Desi Lestari, SH., M.Ag",
+    "nip": "19811218 200604 2 016",
+    "siswa": "Ni Luh Lisna Diantari",
+    "kelas": "XII MP 1",
+    "tempat": "KEMENTRIAN AGAMA KABUPATEN KLUNGKUNG",
+    "alamat": "Jalan Gajah Mada No 72 Semarapura"
+  },
+  {
+    "no": 223,
+    "guru": "Ida Ayu Desi Lestari, SH., M.Ag",
+    "nip": "19811218 200604 2 016",
+    "siswa": "Ni Komang Adelia Putri",
+    "kelas": "XII MP 2",
+    "tempat": "UPTD PPRD KABUPATEN KLUNGKUNG (SAMSAT KLUNGKUNG)",
+    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711"
+  },
+  {
+    "no": 224,
+    "guru": "Ida Ayu Desi Lestari, SH., M.Ag",
+    "nip": "19811218 200604 2 016",
+    "siswa": "Ni Putu Tia Dewi",
+    "kelas": "XII MP 2",
+    "tempat": "UPTD PPRD KABUPATEN KLUNGKUNG (SAMSAT KLUNGKUNG)",
+    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711"
+  },
+  {
+    "no": 225,
+    "guru": "Ida Ayu Desi Lestari, SH., M.Ag",
+    "nip": "19811218 200604 2 016",
+    "siswa": "Putu Juli Ayu Antari",
+    "kelas": "XII MP 2",
+    "tempat": "UPTD PPRD KABUPATEN KLUNGKUNG (SAMSAT KLUNGKUNG)",
+    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711"
+  },
+  {
+    "no": 226,
+    "guru": "I Wayan Dedy Artana, S.Pd",
+    "nip": "19891231 202421 1 019",
+    "siswa": "Munifa Inayatur Rohma",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Lestari",
+    "alamat": "Jln. Flamboyan No.56, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung"
+  },
+  {
+    "no": 227,
+    "guru": "I Gede Aris Widnyana Pratama, S.Pd.",
+    "nip": "19990118 202421 1 010",
+    "siswa": "Ni Kadek Suadnyani Megeng",
+    "kelas": "XII AK",
+    "tempat": "KPP Pratama Gianyar",
+    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec. Blahbatuh, Buruan, Kec. Gianyar"
+  },
+  {
+    "no": 228,
+    "guru": "I Gede Aris Widnyana Pratama, S.Pd.",
+    "nip": "19990118 202421 1 010",
+    "siswa": "Ni Putu Echa Setyawati",
+    "kelas": "XII AK",
+    "tempat": "KPP Pratama Gianyar",
+    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec.Blahbatuh, Buruan, Kec. Gianyar"
+  },
+  {
+    "no": 229,
+    "guru": "I Gede Aris Widnyana Pratama, S.Pd.",
+    "nip": "19990118 202421 1 010",
+    "siswa": "Ni Putu Eka Pandewi",
+    "kelas": "XII AK",
+    "tempat": "KPP Pratama Gianyar",
+    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec.Blahbatuh, Buruan, Kec. Gianyar"
+  },
+  {
+    "no": 230,
+    "guru": "I Gede Aris Widnyana Pratama, S.Pd.",
+    "nip": "19990118 202421 1 010",
+    "siswa": "Yenny Febri Yanthy Ningsih",
+    "kelas": "XII AK",
+    "tempat": "Hotel Sanna Ubud",
+    "alamat": "Jl. Tegallalang, Br. Tengah, Tegalalang, Gianyar, Bali"
+  },
+  {
+    "no": 231,
+    "guru": "I Gede Aris Widnyana Pratama, S.Pd.",
+    "nip": "19990118 202421 1 010",
+    "siswa": "Ni Ketut Melia Purnama Sari",
+    "kelas": "XII MP 1",
+    "tempat": "PT. PLN (PERSERO) UP3 BALI TIMUR",
+    "alamat": "Jalan Batu Tabih 53 Semarapura Klungkung"
+  },
+  {
+    "no": 232,
+    "guru": "I Gede Aris Widnyana Pratama, S.Pd.",
+    "nip": "19990118 202421 1 010",
+    "siswa": "Tiara Yuliyanti",
+    "kelas": "XII MP 1",
+    "tempat": "PT. PLN (PERSERO) UP3 BALI TIMUR",
+    "alamat": "Jalan Batu Tabih 53 Semarapura Klungkung"
+  },
+  {
+    "no": 233,
+    "guru": "Kade Ferry Apriyana, S.Pd.",
+    "nip": "19940413 202421 1 021",
+    "siswa": "Ni Made Ayu Dwi Apriliani",
+    "kelas": "XII DKV",
+    "tempat": "Marvella",
+    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 234,
+    "guru": "Kade Ferry Apriyana, S.Pd.",
+    "nip": "19940413 202421 1 021",
+    "siswa": "Queena Bilqist Mulyadi Putri",
+    "kelas": "XII DKV",
+    "tempat": "Marvella",
+    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 235,
+    "guru": "Kade Ferry Apriyana, S.Pd.",
+    "nip": "19940413 202421 1 021",
+    "siswa": "Anak Agung Gede Dika Pradipta",
+    "kelas": "XII DKV",
+    "tempat": "Sayonara Photo",
+    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 236,
+    "guru": "Kade Ferry Apriyana, S.Pd.",
+    "nip": "19940413 202421 1 021",
+    "siswa": "I Gede Ary Kesuma Suputra",
+    "kelas": "XII DKV",
+    "tempat": "Sayonara Photo",
+    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 237,
+    "guru": "Kade Ferry Apriyana, S.Pd.",
+    "nip": "19940413 202421 1 021",
+    "siswa": "I Gede Rian Primayoga",
+    "kelas": "XII DKV",
+    "tempat": "Sayonara Photo",
+    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 238,
+    "guru": "Kade Ferry Apriyana, S.Pd.",
+    "nip": "19940413 202421 1 021",
+    "siswa": "I Made Wahyu Adikusuma",
+    "kelas": "XII DKV",
+    "tempat": "Sayonara Photo",
+    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+  },
+  {
+    "no": 239,
+    "guru": "I Gusti Ayu Karla Komala Dewi, S.Pd.",
+    "nip": "19870902 202421 2 019",
+    "siswa": "Dewa Ayu Sri Widyastuti",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Sinar Santi",
+    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung"
+  },
+  {
+    "no": 240,
+    "guru": "I Gusti Ayu Karla Komala Dewi, S.Pd.",
+    "nip": "19870902 202421 2 019",
+    "siswa": "I Komang Edi Setiawan.",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Radika",
+    "alamat": "Jln. Raya banjarangkan No.53 Kec. Banjarangkan Kab. Klungkung"
+  },
+  {
+    "no": 241,
+    "guru": "I Gusti Ayu Karla Komala Dewi, S.Pd.",
+    "nip": "19870902 202421 2 019",
+    "siswa": "Ni Kadek Evinayanti",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Sinar Santi",
+    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung"
+  },
+  {
+    "no": 242,
+    "guru": "I Gusti Ayu Karla Komala Dewi, S.Pd.",
+    "nip": "19870902 202421 2 019",
+    "siswa": "Ni Made Juniari",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Radika",
+    "alamat": "Jln. Raya banjarangkan No.53 Kec. Banjarangkan Kab. Klungkung"
+  },
+  {
+    "no": 243,
+    "guru": "I Gusti Ayu Karla Komala Dewi, S.Pd.",
+    "nip": "19870902 202421 2 019",
+    "siswa": "Aisyah Dwi Agusthina",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Griya Candra",
+    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 244,
+    "guru": "I Gusti Ayu Karla Komala Dewi, S.Pd.",
+    "nip": "19870902 202421 2 019",
+    "siswa": "Ni Komang Tri Maetarani",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Griya Candra",
+    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 245,
+    "guru": "I Gusti Ayu Karla Komala Dewi, S.Pd.",
+    "nip": "19870902 202421 2 019",
+    "siswa": "Ni Komang Trisna Dewi",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Griya Candra",
+    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 246,
+    "guru": "I Gusti Ayu Karla Komala Dewi, S.Pd.",
+    "nip": "19870902 202421 2 019",
+    "siswa": "Rizqiana Ayudianingsih",
+    "kelas": "XII LPKKK 2",
+    "tempat": "Apotek Griya Candra",
+    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung"
+  },
+  {
+    "no": 247,
+    "guru": "P. Mirah Marlia Suari, S.Pd.",
+    "nip": "19860310 202521 2 102",
+    "siswa": "I Wayan Agus Septiadi",
+    "kelas": "XII AK",
+    "tempat": "Koperasi Sri Amerta Semaya Klungkung",
+    "alamat": "Jl. Kenyeri XIV No 18 Galiran Klungkung"
+  },
+  {
+    "no": 248,
+    "guru": "P. Mirah Marlia Suari, S.Pd.",
+    "nip": "19860310 202521 2 102",
+    "siswa": "Ni Putu Stefany Devita Putri",
+    "kelas": "XII AK",
+    "tempat": "PT Federal International Finance - Klungkung",
+    "alamat": "Jl Ngurah Rai No 17 Klungkung"
+  },
+  {
+    "no": 249,
+    "guru": "P. Mirah Marlia Suari, S.Pd.",
+    "nip": "19860310 202521 2 102",
+    "siswa": "Ni Putu Wita Sinta Pradnyani",
+    "kelas": "XII AK",
+    "tempat": "PT Federal International Finance - Klungkung",
+    "alamat": "Jl Ngurah Rai No 17 Klungkung"
+  },
+  {
+    "no": 250,
+    "guru": "P. Mirah Marlia Suari, S.Pd.",
+    "nip": "19860310 202521 2 102",
+    "siswa": "Ni Kadek Ayu Lestari",
+    "kelas": "XII MP 1",
+    "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+  },
+  {
+    "no": 251,
+    "guru": "P. Mirah Marlia Suari, S.Pd.",
+    "nip": "19860310 202521 2 102",
+    "siswa": "Ni Kadek Risna Kumala Dewi",
+    "kelas": "XII MP 1",
+    "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+  },
+  {
+    "no": 252,
+    "guru": "P. Mirah Marlia Suari, S.Pd.",
+    "nip": "19860310 202521 2 102",
+    "siswa": "Ni Komang Indah Jesika Dewi",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS SOSIAL PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK",
+    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung"
+  },
+  {
+    "no": 253,
+    "guru": "P. Mirah Marlia Suari, S.Pd.",
+    "nip": "19860310 202521 2 102",
+    "siswa": "Ni Putu Eka Semara Putri",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS SOSIAL PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK",
+    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung"
+  },
+  {
+    "no": 254,
+    "guru": "P. Mirah Marlia Suari, S.Pd.",
+    "nip": "19860310 202521 2 102",
+    "siswa": "Ni Putu Puspawati",
+    "kelas": "XII MP 2",
+    "tempat": "DINAS SOSIAL PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK",
+    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung"
+  },
+  {
+    "no": 255,
+    "guru": "Luh Gd. Karisma Widiantari, S.Farm.Apt.",
+    "nip": "-",
+    "siswa": "I Dewa Ayu Dwi Cahya Indrayani",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Karisma",
+    "alamat": "Jln. Bima Sampalan Tengah Kab. Klungkung"
+  },
+  {
+    "no": 256,
+    "guru": "Luh Gd. Karisma Widiantari, S.Farm.Apt.",
+    "nip": "-",
+    "siswa": "Ni Kadek Ayu Arsani",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Karisma",
+    "alamat": "Jln. Bima Sampalan Tengah Kab. Klungkung"
+  },
+  {
+    "no": 257,
+    "guru": "Luh Gd. Karisma Widiantari, S.Farm.Apt.",
+    "nip": "-",
+    "siswa": "Ni Kadek Diah Dwi Adnyani",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Karisma",
+    "alamat": "Jln. Bima Sampalan Tengah kab. Klungkung"
+  },
+  {
+    "no": 258,
+    "guru": "Luh Gd. Karisma Widiantari, S.Farm.Apt.",
+    "nip": "-",
+    "siswa": "Ni Made Shita Wulandari",
+    "kelas": "XII LPKKK 1",
+    "tempat": "Apotek Karisma",
+    "alamat": "Jln. Bima Sampalan Tengah Kab. Klungkung"
+  }
+]
