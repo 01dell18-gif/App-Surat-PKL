@@ -1,7 +1,7 @@
 -- ========================================================
 -- Database Schema & Data: Surat Pengantar PKL
 -- Instansi : SMKN 1 FYJ Channel
--- Diperbarui : 2026-11-03 16:26:28
+-- Diperbarui : 2026-11-03 16:41:13
 -- Kompatibel : MySQL, MariaDB, PostgreSQL, SQLite
 -- ========================================================
 

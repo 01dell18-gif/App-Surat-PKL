@@ -26,9 +26,28 @@ NS = {
     'r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 }
 
+def get_template_path():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        os.path.join(base_dir, 'assets', 'templates', 'template_clean.docx'),
+        os.path.join(base_dir, 'template_clean.docx'),
+        'assets/templates/template_clean.docx',
+        'template_clean.docx'
+    ]
+    for c in candidates:
+        if c and os.path.exists(c):
+            return c
+    return 'template_clean.docx'
+
 def create_ttd_elektronik_bytes(nama_sekolah="SMKN 1 FYJ Channel", kepsek_nama="Sri Rejeki, S.Pd., M.Pd.", kepsek_pangkat="Pembina (IV/a)", kepsek_nip="19770309 200903 2 010"):
     """Menghasilkan berkas gambar JPEG TTD Elektronik dinamis sesuai sekolah & kepala sekolah."""
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    fallback_p = os.path.join(base_dir, 'assets', 'images', 'ttdelektronik.jpg')
+
     if not HAS_PIL:
+        if os.path.exists(fallback_p):
+            with open(fallback_p, 'rb') as f:
+                return f.read()
         return None
     try:
         width, height = 850, 256
@@ -39,7 +58,6 @@ def create_ttd_elektronik_bytes(nama_sekolah="SMKN 1 FYJ Channel", kepsek_nama="
         draw.rectangle([(2, 2), (width - 3, height - 3)], outline=(120, 120, 120), width=3)
         
         # Logo Bali
-        base_dir = os.path.dirname(os.path.abspath(__file__))
         logo_path = os.path.join(base_dir, 'assets', 'images', 'logo_bali.png')
         if os.path.exists(logo_path):
             logo = Image.open(logo_path)
@@ -92,6 +110,9 @@ def create_ttd_elektronik_bytes(nama_sekolah="SMKN 1 FYJ Channel", kepsek_nama="
         return buf.getvalue()
     except Exception as e:
         print('[WARN] Gagal membuat gambar TTD dinamis:', e)
+        if os.path.exists(fallback_p):
+            with open(fallback_p, 'rb') as f:
+                return f.read()
         return None
 
 def load_data(excel_path='Data_Pembagian_Tugas_PKL.xlsx', json_path='data_pkl.json'):
@@ -248,29 +269,84 @@ def clean_fld_paragraph(p, field_name, new_value):
             t_last.text = new_value
     return True
 
+def set_p_text(p, text, bold=False, underline=False, font_size=24, indent="5103"):
+    """Helper untuk mengatur teks, font, ukuran, tebal, garis bawah, dan indent pada paragraph w:p."""
+    if p is None:
+        return
+    pPr = p.find(f'{{{NS["w"]}}}pPr')
+    if pPr is None:
+        pPr = ET.SubElement(p, f'{{{NS["w"]}}}pPr')
+    
+    # Indent
+    ind = pPr.find(f'{{{NS["w"]}}}ind')
+    if ind is None:
+        ind = ET.SubElement(pPr, f'{{{NS["w"]}}}ind')
+    ind.set(f'{{{NS["w"]}}}left', str(indent))
+    
+    # Spacing
+    sp = pPr.find(f'{{{NS["w"]}}}spacing')
+    if sp is None:
+        sp = ET.SubElement(pPr, f'{{{NS["w"]}}}spacing')
+    sp.set(f'{{{NS["w"]}}}after', '0')
+
+    # Remove all existing runs & mergefield remnants
+    for r in list(p.findall(f'{{{NS["w"]}}}r')):
+        p.remove(r)
+    for fc in list(p.findall(f'.//{{{NS["w"]}}}fldChar')):
+        try: p.remove(fc)
+        except: pass
+    for it in list(p.findall(f'.//{{{NS["w"]}}}instrText')):
+        try: p.remove(it)
+        except: pass
+
+    if not text:
+        return
+
+    r = ET.SubElement(p, f'{{{NS["w"]}}}r')
+    rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')
+    rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
+    rf.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
+    rf.set(f'{{{NS["w"]}}}eastAsia', 'Bookman Old Style')
+    rf.set(f'{{{NS["w"]}}}hAnsi', 'Bookman Old Style')
+    rf.set(f'{{{NS["w"]}}}cs', 'Bookman Old Style')
+    sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
+    sz.set(f'{{{NS["w"]}}}val', str(font_size))
+    szCs = ET.SubElement(rPr, f'{{{NS["w"]}}}szCs')
+    szCs.set(f'{{{NS["w"]}}}val', str(font_size))
+
+    if bold:
+        ET.SubElement(rPr, f'{{{NS["w"]}}}b')
+    if underline:
+        u = ET.SubElement(rPr, f'{{{NS["w"]}}}u')
+        u.set(f'{{{NS["w"]}}}val', 'single')
+
+    t = ET.SubElement(r, f'{{{NS["w"]}}}t')
+    t.text = str(text)
+
 def create_table_row(template_row, no, nama, kelas, tempat):
     new_tr = copy.deepcopy(template_row)
     tcs = new_tr.findall('w:tc', NS)
     
-    # helper to clean and set single text in a tc
     def set_cell_text(tc, text):
-        # remove fldChar, instrText
-        for r in tc.findall('.//w:r', NS):
-            for fc in r.findall('w:fldChar', NS):
-                r.remove(fc)
-            for it in r.findall('w:instrText', NS):
-                r.remove(it)
-            for t in r.findall('w:t', NS):
-                t.text = ''
-        # put text in first run of first paragraph
-        p = tc.find('w:p', NS)
-        if p is not None:
-            runs = p.findall('w:r', NS)
-            if runs:
-                t0 = runs[0].find('w:t', NS)
-                if t0 is None:
-                    t0 = ET.SubElement(runs[0], f'{{{NS["w"]}}}t')
-                t0.text = text
+        p = tc.find(f'{{{NS["w"]}}}p')
+        if p is None:
+            p = ET.SubElement(tc, f'{{{NS["w"]}}}p')
+        existing_rPr = p.find(f'.//{{{NS["w"]}}}rPr')
+        for child in list(p):
+            if child.tag != f'{{{NS["w"]}}}pPr':
+                p.remove(child)
+        new_r = ET.SubElement(p, f'{{{NS["w"]}}}r')
+        if existing_rPr is not None:
+            new_r.append(copy.deepcopy(existing_rPr))
+        else:
+            rPr = ET.SubElement(new_r, f'{{{NS["w"]}}}rPr')
+            rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
+            rf.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
+            rf.set(f'{{{NS["w"]}}}hAnsi', 'Bookman Old Style')
+            sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
+            sz.set(f'{{{NS["w"]}}}val', '22')
+        t = ET.SubElement(new_r, f'{{{NS["w"]}}}t')
+        t.text = str(text)
     
     if len(tcs) >= 4:
         set_cell_text(tcs[0], str(no))
@@ -280,7 +356,7 @@ def create_table_row(template_row, no, nama, kelas, tempat):
         
     return new_tr
 
-def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl, students, 
+def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_nip="", tempat_pkl="", students=None, 
                         no_surat="B.10.000/9546/SMKN1KLK/DIKPORA", 
                         tgl_surat="06 Oktober 2026",
                         tgl_pelepasan="13 November 2026",
@@ -291,17 +367,54 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                         nama_sekolah="SMKN 1 FYJ Channel",
                         tahun_ajaran="2026/2027",
                         kepsek_nama="Sri Rejeki, S.Pd., M.Pd.",
+                        kepsek_pangkat="Pembina (IV/a)",
                         kepsek_nip="19770309 200903 2 010",
-                        alamat_pkl=""):
+                        alamat_pkl="",
+                        show_kop=True,
+                        show_ttd=True,
+                        show_alamat=True,
+                        paper_size="f4"):
     
+    if students is None:
+        students = []
+
+    if not template_path or not os.path.exists(template_path):
+        template_path = get_template_path()
+
     with zipfile.ZipFile(template_path, 'r') as zin:
         doc_xml_bytes = zin.read('word/document.xml')
         
     root = ET.fromstring(doc_xml_bytes)
     body = root.find('w:body', NS)
     
+    # 0. Sesuaikan Ukuran Kertas (Folio / F4 vs A4) pada Section Properties (w:sectPr)
+    sectPr = body.find(f'{{{NS["w"]}}}sectPr') if body is not None else None
+    if sectPr is not None:
+        pgSz = sectPr.find(f'{{{NS["w"]}}}pgSz')
+        if pgSz is None:
+            pgSz = ET.SubElement(sectPr, f'{{{NS["w"]}}}pgSz')
+        if paper_size and paper_size.lower() == 'a4':
+            # Ukuran Internasional A4: 210mm x 297mm (11906 x 16838 twips)
+            pgSz.set(f'{{{NS["w"]}}}w', '11906')
+            pgSz.set(f'{{{NS["w"]}}}h', '16838')
+        else:
+            # Ukuran Folio / F4 Standar Indonesia: 215mm x 330mm (12242 x 18722 twips)
+            pgSz.set(f'{{{NS["w"]}}}w', '12242')
+            pgSz.set(f'{{{NS["w"]}}}h', '18722')
+
+    # 1. Sesuaikan Opsi Tampilan Kop Surat: Jika unchecked (show_kop=False), hapus paragraf kop
+    if not show_kop and body is not None:
+        body_p_list = body.findall(f'{{{NS["w"]}}}p')
+        if body_p_list:
+            # Paragraf 0 adalah gambar kop (memiliki w:drawing)
+            p0 = body_p_list[0]
+            if p0.findall(f'.//{{{NS["w"]}}}drawing'):
+                body.remove(p0)
+
     # Process paragraphs
     p_to_remove = []
+    p_alamat_to_insert = []  # list of (target_p, new_p)
+
     for p in root.findall('.//w:p', NS):
         text = ''.join(p.itertext()).strip()
         
@@ -311,10 +424,40 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                 if 'B.10.000/9546/SMKN1KLK/DIKPORA' in (t.text or ''):
                     t.text = t.text.replace('B.10.000/9546/SMKN1KLK/DIKPORA', no_surat)
                     
-        # 2. Tujuan DU/DI (Tempat_PKL)
+        # 2. Tujuan DU/DI (Tempat_PKL & Alamat)
         if 'MERGEFIELD Tempat_PKL' in text and 'di' not in text and 'No' not in text:
             if tempat_pkl:
                 clean_fld_paragraph(p, 'MERGEFIELD Tempat_PKL', tempat_pkl)
+                if show_alamat and alamat_pkl and alamat_pkl.strip():
+                    addr_p = ET.Element(f'{{{NS["w"]}}}p')
+                    pPr = ET.SubElement(addr_p, f'{{{NS["w"]}}}pPr')
+                    sp = ET.SubElement(pPr, f'{{{NS["w"]}}}spacing')
+                    sp.set(f'{{{NS["w"]}}}after', '0')
+                    ind = ET.SubElement(pPr, f'{{{NS["w"]}}}ind')
+                    ind.set(f'{{{NS["w"]}}}left', '709')
+                    jc = ET.SubElement(pPr, f'{{{NS["w"]}}}jc')
+                    jc.set(f'{{{NS["w"]}}}val', 'both')
+                    rPr_p = ET.SubElement(pPr, f'{{{NS["w"]}}}rPr')
+                    rf_p = ET.SubElement(rPr_p, f'{{{NS["w"]}}}rFonts')
+                    rf_p.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
+                    rf_p.set(f'{{{NS["w"]}}}eastAsia', 'Bookman Old Style')
+                    rf_p.set(f'{{{NS["w"]}}}hAnsi', 'Bookman Old Style')
+                    rf_p.set(f'{{{NS["w"]}}}cs', 'Bookman Old Style')
+                    sz_p = ET.SubElement(rPr_p, f'{{{NS["w"]}}}sz')
+                    sz_p.set(f'{{{NS["w"]}}}val', '21')
+
+                    r = ET.SubElement(addr_p, f'{{{NS["w"]}}}r')
+                    rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')
+                    rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
+                    rf.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
+                    rf.set(f'{{{NS["w"]}}}eastAsia', 'Bookman Old Style')
+                    rf.set(f'{{{NS["w"]}}}hAnsi', 'Bookman Old Style')
+                    rf.set(f'{{{NS["w"]}}}cs', 'Bookman Old Style')
+                    sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
+                    sz.set(f'{{{NS["w"]}}}val', '21')
+                    t = ET.SubElement(r, f'{{{NS["w"]}}}t')
+                    t.text = alamat_pkl.strip()
+                    p_alamat_to_insert.append((p, addr_p))
             else:
                 # Sesuai pratinjau web: hilangkan baris tujuan dudi jika Semua Lokasi PKL dipilih
                 if body is not None and p in list(body):
@@ -390,12 +533,51 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                 for t in t_elems[1:]:
                     t.text = ''
 
+    # Insert alamat paragraph if queued
+    for target_p, new_p in p_alamat_to_insert:
+        try:
+            body_list = list(body)
+            p_idx = body_list.index(target_p)
+            body.insert(p_idx + 1, new_p)
+        except Exception:
+            pass
+
     # Remove paragraphs queued for deletion (e.g. Tempat_PKL when multi-location)
     for p in p_to_remove:
         try:
             body.remove(p)
         except:
             pass
+
+    # 13. Atur Tanda Tangan: TTD Elektronik vs TTD Basah
+    # Cari paragraf signature (yang memuat gambar rId10) dan 3 paragraf setelahnya di body
+    if body is not None:
+        body_children = list(body)
+        sig_idx = -1
+        for idx, child in enumerate(body_children):
+            if child.tag == f'{{{NS["w"]}}}p':
+                for blip in child.findall('.//{http://schemas.openxmlformats.org/drawingml/2006/main}blip'):
+                    if 'rId10' in str(blip.attrib.values()):
+                        sig_idx = idx
+                        break
+            if sig_idx != -1:
+                break
+
+        if sig_idx != -1 and len(body_children) > sig_idx + 3:
+            p_nama = body_children[sig_idx + 1]
+            p_pangkat = body_children[sig_idx + 2]
+            p_nip = body_children[sig_idx + 3]
+
+            if not show_ttd:
+                # TTD Basah: tampilkan Nama lengkap bergaris bawah tebal, Pangkat, dan NIP
+                set_p_text(p_nama, kepsek_nama, bold=True, underline=True, font_size=24, indent="5103")
+                set_p_text(p_pangkat, kepsek_pangkat, bold=False, underline=False, font_size=22, indent="5103")
+                set_p_text(p_nip, f"NIP. {kepsek_nip}", bold=False, underline=False, font_size=22, indent="5103")
+            else:
+                # TTD Elektronik: kosongkan teks di bawah gambar agar tidak redundan (sudah tercantum dalam kotak QR)
+                set_p_text(p_nama, "")
+                set_p_text(p_pangkat, "")
+                set_p_text(p_nip, "")
 
     # Process Lampiran 2 Table
     tbl = root.find('.//w:tbl', NS)
@@ -417,18 +599,13 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
 
     new_doc_xml = ET.tostring(root, encoding='utf-8', xml_declaration=True)
     
-    # Generate dynamic electronic signature image for Word document
-    dynamic_ttd_bytes = create_ttd_elektronik_bytes(
-        nama_sekolah=nama_sekolah,
-        kepsek_nama=kepsek_nama,
-        kepsek_nip=kepsek_nip
-    )
-
     # Cek apakah ada berkas kustom hasil upload pengguna di assets/images/
     base_dir = os.path.dirname(os.path.abspath(__file__))
     images_dir = os.path.join(base_dir, 'assets', 'images')
     custom_kop_bytes = None
     custom_ttd_bytes = None
+    custom_ttd_basah_bytes = None
+
     if os.path.exists(images_dir):
         for f_name in os.listdir(images_dir):
             if f_name.startswith('upload_kop.'):
@@ -446,37 +623,66 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                     break
                 except Exception as e:
                     print('[WARN] Gagal membaca custom ttd:', e)
+        for f_name in os.listdir(images_dir):
+            if f_name.startswith('upload_ttd_basah.'):
+                try:
+                    with open(os.path.join(images_dir, f_name), 'rb') as bf:
+                        custom_ttd_basah_bytes = bf.read()
+                    break
+                except Exception as e:
+                    print('[WARN] Gagal membaca custom ttd basah:', e)
 
-    ttd_final_bytes = custom_ttd_bytes if custom_ttd_bytes else dynamic_ttd_bytes
+    # Tentukan bytes untuk gambar TTD (image3.png)
+    if show_ttd:
+        if custom_ttd_bytes:
+            ttd_final_bytes = custom_ttd_bytes
+        else:
+            ttd_final_bytes = create_ttd_elektronik_bytes(
+                nama_sekolah=nama_sekolah,
+                kepsek_nama=kepsek_nama,
+                kepsek_pangkat=kepsek_pangkat,
+                kepsek_nip=kepsek_nip
+            )
+    else:
+        if custom_ttd_basah_bytes:
+            ttd_final_bytes = custom_ttd_basah_bytes
+        else:
+            basah_path = os.path.join(images_dir, 'ttd_basah.png')
+            if os.path.exists(basah_path):
+                with open(basah_path, 'rb') as bf:
+                    ttd_final_bytes = bf.read()
+            else:
+                ttd_final_bytes = None
+
+    def write_zip_contents(zin, zout):
+        for item in zin.infolist():
+            if item.filename == 'word/document.xml':
+                zout.writestr(item, new_doc_xml)
+            elif item.filename in ('word/media/image1.jpg', 'word/media/image2.jpeg'):
+                if show_kop and custom_kop_bytes:
+                    zout.writestr(item, custom_kop_bytes)
+                else:
+                    zout.writestr(item, zin.read(item.filename))
+            elif item.filename == 'word/media/image3.png':
+                if ttd_final_bytes:
+                    zout.writestr(item, ttd_final_bytes)
+                else:
+                    zout.writestr(item, zin.read(item.filename))
+            else:
+                zout.writestr(item, zin.read(item.filename))
     
     if out_path:
         os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
         with zipfile.ZipFile(template_path, 'r') as zin:
             with zipfile.ZipFile(out_path, 'w', zipfile.ZIP_DEFLATED) as zout:
-                for item in zin.infolist():
-                    if item.filename == 'word/document.xml':
-                        zout.writestr(item, new_doc_xml)
-                    elif item.filename == 'word/media/image1.jpg' and custom_kop_bytes:
-                        zout.writestr(item, custom_kop_bytes)
-                    elif item.filename == 'word/media/image3.png' and ttd_final_bytes:
-                        zout.writestr(item, ttd_final_bytes)
-                    else:
-                        zout.writestr(item, zin.read(item.filename))
+                write_zip_contents(zin, zout)
         print(f"[OK] Surat tersimpan: {out_path} ({len(students)} siswa)")
         return out_path
     else:
         mem_buffer = io.BytesIO()
         with zipfile.ZipFile(template_path, 'r') as zin:
             with zipfile.ZipFile(mem_buffer, 'w', zipfile.ZIP_DEFLATED) as zout:
-                for item in zin.infolist():
-                    if item.filename == 'word/document.xml':
-                        zout.writestr(item, new_doc_xml)
-                    elif item.filename == 'word/media/image1.jpg' and custom_kop_bytes:
-                        zout.writestr(item, custom_kop_bytes)
-                    elif item.filename == 'word/media/image3.png' and ttd_final_bytes:
-                        zout.writestr(item, ttd_final_bytes)
-                    else:
-                        zout.writestr(item, zin.read(item.filename))
+                write_zip_contents(zin, zout)
         mem_buffer.seek(0)
         return mem_buffer.getvalue()
 

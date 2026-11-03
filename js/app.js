@@ -224,6 +224,45 @@ function getLogoWebSrc() {
   return (typeof ASSETS !== 'undefined' && ASSETS.logo) ? ASSETS.logo : 'assets/images/logo_fyj.png';
 }
 
+// Helper: Get Active Signature Block HTML (Dynamic Electronic Box vs Wet Signature) for Preview & Print
+function getTtdHtml(ds, dOpt) {
+  if (dOpt.showTtd) {
+    if (AppState.appSettings.ttdUrl) {
+      return `
+        <div style="margin: 6px 0; text-align: left;">
+          <img src="${AppState.appSettings.ttdUrl}" alt="TTD Elektronik" style="width: 220px; height: auto; display: block;">
+        </div>
+      `;
+    } else {
+      const logoBaliSrc = (typeof ASSETS !== 'undefined' && ASSETS.logoBali) ? ASSETS.logoBali : 'assets/images/logo_bali.png';
+      const namaSekolahUpper = (AppState.appSettings.namaSekolah || ds.namaSekolah || 'SMKN 1 FYJ CHANNEL').toUpperCase();
+      return `
+        <div style="margin: 6px 0; display: inline-flex; align-items: center; border: 1.5px solid #666; background: #ffffff; padding: 5px 8px; width: 235px; box-sizing: border-box; gap: 8px; font-family: Arial, sans-serif; text-align: left;">
+          <img src="${logoBaliSrc}" alt="Logo Bali" style="width: 48px; height: 50px; object-fit: contain; flex-shrink: 0; display: block;" onerror="this.src='assets/images/logo_bali.png'">
+          <div style="font-size: 6.8pt; line-height: 1.25; color: #111; overflow: hidden;">
+            <div style="text-decoration: underline; font-size: 6.2pt; margin-bottom: 2px; white-space: nowrap;">Ditandatangani secara elektronik oleh :</div>
+            <div style="font-weight: bold; font-size: 7.2pt; line-height: 1.2;">KEPALA ${escapeXml(namaSekolahUpper)}</div>
+            <div style="font-weight: bold; font-size: 7pt; margin-top: 2px;">${escapeXml(ds.kepsekNama)}</div>
+            <div style="font-size: 6.8pt; color: #333;">${escapeXml(ds.kepsekPangkat)}</div>
+            <div style="font-size: 6.8pt; color: #333;">NIP. ${escapeXml(ds.kepsekNip)}</div>
+          </div>
+        </div>
+      `;
+    }
+  } else {
+    // 2. TTD Basah (ttd_basah.png) + Nama & NIP
+    const ttdBasahSrc = getTtdBasahSrc();
+    return `
+      <div style="margin: 4px 0 6px 0; text-align: left;">
+        <img src="${ttdBasahSrc}" alt="TTD Basah Kepala Sekolah" style="width: 175px; height: auto; display: block;">
+      </div>
+      <div style="font-weight: bold; text-decoration: underline; font-size: 11pt;">${escapeXml(ds.kepsekNama)}</div>
+      <div style="font-size: 10pt;">${escapeXml(ds.kepsekPangkat)}</div>
+      <div style="font-size: 10pt;">NIP. ${escapeXml(ds.kepsekNip)}</div>
+    `;
+  }
+}
+
 // Apply App Settings to Header, Favicon, and Document UI
 function applyAppSettingsToUI() {
   const s = AppState.appSettings;
@@ -600,17 +639,26 @@ function setupEventListeners() {
   }
 }
 
-// Update paper size css class on document container
+// Update paper size css class on document container and inject dynamic @page print CSS
 function updatePaperSizeClass() {
+  const isF4 = (AppState.displayOptions.paperSize || 'f4') === 'f4';
   const pages = document.querySelectorAll('.doc-page');
   pages.forEach(p => {
     p.classList.remove('paper-f4', 'paper-a4');
-    if (AppState.displayOptions.paperSize === 'f4') {
-      p.classList.add('paper-f4');
-    } else {
-      p.classList.add('paper-a4');
-    }
+    p.classList.add(isF4 ? 'paper-f4' : 'paper-a4');
   });
+
+  let styleEl = document.getElementById('dynamicPrintPageStyle');
+  if (!styleEl) {
+    styleEl = document.createElement('style');
+    styleEl.id = 'dynamicPrintPageStyle';
+    document.head.appendChild(styleEl);
+  }
+  if (isF4) {
+    styleEl.innerHTML = `@media print { @page { size: 215mm 330mm; margin: 12mm 15mm 15mm 20mm; } }`;
+  } else {
+    styleEl.innerHTML = `@media print { @page { size: 210mm 297mm; margin: 12mm 15mm 15mm 20mm; } }`;
+  }
 }
 
 // Switch between Selection Modes: 'per-guru' vs 'per-du-di'
@@ -810,41 +858,7 @@ function renderPreview() {
 
   const docTtdArea = document.getElementById('docTtdArea');
   if (docTtdArea) {
-    if (dOpt.showTtd) {
-      if (AppState.appSettings.ttdUrl) {
-        docTtdArea.innerHTML = `
-          <div style="margin: 6px 0; text-align: left;">
-            <img src="${AppState.appSettings.ttdUrl}" alt="TTD Elektronik" style="width: 220px; height: auto; display: block;">
-          </div>
-        `;
-      } else {
-        const logoBaliSrc = (typeof ASSETS !== 'undefined' && ASSETS.logoBali) ? ASSETS.logoBali : 'assets/images/logo_bali.png';
-        const namaSekolahUpper = (AppState.appSettings.namaSekolah || 'SMKN 1 FYJ CHANNEL').toUpperCase();
-        docTtdArea.innerHTML = `
-          <div style="margin: 6px 0; display: inline-flex; align-items: center; border: 1.5px solid #666; background: #ffffff; padding: 5px 8px; width: 235px; box-sizing: border-box; gap: 8px; font-family: Arial, sans-serif; text-align: left;">
-            <img src="${logoBaliSrc}" alt="Logo Bali" style="width: 48px; height: 50px; object-fit: contain; flex-shrink: 0; display: block;" onerror="this.src='assets/images/logo_bali.png'">
-            <div style="font-size: 6.8pt; line-height: 1.25; color: #111; overflow: hidden;">
-              <div style="text-decoration: underline; font-size: 6.2pt; margin-bottom: 2px; white-space: nowrap;">Ditandatangani secara elektronik oleh :</div>
-              <div style="font-weight: bold; font-size: 7.2pt; line-height: 1.2;">KEPALA ${escapeXml(namaSekolahUpper)}</div>
-              <div style="font-weight: bold; font-size: 7pt; margin-top: 2px;">${escapeXml(ds.kepsekNama)}</div>
-              <div style="font-size: 6.8pt; color: #333;">${escapeXml(ds.kepsekPangkat)}</div>
-              <div style="font-size: 6.8pt; color: #333;">NIP. ${escapeXml(ds.kepsekNip)}</div>
-            </div>
-          </div>
-        `;
-      }
-    } else {
-      // 2. TTD Basah (ttd_basah.png) + Nama & NIP
-      const ttdBasahSrc = getTtdBasahSrc();
-      docTtdArea.innerHTML = `
-        <div style="margin: 4px 0 6px 0; text-align: left;">
-          <img src="${ttdBasahSrc}" alt="TTD Basah Kepala Sekolah" style="width: 175px; height: auto; display: block;">
-        </div>
-        <div style="font-weight: bold; text-decoration: underline; font-size: 11pt;">${ds.kepsekNama}</div>
-        <div style="font-size: 10pt;">${ds.kepsekPangkat}</div>
-        <div style="font-size: 10pt;">NIP. ${ds.kepsekNip}</div>
-      `;
-    }
+    docTtdArea.innerHTML = getTtdHtml(ds, dOpt);
   }
 
   // 6. Lampiran 2 Tabel Siswa
@@ -1700,7 +1714,12 @@ async function downloadDocxClient() {
         nama_sekolah: ds.namaSekolah || AppState.appSettings.namaSekolah || 'SMKN 1 FYJ Channel',
         tahun_ajaran: ds.tahunAjaran || AppState.appSettings.tahunAjaran || '2026/2027',
         kepsek_nama: ds.kepsekNama || AppState.appSettings.kepsekNama || 'Sri Rejeki, S.Pd., M.Pd.',
-        kepsek_nip: ds.kepsekNip || AppState.appSettings.kepsekNip || '19770309 200903 2 010'
+        kepsek_pangkat: ds.kepsekPangkat || AppState.appSettings.kepsekPangkat || 'Pembina (IV/a)',
+        kepsek_nip: ds.kepsekNip || AppState.appSettings.kepsekNip || '19770309 200903 2 010',
+        show_kop: dOpt.showKop,
+        show_ttd: dOpt.showTtd,
+        show_alamat: dOpt.showAlamat,
+        paper_size: dOpt.paperSize
       };
 
       const res = await fetch('/api/generate-docx', {
@@ -1745,6 +1764,18 @@ async function downloadDocxClient() {
 
       const zip = await JSZip.loadAsync(base64ToUint8Array(DOCX_TEMPLATE_B64));
       let docXml = await zip.file('word/document.xml').async('text');
+
+      // 0. Update Paper Size (F4 vs A4)
+      if (dOpt.paperSize === 'a4') {
+        docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="11906" w:h="16838"/>');
+      } else {
+        docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="12242" w:h="18722"/>');
+      }
+
+      // 0.1 Update Kop Surat: Hapus jika tidak dicentang
+      if (!dOpt.showKop) {
+        docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?rId8[\s\S]*?<\/w:p>/, '');
+      }
 
       // 1. Replace Nomor Surat
       docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, ds.noSurat);
@@ -1829,6 +1860,22 @@ async function downloadDocxClient() {
             console.warn('Word export ttd basah replacement warning:', err);
           }
         }
+        // Tambahkan Nama, Pangkat, NIP bergaris bawah di bawah gambar TTD Basah
+        const ttdTextXml = `
+          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+            <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:u w:val="single"/><w:sz w:val="24"/></w:rPr></w:pPr>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:u w:val="single"/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(ds.kepsekNama)}</w:t></w:r>
+          </w:p>
+          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+            <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${escapeXml(ds.kepsekPangkat)}</w:t></w:r>
+          </w:p>
+          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+            <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>NIP. ${escapeXml(ds.kepsekNip)}</w:t></w:r>
+          </w:p>
+        `;
+        docXml = docXml.replace(/(<w:p\b[^>]*>[\s\S]*?rId10[\s\S]*?<\/w:p>)([\s\S]*?<w:p\b[^>]*>[\s\S]*?Lampiran 2)/, `$1\n${ttdTextXml}\n$2`);
       } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
         try {
           const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
@@ -1945,7 +1992,12 @@ async function downloadBatchZipClient() {
           nama_sekolah: ds.namaSekolah || AppState.appSettings.namaSekolah || 'SMKN 1 FYJ Channel',
           tahun_ajaran: ds.tahunAjaran || AppState.appSettings.tahunAjaran || '2026/2027',
           kepsek_nama: ds.kepsekNama || AppState.appSettings.kepsekNama || 'Sri Rejeki, S.Pd., M.Pd.',
-          kepsek_nip: ds.kepsekNip || AppState.appSettings.kepsekNip || '19770309 200903 2 010'
+          kepsek_pangkat: ds.kepsekPangkat || AppState.appSettings.kepsekPangkat || 'Pembina (IV/a)',
+          kepsek_nip: ds.kepsekNip || AppState.appSettings.kepsekNip || '19770309 200903 2 010',
+          show_kop: dOpt.showKop,
+          show_ttd: dOpt.showTtd,
+          show_alamat: dOpt.showAlamat,
+          paper_size: dOpt.paperSize
         })
       });
 
@@ -1986,20 +2038,43 @@ async function downloadBatchZipClient() {
         const singleZip = await JSZip.loadAsync(templateBytes);
         let docXml = await singleZip.file('word/document.xml').async('text');
 
+        // Update Paper Size (F4 vs A4)
+        if (dOpt.paperSize === 'a4') {
+          docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="11906" w:h="16838"/>');
+        } else {
+          docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="12242" w:h="18722"/>');
+        }
+
+        // Update Kop Surat: Hapus jika tidak dicentang
+        if (!dOpt.showKop) {
+          docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?rId8[\s\S]*?<\/w:p>/, '');
+        }
+
         // Jika semua siswa guru ini di 1 lokasi yang sama, tampilkan lokasi tersebut. Jika multi-lokasi, kosongkan di Yth.
-        const targetTempat = (g.tempatList && g.tempatList.length === 1) ? g.tempatList[0] : '';
+        const isSinglePlace = (g.tempatList && g.tempatList.length === 1);
+        const targetTempat = isSinglePlace ? g.tempatList[0] : '';
+        const targetAlamat = (isSinglePlace && g.siswa && g.siswa.length > 0) ? (g.siswa[0].alamat || '') : '';
 
         docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, ds.noSurat);
 
         if (!targetTempat) {
           docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, '');
         } else {
-          docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, `
+          let replaceXml = `
             <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
               <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr></w:pPr>
               <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(targetTempat)}</w:t></w:r>
             </w:p>
-          `);
+          `;
+          if (dOpt.showAlamat && targetAlamat) {
+            replaceXml += `
+              <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr></w:pPr>
+                <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr><w:t>${escapeXml(targetAlamat)}</w:t></w:r>
+              </w:p>
+            `;
+          }
+          docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, replaceXml);
         }
 
         // Replace Nama Guru & NIP
@@ -2050,6 +2125,21 @@ async function downloadBatchZipClient() {
               if (singleZip.file('word/media/image3.png')) singleZip.file('word/media/image3.png', ttdBasahBytes);
             } catch (err) {}
           }
+          const ttdTextXml = `
+            <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+              <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:u w:val="single"/><w:sz w:val="24"/></w:rPr></w:pPr>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:u w:val="single"/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(ds.kepsekNama)}</w:t></w:r>
+            </w:p>
+            <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+              <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${escapeXml(ds.kepsekPangkat)}</w:t></w:r>
+            </w:p>
+            <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+              <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>NIP. ${escapeXml(ds.kepsekNip)}</w:t></w:r>
+            </w:p>
+          `;
+          docXml = docXml.replace(/(<w:p\b[^>]*>[\s\S]*?rId10[\s\S]*?<\/w:p>)([\s\S]*?<w:p\b[^>]*>[\s\S]*?Lampiran 2)/, `$1\n${ttdTextXml}\n$2`);
         } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
           try {
             const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
@@ -2118,6 +2208,7 @@ async function downloadBatchZipClient() {
 
 // Print Current Document
 function printCurrentDoc() {
+  updatePaperSizeClass();
   window.print();
 }
 
@@ -2175,13 +2266,19 @@ function executeBatchPrint() {
   const dOpt = AppState.displayOptions;
   const activeTpl = getActiveTemplate();
   const kopSrc = getKopSrc();
-  const ttdSrc = getTtdSrc();
 
   selectedIndices.forEach((gIdx) => {
     const g = AppState.gurus[gIdx];
     const isSinglePlace = g.tempatList && g.tempatList.length === 1;
     const targetTempat = isSinglePlace ? g.tempatList[0] : '';
-    const letterMock = { guruNama: g.guru, guruNip: g.nip, tempatPkl: targetTempat, alamatPkl: '', isSpecificTempat: isSinglePlace };
+    const targetAlamat = (isSinglePlace && g.siswa && g.siswa.length > 0) ? (g.siswa[0].alamat || '') : '';
+    const letterMock = { 
+      guruNama: g.guru, 
+      guruNip: g.nip, 
+      tempatPkl: targetTempat, 
+      alamatPkl: targetAlamat, 
+      isSpecificTempat: isSinglePlace 
+    };
 
     const pageWrapper = document.createElement('div');
     pageWrapper.className = `doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
@@ -2210,7 +2307,7 @@ function executeBatchPrint() {
 
       <div style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
         <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
-        <div style="font-size: 11pt; margin-top: 2px;">Nomor: ${ds.noSurat}</div>
+        <div style="font-size: 11pt; margin-top: 2px;">Nomor: ${escapeXml(ds.noSurat)}</div>
       </div>
 
       <div style="margin-bottom: 14px;">
@@ -2223,7 +2320,8 @@ function executeBatchPrint() {
             <td style="vertical-align: top;">Yth.</td>
             <td>
               <div style="font-weight: bold;">Pimpinan DU/DI</div>
-              ${targetTempat ? `<div style="font-weight: bold;">${targetTempat}</div>` : ''}
+              ${targetTempat ? `<div style="font-weight: bold;">${escapeXml(targetTempat)}</div>` : ''}
+              ${(targetTempat && dOpt.showAlamat && targetAlamat) ? `<div style="font-size: 9.5pt; color: #333;">${escapeXml(targetAlamat)}</div>` : ''}
               <div>di -</div>
               <div style="text-indent: 20px;">Tempat</div>
             </td>
@@ -2237,20 +2335,9 @@ function executeBatchPrint() {
 
       <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px; page-break-inside: avoid;">
         <div style="width: 250px; text-align: left;">
-          <div>Klungkung, ${ds.tglSurat}</div>
-          <div>Kepala ${AppState.appSettings.namaSekolah}</div>
-          ${dOpt.showTtd ? `
-            <div style="margin: 6px 0;">
-              <img src="${ttdSrc}" style="width: 210px; height: auto;" alt="TTD Elektronik">
-            </div>
-          ` : `
-            <div style="margin: 4px 0 6px 0; text-align: left;">
-              <img src="${getTtdBasahSrc()}" style="width: 175px; height: auto; display: block;" alt="TTD Basah">
-            </div>
-            <div style="font-weight: bold; text-decoration: underline;">${ds.kepsekNama}</div>
-            <div>${ds.kepsekPangkat}</div>
-            <div>NIP. ${ds.kepsekNip}</div>
-          `}
+          <div>Klungkung, ${escapeXml(ds.tglSurat)}</div>
+          <div>Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
+          ${getTtdHtml(ds, dOpt)}
         </div>
       </div>
 
@@ -2281,6 +2368,7 @@ function executeBatchPrint() {
   });
 
   closeBatchPrintModal();
+  updatePaperSizeClass();
   document.body.classList.add('batch-print-active');
   window.print();
   document.body.classList.remove('batch-print-active');

@@ -408,6 +408,10 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 tgl_penarikan = req_data.get('tgl_penarikan', '30 April 2027')
                 paragraf_pembuka = req_data.get('paragraf_pembuka')
                 paragraf_penutup = req_data.get('paragraf_penutup')
+                show_kop = req_data.get('show_kop', True)
+                show_ttd = req_data.get('show_ttd', True)
+                show_alamat = req_data.get('show_alamat', True)
+                paper_size = req_data.get('paper_size', 'f4')
 
                 template_path = get_template_path()
                 
@@ -428,8 +432,13 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                     nama_sekolah=req_data.get('nama_sekolah', 'SMKN 1 FYJ Channel'),
                     tahun_ajaran=req_data.get('tahun_ajaran', '2026/2027'),
                     kepsek_nama=req_data.get('kepsek_nama', 'Sri Rejeki, S.Pd., M.Pd.'),
+                    kepsek_pangkat=req_data.get('kepsek_pangkat', 'Pembina (IV/a)'),
                     kepsek_nip=req_data.get('kepsek_nip', '19770309 200903 2 010'),
-                    alamat_pkl=req_data.get('alamat_pkl', '')
+                    alamat_pkl=req_data.get('alamat_pkl', ''),
+                    show_kop=show_kop,
+                    show_ttd=show_ttd,
+                    show_alamat=show_alamat,
+                    paper_size=paper_size
                 )
 
                 safe_name = "".join(c for c in guru_nama if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
@@ -457,6 +466,10 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 tgl_penarikan = req_data.get('tgl_penarikan', '30 April 2027')
                 paragraf_pembuka = req_data.get('paragraf_pembuka')
                 paragraf_penutup = req_data.get('paragraf_penutup')
+                show_kop = req_data.get('show_kop', True)
+                show_ttd = req_data.get('show_ttd', True)
+                show_alamat = req_data.get('show_alamat', True)
+                paper_size = req_data.get('paper_size', 'f4')
                 
                 records = req_data.get('records', []) or load_data()
                 
@@ -476,12 +489,16 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 tahun_ajaran = req_data.get('tahun_ajaran', settings.get('tahunAjaran', '2026/2027'))
                 periode_pkl = req_data.get('periode_pkl', settings.get('periodePkl', '13 November 2026 sampai dengan 30 April 2027'))
                 kepsek_nama = req_data.get('kepsek_nama', settings.get('kepsekNama', 'Sri Rejeki, S.Pd., M.Pd.'))
+                kepsek_pangkat = req_data.get('kepsek_pangkat', settings.get('kepsekPangkat', 'Pembina (IV/a)'))
                 kepsek_nip = req_data.get('kepsek_nip', settings.get('kepsekNip', '19770309 200903 2 010'))
 
                 with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as master_zip:
                     for idx, (g_name, info) in enumerate(guru_map.items(), 1):
                         tempat_set = set(s.get('tempat', '').strip() for s in info['siswa'] if s.get('tempat', '').strip())
-                        target_tempat = list(tempat_set)[0] if len(tempat_set) == 1 else ''
+                        is_single_place = len(tempat_set) == 1
+                        target_tempat = list(tempat_set)[0] if is_single_place else ''
+                        target_alamat = info['siswa'][0].get('alamat', '') if (is_single_place and info['siswa']) else ''
+
                         doc_bytes = generate_surat_docx(
                             template_path=template_path,
                             out_path=None,
@@ -499,7 +516,13 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                             nama_sekolah=nama_sekolah,
                             tahun_ajaran=tahun_ajaran,
                             kepsek_nama=kepsek_nama,
-                            kepsek_nip=kepsek_nip
+                            kepsek_pangkat=kepsek_pangkat,
+                            kepsek_nip=kepsek_nip,
+                            alamat_pkl=target_alamat,
+                            show_kop=show_kop,
+                            show_ttd=show_ttd,
+                            show_alamat=show_alamat,
+                            paper_size=paper_size
                         )
                         safe_g = "".join(c for c in g_name if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
                         master_zip.writestr(f"Surat_Pengantar_{idx:02d}_{safe_g}.docx", doc_bytes)

@@ -161,6 +161,15 @@
       scrollbar-width: none;
     }
   </style>
+  <!-- Dynamic Print @page size injected dynamically by updatePaperSizeClass() -->
+  <style id="dynamicPrintPageStyle">
+    @media print {
+      @page {
+        size: 215mm 330mm;
+        margin: 12mm 15mm 15mm 20mm;
+      }
+    }
+  </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col overflow-x-hidden">
 
