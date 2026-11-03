@@ -8,6 +8,7 @@ Template: template_clean.docx
 
 import os
 import sys
+import io
 import json
 import copy
 import zipfile
@@ -215,14 +216,21 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                         periode_pkl="13 November 2026 sampai dengan 30 April 2027",
                         tgl_penarikan="30 April 2027",
                         paragraf_pembuka=None,
-                        paragraf_penutup=None):
+                        paragraf_penutup=None,
+                        nama_sekolah="SMK FYJ Channel",
+                        tahun_ajaran="2026/2027",
+                        kepsek_nama="Sri Rejeki, S.Pd., M.Pd.",
+                        kepsek_nip="19770309 200903 2 010",
+                        alamat_pkl=""):
     
     with zipfile.ZipFile(template_path, 'r') as zin:
         doc_xml_bytes = zin.read('word/document.xml')
         
     root = ET.fromstring(doc_xml_bytes)
+    body = root.find('w:body', NS)
     
     # Process paragraphs
+    p_to_remove = []
     for p in root.findall('.//w:p', NS):
         text = ''.join(p.itertext()).strip()
         
@@ -234,7 +242,12 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                     
         # 2. Tujuan DU/DI (Tempat_PKL)
         if 'MERGEFIELD Tempat_PKL' in text and 'di' not in text and 'No' not in text:
-            clean_fld_paragraph(p, 'MERGEFIELD Tempat_PKL', tempat_pkl)
+            if tempat_pkl:
+                clean_fld_paragraph(p, 'MERGEFIELD Tempat_PKL', tempat_pkl)
+            else:
+                # Sesuai pratinjau web: hilangkan baris tujuan dudi jika Semua Lokasi PKL dipilih
+                if body is not None and p in list(body):
+                    p_to_remove.append(p)
             
         # 3. Identitas Guru: Nama
         if 'MERGEFIELD Nama_Guru' in text:
@@ -257,14 +270,40 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
             for t in p.findall('.//w:t', NS):
                 if '13 November 2026' in (t.text or ''):
                     t.text = t.text.replace('13 November 2026', tgl_pelepasan)
+
+        # 7. Periode PKL & Monitoring
+        if 'Pelaksanaan & Monitoring PKL' in text:
+            for t in p.findall('.//w:t', NS):
+                if '13 November 2026 sampai dengan 30 April 2027' in (t.text or ''):
+                    t.text = t.text.replace('13 November 2026 sampai dengan 30 April 2027', periode_pkl)
                     
-        # 7. Tanggal Penarikan
+        # 8. Tanggal Penarikan
         if 'Penarikan siswa' in text:
             for t in p.findall('.//w:t', NS):
                 if '30 April 2027' in (t.text or ''):
                     t.text = t.text.replace('30 April 2027', tgl_penarikan)
 
-        # 8. Custom Paragraf Pembuka
+        # 9. Nama Sekolah & Tahun Ajaran
+        if 'SMK Negeri 1 Klungkung' in text:
+            for t in p.findall('.//w:t', NS):
+                if 'SMK Negeri 1 Klungkung' in (t.text or ''):
+                    t.text = t.text.replace('SMK Negeri 1 Klungkung', nama_sekolah)
+        if '2026/2027' in text and tahun_ajaran:
+            for t in p.findall('.//w:t', NS):
+                if '2026/2027' in (t.text or ''):
+                    t.text = t.text.replace('2026/2027', tahun_ajaran)
+
+        # 10. Data Kepala Sekolah
+        if 'Sri Rejeki, S.Pd., M.Pd.' in text and kepsek_nama:
+            for t in p.findall('.//w:t', NS):
+                if 'Sri Rejeki, S.Pd., M.Pd.' in (t.text or ''):
+                    t.text = t.text.replace('Sri Rejeki, S.Pd., M.Pd.', kepsek_nama)
+        if '19770309 200903 2 010' in text and kepsek_nip:
+            for t in p.findall('.//w:t', NS):
+                if '19770309 200903 2 010' in (t.text or ''):
+                    t.text = t.text.replace('19770309 200903 2 010', kepsek_nip)
+
+        # 11. Custom Paragraf Pembuka
         if paragraf_pembuka and 'Dalam rangka pelaksanaan kegiatan' in text:
             t_elems = p.findall('.//w:t', NS)
             if t_elems:
@@ -272,13 +311,20 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                 for t in t_elems[1:]:
                     t.text = ''
 
-        # 9. Custom Paragraf Penutup
+        # 12. Custom Paragraf Penutup
         if paragraf_penutup and 'Daftar nama siswa/siswi peserta' in text:
             t_elems = p.findall('.//w:t', NS)
             if t_elems:
                 t_elems[0].text = paragraf_penutup
                 for t in t_elems[1:]:
                     t.text = ''
+
+    # Remove paragraphs queued for deletion (e.g. Tempat_PKL when multi-location)
+    for p in p_to_remove:
+        try:
+            body.remove(p)
+        except:
+            pass
 
     # Process Lampiran 2 Table
     tbl = root.find('.//w:tbl', NS)
@@ -300,16 +346,28 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
 
     new_doc_xml = ET.tostring(root, encoding='utf-8', xml_declaration=True)
     
-    os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
-    with zipfile.ZipFile(template_path, 'r') as zin:
-        with zipfile.ZipFile(out_path, 'w', zipfile.ZIP_DEFLATED) as zout:
-            for item in zin.infolist():
-                if item.filename == 'word/document.xml':
-                    zout.writestr(item, new_doc_xml)
-                else:
-                    zout.writestr(item, zin.read(item.filename))
-                    
-    print(f"[OK] Surat tersimpan: {out_path} ({len(students)} siswa)")
+    if out_path:
+        os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
+        with zipfile.ZipFile(template_path, 'r') as zin:
+            with zipfile.ZipFile(out_path, 'w', zipfile.ZIP_DEFLATED) as zout:
+                for item in zin.infolist():
+                    if item.filename == 'word/document.xml':
+                        zout.writestr(item, new_doc_xml)
+                    else:
+                        zout.writestr(item, zin.read(item.filename))
+        print(f"[OK] Surat tersimpan: {out_path} ({len(students)} siswa)")
+        return out_path
+    else:
+        mem_buffer = io.BytesIO()
+        with zipfile.ZipFile(template_path, 'r') as zin:
+            with zipfile.ZipFile(mem_buffer, 'w', zipfile.ZIP_DEFLATED) as zout:
+                for item in zin.infolist():
+                    if item.filename == 'word/document.xml':
+                        zout.writestr(item, new_doc_xml)
+                    else:
+                        zout.writestr(item, zin.read(item.filename))
+        mem_buffer.seek(0)
+        return mem_buffer.getvalue()
 
 def main():
     parser = argparse.ArgumentParser(description="Generator Surat Pengantar PKL SMK FYJ Channel")

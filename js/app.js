@@ -165,6 +165,13 @@ function loadStoredSettings() {
     const saved = localStorage.getItem('pkl_app_settings');
     if (saved) {
       AppState.appSettings = Object.assign({}, DEFAULT_APP_SETTINGS, JSON.parse(saved));
+      // Otomatis migrasikan nama default sekolah lama jika ada sisa cache di peramban
+      if (AppState.appSettings.namaSekolah === 'SMK Negeri 1 Klungkung' || AppState.appSettings.namaSekolah === 'SMK Negeri FYJ Channel') {
+        AppState.appSettings.namaSekolah = DEFAULT_APP_SETTINGS.namaSekolah;
+      }
+      if (AppState.appSettings.subJudulSekolah && AppState.appSettings.subJudulSekolah.includes('Klungkung')) {
+        AppState.appSettings.subJudulSekolah = DEFAULT_APP_SETTINGS.subJudulSekolah;
+      }
     } else {
       AppState.appSettings = Object.assign({}, DEFAULT_APP_SETTINGS);
     }
@@ -219,6 +226,9 @@ function getLogoWebSrc() {
 // Apply App Settings to Header, Favicon, and Document UI
 function applyAppSettingsToUI() {
   const s = AppState.appSettings;
+
+  // Browser Window / Tab Title
+  document.title = `Aplikasi Surat Pengantar PKL - ${s.namaSekolah}`;
 
   // Header Subtitle
   const subEl = document.getElementById('headerSchoolSubtitle');
@@ -854,12 +864,16 @@ function openTemplateModal(tab = 'editor') {
   loadTemplateIntoEditor(AppState.editingTemplateId || AppState.activeTemplateId);
   renderTemplateTable();
   switchTemplateTab(tab);
+  modal.style.display = 'flex';
   modal.classList.remove('hidden');
 }
 
 function closeTemplateModal() {
   const modal = document.getElementById('templateManagerModal');
-  if (modal) modal.classList.add('hidden');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+  }
 }
 
 function switchTemplateTab(tab) {
@@ -1202,13 +1216,17 @@ function openSettingsModal(tab = 'media') {
 
   updateSettingsMediaPreviews();
   switchSettingsTab(tab);
+  modal.style.display = 'flex';
   modal.classList.remove('hidden');
   if (window.lucide) lucide.createIcons();
 }
 
 function closeSettingsModal() {
   const modal = document.getElementById('settingsModal');
-  if (modal) modal.classList.add('hidden');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+  }
 }
 
 function switchSettingsTab(tab) {
@@ -1597,17 +1615,8 @@ function base64DataUrlToUint8Array(dataUrl) {
   return base64ToUint8Array(b64);
 }
 
-// Generate single DOCX in browser using JSZip & embedded template
+// Generate single DOCX in browser using JSZip & embedded template (or backend API)
 async function downloadDocxClient() {
-  if (typeof JSZip === 'undefined') {
-    alert('Library JSZip belum dimuat. Pastikan koneksi internet aktif untuk CDN, atau jalankan python app.py.');
-    return;
-  }
-  if (typeof DOCX_TEMPLATE_B64 === 'undefined') {
-    alert('Template DOCX belum tersedia. Pastikan template_base64.js dimuat.');
-    return;
-  }
-
   const btn = document.getElementById('btnDownloadDocx');
   const originalText = btn ? btn.innerHTML : '';
   if (btn) btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Memproses...</span>`;
@@ -1615,149 +1624,236 @@ async function downloadDocxClient() {
   try {
     const letter = getCurrentLetterData();
     const ds = AppState.docSettings;
+    const dOpt = AppState.displayOptions;
     const activeTpl = getActiveTemplate();
 
-    const zip = await JSZip.loadAsync(base64ToUint8Array(DOCX_TEMPLATE_B64));
-    let docXml = await zip.file('word/document.xml').async('text');
+    // 1. Coba unduh via backend Python API (jika server start.bat / app.py aktif)
+    let downloadedViaBackend = false;
+    try {
+      const payload = {
+        guru_nama: letter.guruNama || '',
+        guru_nip: letter.guruNip || '',
+        tempat_pkl: (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl : '',
+        alamat_pkl: (letter.isSpecificTempat && dOpt.showAlamat && letter.alamatPkl) ? letter.alamatPkl : '',
+        students: letter.students || [],
+        no_surat: ds.noSurat || 'B.10.000/9546/SMKN1KLK/DIKPORA',
+        tgl_surat: ds.tglSurat || '06 Oktober 2026',
+        tgl_pelepasan: ds.tglPelepasan || '13 November 2026',
+        periode_pkl: ds.periodePkl || '13 November 2026 sampai dengan 30 April 2027',
+        tgl_penarikan: ds.tglPenarikan || '30 April 2027',
+        nama_sekolah: ds.namaSekolah || AppState.appSettings.namaSekolah || 'SMK FYJ Channel',
+        tahun_ajaran: ds.tahunAjaran || AppState.appSettings.tahunAjaran || '2026/2027',
+        kepsek_nama: ds.kepsekNama || AppState.appSettings.kepsekNama || 'Sri Rejeki, S.Pd., M.Pd.',
+        kepsek_nip: ds.kepsekNip || AppState.appSettings.kepsekNip || '19770309 200903 2 010'
+      };
 
-    // 1. Replace Nomor Surat
-    docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, ds.noSurat);
+      const res = await fetch('/api/generate-docx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
 
-    // 2. Replace Tempat PKL on Yth paragraph
-    const targetTempatDocx = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl : '';
-    docXml = docXml.replace(
-      /(<w:instrText[^>]*>\s*MERGEFIELD\s+Tempat_PKL\s*<\/w:instrText>[\s\S]*?<w:t[^>]*>)([^<]*)(<\/w:t>)/,
-      `$1${escapeXml(targetTempatDocx)}$3`
-    );
+      if (res.ok) {
+        const blob = await res.blob();
+        const safeName = (letter.guruNama || 'Surat').replace(/[^a-zA-Z0-9]/g, '_');
+        const safeTempat = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) : 'Semua_Lokasi';
+        const fileName = `Surat_Pengantar_PKL_${safeName}_${safeTempat}.docx`;
 
-    // 3. Replace Nama Guru
-    docXml = docXml.replace(
-      /(<w:instrText[^>]*>\s*MERGEFIELD\s+Nama_Guru\s*<\/w:instrText>[\s\S]*?<w:t[^>]*>)([^<]*)(<\/w:t>)/,
-      `$1${escapeXml(letter.guruNama)}$3`
-    );
-
-    // 4. Replace NIP
-    docXml = docXml.replace(
-      /(<w:instrText[^>]*>\s*MERGEFIELD\s+NIP\s*<\/w:instrText>[\s\S]*?<w:t[^>]*>)([^<]*)(<\/w:t>)/,
-      `$1${escapeXml(letter.guruNip)}$3`
-    );
-
-    // 5. Replace Tanggal Surat (Klungkung, ...)
-    docXml = docXml.replace(
-      /(<w:t[^>]*>Klungkung<\/w:t>[\s\S]*?<w:t[^>]*>),(\s*)<\/w:t>/,
-      `<w:t>Klungkung, ${escapeXml(ds.tglSurat)}</w:t>`
-    );
-
-    // 6. Replace Pelepasan, Monitoring, Penarikan, Tahun Ajaran & Lembaga
-    docXml = docXml.replace(/13 November 2026/g, ds.tglPelepasan);
-    docXml = docXml.replace(/30 April 2027/g, ds.tglPenarikan);
-    if (ds.tahunAjaran) docXml = docXml.replace(/2026\/2027/g, escapeXml(ds.tahunAjaran));
-    if (ds.namaSekolah) docXml = docXml.replace(/SMK Negeri 1 Klungkung/g, escapeXml(ds.namaSekolah));
-    if (ds.kepsekNama) docXml = docXml.replace(/Sri Rejeki, S\.Pd\., M\.Pd\./g, escapeXml(ds.kepsekNama));
-    if (ds.kepsekNip) docXml = docXml.replace(/19770309 200903 2 010/g, escapeXml(ds.kepsekNip));
-
-    // Inject Custom Kop into Word DOCX if uploaded
-    if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
-      try {
-        const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
-        if (zip.file('word/media/image1.jpg')) zip.file('word/media/image1.jpg', kopBytes);
-        if (zip.file('word/media/image2.jpeg')) zip.file('word/media/image2.jpeg', kopBytes);
-      } catch (err) {
-        console.warn('Word export kop replacement warning:', err);
+        if (typeof saveAs !== 'undefined') {
+          saveAs(blob, fileName);
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+        downloadedViaBackend = true;
       }
+    } catch (backendErr) {
+      // Backend tidak aktif (misal buka index.html mandiri secara offline), gunakan engine JSZip client-side
     }
-    // Inject Custom TTD or TTD Basah into Word DOCX
-    if (!dOpt.showTtd) {
-      // User disabled electronic signature -> embed TTD Basah
-      const activeBasah = getTtdBasahSrc();
-      if (activeBasah && activeBasah.startsWith('data:image/')) {
+
+    if (!downloadedViaBackend) {
+      if (typeof JSZip === 'undefined') {
+        alert('Pustaka JSZip belum dimuat. Pastikan berkas assets/vendor/jszip.min.js tersedia.');
+        return;
+      }
+      if (typeof DOCX_TEMPLATE_B64 === 'undefined') {
+        alert('Template DOCX belum tersedia. Pastikan js/template_base64.js dimuat.');
+        return;
+      }
+
+      const zip = await JSZip.loadAsync(base64ToUint8Array(DOCX_TEMPLATE_B64));
+      let docXml = await zip.file('word/document.xml').async('text');
+
+      // 1. Replace Nomor Surat
+      docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, ds.noSurat);
+
+      // 2. Replace Tempat PKL on Yth paragraph (Sesuai Pratinjau Dokumen Nyata)
+      const targetTempatDocx = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl : '';
+      if (!targetTempatDocx) {
+        // Jika Semua Lokasi PKL dipilih, hilangkan baris tujuan dudi agar Yth langsung diikuti di dan Tempat
+        docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, '');
+      } else {
+        let replaceXml = `
+          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+            <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr></w:pPr>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(targetTempatDocx)}</w:t></w:r>
+          </w:p>
+        `;
+        if (dOpt.showAlamat && letter.alamatPkl) {
+          replaceXml += `
+            <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+              <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr></w:pPr>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr><w:t>${escapeXml(letter.alamatPkl)}</w:t></w:r>
+            </w:p>
+          `;
+        }
+        docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, replaceXml);
+      }
+
+      // 3. Replace Nama Guru (format rapi tanpa mergefield construct)
+      docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Nama_Guru[\s\S]*?<\/w:p>/, `
+        <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+          <w:pPr><w:tabs><w:tab w:val="left" w:pos="2160"/></w:tabs><w:spacing w:after="0" w:line="360" w:lineRule="auto"/><w:ind w:left="720"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr></w:pPr>
+          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">Nama </w:t></w:r>
+          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:tab/><w:t xml:space="preserve">: </w:t></w:r>
+          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(letter.guruNama)}</w:t></w:r>
+        </w:p>
+      `);
+
+      // 4. Replace NIP
+      docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+NIP[\s\S]*?<\/w:p>/, `
+        <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+          <w:pPr><w:tabs><w:tab w:val="left" w:pos="2160"/></w:tabs><w:spacing w:after="0" w:line="360" w:lineRule="auto"/><w:ind w:left="720"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr></w:pPr>
+          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">NIP </w:t></w:r>
+          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:tab/><w:t xml:space="preserve">: </w:t></w:r>
+          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(letter.guruNip || '-')}</w:t></w:r>
+        </w:p>
+      `);
+
+      // 5. Replace Tanggal Surat (Klungkung, ...)
+      docXml = docXml.replace(
+        /(<w:t[^>]*>Klungkung<\/w:t>[\s\S]*?<w:t[^>]*>),(\s*)<\/w:t>/,
+        `<w:t>Klungkung, ${escapeXml(ds.tglSurat)}</w:t>`
+      );
+
+      // 6. Replace Pelepasan, Monitoring, Penarikan, Tahun Ajaran & Lembaga
+      docXml = docXml.replace(/13 November 2026 sampai dengan 30 April 2027/g, escapeXml(ds.periodePkl));
+      docXml = docXml.replace(/13 November 2026/g, ds.tglPelepasan);
+      docXml = docXml.replace(/30 April 2027/g, ds.tglPenarikan);
+      if (ds.tahunAjaran) docXml = docXml.replace(/2026\/2027/g, escapeXml(ds.tahunAjaran));
+      if (ds.namaSekolah) docXml = docXml.replace(/SMK Negeri 1 Klungkung/g, escapeXml(ds.namaSekolah));
+      if (ds.kepsekNama) docXml = docXml.replace(/Sri Rejeki, S\.Pd\., M\.Pd\./g, escapeXml(ds.kepsekNama));
+      if (ds.kepsekNip) docXml = docXml.replace(/19770309 200903 2 010/g, escapeXml(ds.kepsekNip));
+
+      // Inject Custom Kop into Word DOCX if uploaded
+      if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
         try {
-          const ttdBasahBytes = base64DataUrlToUint8Array(activeBasah);
-          if (zip.file('word/media/image3.png')) zip.file('word/media/image3.png', ttdBasahBytes);
+          const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
+          if (zip.file('word/media/image1.jpg')) zip.file('word/media/image1.jpg', kopBytes);
+          if (zip.file('word/media/image2.jpeg')) zip.file('word/media/image2.jpeg', kopBytes);
         } catch (err) {
-          console.warn('Word export ttd basah replacement warning:', err);
+          console.warn('Word export kop replacement warning:', err);
         }
       }
-    } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
-      try {
-        const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
-        if (zip.file('word/media/image3.png')) zip.file('word/media/image3.png', ttdBytes);
-      } catch (err) {
-        console.warn('Word export ttd replacement warning:', err);
+      // Inject Custom TTD or TTD Basah into Word DOCX
+      if (!dOpt.showTtd) {
+        // User disabled electronic signature -> embed TTD Basah
+        const activeBasah = getTtdBasahSrc();
+        if (activeBasah && activeBasah.startsWith('data:image/')) {
+          try {
+            const ttdBasahBytes = base64DataUrlToUint8Array(activeBasah);
+            if (zip.file('word/media/image3.png')) zip.file('word/media/image3.png', ttdBasahBytes);
+          } catch (err) {
+            console.warn('Word export ttd basah replacement warning:', err);
+          }
+        }
+      } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
+        try {
+          const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
+          if (zip.file('word/media/image3.png')) zip.file('word/media/image3.png', ttdBytes);
+        } catch (err) {
+          console.warn('Word export ttd replacement warning:', err);
+        }
       }
-    }
 
-    // 7. Replace Lampiran Table Rows
-    const tblStartIdx = docXml.indexOf('<w:tbl');
-    const tblEndIdx = docXml.indexOf('</w:tbl>', tblStartIdx) + 8;
-    if (tblStartIdx !== -1 && tblEndIdx !== -1) {
-      const tblXml = docXml.substring(tblStartIdx, tblEndIdx);
-      const rowMatches = tblXml.match(/<w:tr[\s\S]*?<\/w:tr>/g);
-      if (rowMatches && rowMatches.length >= 2) {
-        const headerRow = rowMatches[0];
-        let newTableRows = headerRow;
+      // 7. Replace Lampiran Table Rows
+      const tblStartIdx = docXml.indexOf('<w:tbl');
+      const tblEndIdx = docXml.indexOf('</w:tbl>', tblStartIdx) + 8;
+      if (tblStartIdx !== -1 && tblEndIdx !== -1) {
+        const tblXml = docXml.substring(tblStartIdx, tblEndIdx);
+        const rowMatches = tblXml.match(/<w:tr[\s\S]*?<\/w:tr>/g);
+        if (rowMatches && rowMatches.length >= 2) {
+          const headerRow = rowMatches[0];
+          let newTableRows = headerRow;
 
-        letter.students.forEach((s, idx) => {
-          const noVal = idx + 1;
-          const namaVal = escapeXml(s.siswa || s.nama || '');
-          const kelasVal = escapeXml(s.kelas || '');
-          const tempatVal = escapeXml(s.tempat || '');
+          letter.students.forEach((s, idx) => {
+            const noVal = idx + 1;
+            const namaVal = escapeXml(s.siswa || s.nama || '');
+            const kelasVal = escapeXml(s.kelas || '');
+            const tempatVal = escapeXml(s.tempat || '');
 
-          const studentRowXml = `
-            <w:tr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-              <w:tc>
-                <w:tcPr><w:tcW w:w="699" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
-                <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${noVal}</w:t></w:r></w:p>
-              </w:tc>
-              <w:tc>
-                <w:tcPr><w:tcW w:w="4050" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
-                <w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${namaVal}</w:t></w:r></w:p>
-              </w:tc>
-              <w:tc>
-                <w:tcPr><w:tcW w:w="1620" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
-                <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${kelasVal}</w:t></w:r></w:p>
-              </w:tc>
-              <w:tc>
-                <w:tcPr><w:tcW w:w="3827" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
-                <w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${tempatVal}</w:t></w:r></w:p>
-              </w:tc>
-            </w:tr>
-          `;
-          newTableRows += studentRowXml;
-        });
+            const studentRowXml = `
+              <w:tr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                <w:tc>
+                  <w:tcPr><w:tcW w:w="699" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                  <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${noVal}</w:t></w:r></w:p>
+                </w:tc>
+                <w:tc>
+                  <w:tcPr><w:tcW w:w="4050" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                  <w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${namaVal}</w:t></w:r></w:p>
+                </w:tc>
+                <w:tc>
+                  <w:tcPr><w:tcW w:w="1620" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                  <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${kelasVal}</w:t></w:r></w:p>
+                </w:tc>
+                <w:tc>
+                  <w:tcPr><w:tcW w:w="3827" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                  <w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${tempatVal}</w:t></w:r></w:p>
+                </w:tc>
+              </w:tr>
+            `;
+            newTableRows += studentRowXml;
+          });
 
-        const tblPrMatch = tblXml.match(/<w:tblPr[\s\S]*?<\/w:tblPr>/);
-        const tblGridMatch = tblXml.match(/<w:tblGrid[\s\S]*?<\/w:tblGrid>/);
-        const tblPr = tblPrMatch ? tblPrMatch[0] : '';
-        const tblGrid = tblGridMatch ? tblGridMatch[0] : '';
+          const tblPrMatch = tblXml.match(/<w:tblPr[\s\S]*?<\/w:tblPr>/);
+          const tblGridMatch = tblXml.match(/<w:tblGrid[\s\S]*?<\/w:tblGrid>/);
+          const tblPr = tblPrMatch ? tblPrMatch[0] : '';
+          const tblGrid = tblGridMatch ? tblGridMatch[0] : '';
 
-        const newTblXml = `<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${tblPr}${tblGrid}${newTableRows}</w:tbl>`;
-        docXml = docXml.substring(0, tblStartIdx) + newTblXml + docXml.substring(tblEndIdx);
+          const newTblXml = `<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${tblPr}${tblGrid}${newTableRows}</w:tbl>`;
+          docXml = docXml.substring(0, tblStartIdx) + newTblXml + docXml.substring(tblEndIdx);
+        }
       }
-    }
 
-    zip.file('word/document.xml', docXml);
+      zip.file('word/document.xml', docXml);
 
-    const blob = await zip.generateAsync({
-      type: 'blob',
-      mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    });
+      const blob = await zip.generateAsync({
+        type: 'blob',
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      });
 
-    const safeName = (letter.guruNama || 'Surat').replace(/[^a-zA-Z0-9]/g, '_');
-    const safeTempat = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) : 'Semua_Lokasi';
-    const fileName = `Surat_Pengantar_PKL_${safeName}_${safeTempat}.docx`;
+      const safeName = (letter.guruNama || 'Surat').replace(/[^a-zA-Z0-9]/g, '_');
+      const safeTempat = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) : 'Semua_Lokasi';
+      const fileName = `Surat_Pengantar_PKL_${safeName}_${safeTempat}.docx`;
 
-    if (typeof saveAs !== 'undefined') {
-      saveAs(blob, fileName);
-    } else {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      if (typeof saveAs !== 'undefined') {
+        saveAs(blob, fileName);
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
     }
   } catch (err) {
     console.error('Error generating DOCX:', err);
@@ -1770,132 +1866,194 @@ async function downloadDocxClient() {
 
 // Download All Letters in a single ZIP file
 async function downloadBatchZipClient() {
-  if (typeof JSZip === 'undefined') {
-    alert('Library JSZip belum dimuat.');
-    return;
-  }
-  if (typeof DOCX_TEMPLATE_B64 === 'undefined') {
-    alert('Template DOCX belum tersedia.');
-    return;
-  }
-
   const btn = document.getElementById('btnDownloadBatchZip');
   const originalText = btn ? btn.innerHTML : '';
   if (btn) btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Membuat ZIP...</span>`;
 
   try {
-    const masterZip = new JSZip();
     const ds = AppState.docSettings;
-    const templateBytes = base64ToUint8Array(DOCX_TEMPLATE_B64);
+    const dOpt = AppState.displayOptions;
 
-    for (let idx = 0; idx < AppState.gurus.length; idx++) {
-      const g = AppState.gurus[idx];
-      const singleZip = await JSZip.loadAsync(templateBytes);
-      let docXml = await singleZip.file('word/document.xml').async('text');
+    // 1. Coba unduh via backend Python API jika aktif
+    let downloadedViaBackend = false;
+    try {
+      const res = await fetch('/api/batch-docx-zip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          no_surat: ds.noSurat || 'B.10.000/9546/SMKN1KLK/DIKPORA',
+          tgl_surat: ds.tglSurat || '06 Oktober 2026',
+          tgl_pelepasan: ds.tglPelepasan || '13 November 2026',
+          periode_pkl: ds.periodePkl || '13 November 2026 sampai dengan 30 April 2027',
+          tgl_penarikan: ds.tglPenarikan || '30 April 2027',
+          nama_sekolah: ds.namaSekolah || AppState.appSettings.namaSekolah || 'SMK FYJ Channel',
+          tahun_ajaran: ds.tahunAjaran || AppState.appSettings.tahunAjaran || '2026/2027',
+          kepsek_nama: ds.kepsekNama || AppState.appSettings.kepsekNama || 'Sri Rejeki, S.Pd., M.Pd.',
+          kepsek_nip: ds.kepsekNip || AppState.appSettings.kepsekNip || '19770309 200903 2 010'
+        })
+      });
 
-      // Jika semua siswa guru ini di 1 lokasi yang sama, tampilkan lokasi tersebut. Jika multi-lokasi, kosongkan di Yth.
-      const targetTempat = (g.tempatList && g.tempatList.length === 1) ? g.tempatList[0] : '';
-
-      docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, ds.noSurat);
-      docXml = docXml.replace(
-        /(<w:instrText[^>]*>\s*MERGEFIELD\s+Tempat_PKL\s*<\/w:instrText>[\s\S]*?<w:t[^>]*>)([^<]*)(<\/w:t>)/,
-        `$1${escapeXml(targetTempat)}$3`
-      );
-      docXml = docXml.replace(
-        /(<w:instrText[^>]*>\s*MERGEFIELD\s+Nama_Guru\s*<\/w:instrText>[\s\S]*?<w:t[^>]*>)([^<]*)(<\/w:t>)/,
-        `$1${escapeXml(g.guru)}$3`
-      );
-      docXml = docXml.replace(
-        /(<w:instrText[^>]*>\s*MERGEFIELD\s+NIP\s*<\/w:instrText>[\s\S]*?<w:t[^>]*>)([^<]*)(<\/w:t>)/,
-        `$1${escapeXml(g.nip || '-')}$3`
-      );
-      docXml = docXml.replace(
-        /(<w:t[^>]*>Klungkung<\/w:t>[\s\S]*?<w:t[^>]*>),(\s*)<\/w:t>/,
-        `<w:t>Klungkung, ${escapeXml(ds.tglSurat)}</w:t>`
-      );
-      docXml = docXml.replace(/13 November 2026/g, ds.tglPelepasan);
-      docXml = docXml.replace(/30 April 2027/g, ds.tglPenarikan);
-      if (ds.tahunAjaran) docXml = docXml.replace(/2026\/2027/g, escapeXml(ds.tahunAjaran));
-      if (ds.namaSekolah) docXml = docXml.replace(/SMK Negeri 1 Klungkung/g, escapeXml(ds.namaSekolah));
-      if (ds.kepsekNama) docXml = docXml.replace(/Sri Rejeki, S\.Pd\., M\.Pd\./g, escapeXml(ds.kepsekNama));
-      if (ds.kepsekNip) docXml = docXml.replace(/19770309 200903 2 010/g, escapeXml(ds.kepsekNip));
-
-      // Inject custom kop/ttd into batch docx if uploaded
-      if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
-        try {
-          const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
-          if (singleZip.file('word/media/image1.jpg')) singleZip.file('word/media/image1.jpg', kopBytes);
-          if (singleZip.file('word/media/image2.jpeg')) singleZip.file('word/media/image2.jpeg', kopBytes);
-        } catch (err) {}
+      if (res.ok) {
+        const blob = await res.blob();
+        const fileName = 'Surat_Pengantar_PKL_Semua_Guru.zip';
+        if (typeof saveAs !== 'undefined') {
+          saveAs(blob, fileName);
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+        downloadedViaBackend = true;
       }
-      // Inject Custom TTD or TTD Basah into batch DOCX
-      if (!dOpt.showTtd) {
-        const activeBasah = getTtdBasahSrc();
-        if (activeBasah && activeBasah.startsWith('data:image/')) {
+    } catch (backendErr) {}
+
+    if (!downloadedViaBackend) {
+      if (typeof JSZip === 'undefined') {
+        alert('Library JSZip belum dimuat.');
+        return;
+      }
+      if (typeof DOCX_TEMPLATE_B64 === 'undefined') {
+        alert('Template DOCX belum tersedia.');
+        return;
+      }
+
+      const masterZip = new JSZip();
+      const templateBytes = base64ToUint8Array(DOCX_TEMPLATE_B64);
+
+      for (let idx = 0; idx < AppState.gurus.length; idx++) {
+        const g = AppState.gurus[idx];
+        const singleZip = await JSZip.loadAsync(templateBytes);
+        let docXml = await singleZip.file('word/document.xml').async('text');
+
+        // Jika semua siswa guru ini di 1 lokasi yang sama, tampilkan lokasi tersebut. Jika multi-lokasi, kosongkan di Yth.
+        const targetTempat = (g.tempatList && g.tempatList.length === 1) ? g.tempatList[0] : '';
+
+        docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, ds.noSurat);
+
+        if (!targetTempat) {
+          docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, '');
+        } else {
+          docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, `
+            <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+              <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr></w:pPr>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(targetTempat)}</w:t></w:r>
+            </w:p>
+          `);
+        }
+
+        // Replace Nama Guru & NIP
+        docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Nama_Guru[\s\S]*?<\/w:p>/, `
+          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+            <w:pPr><w:tabs><w:tab w:val="left" w:pos="2160"/></w:tabs><w:spacing w:after="0" w:line="360" w:lineRule="auto"/><w:ind w:left="720"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr></w:pPr>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">Nama </w:t></w:r>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:tab/><w:t xml:space="preserve">: </w:t></w:r>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(g.guru)}</w:t></w:r>
+          </w:p>
+        `);
+
+        docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+NIP[\s\S]*?<\/w:p>/, `
+          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+            <w:pPr><w:tabs><w:tab w:val="left" w:pos="2160"/></w:tabs><w:spacing w:after="0" w:line="360" w:lineRule="auto"/><w:ind w:left="720"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr></w:pPr>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">NIP </w:t></w:r>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:tab/><w:t xml:space="preserve">: </w:t></w:r>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(g.nip || '-')}</w:t></w:r>
+          </w:p>
+        `);
+
+        docXml = docXml.replace(
+          /(<w:t[^>]*>Klungkung<\/w:t>[\s\S]*?<w:t[^>]*>),(\s*)<\/w:t>/,
+          `<w:t>Klungkung, ${escapeXml(ds.tglSurat)}</w:t>`
+        );
+        docXml = docXml.replace(/13 November 2026 sampai dengan 30 April 2027/g, escapeXml(ds.periodePkl));
+        docXml = docXml.replace(/13 November 2026/g, ds.tglPelepasan);
+        docXml = docXml.replace(/30 April 2027/g, ds.tglPenarikan);
+        if (ds.tahunAjaran) docXml = docXml.replace(/2026\/2027/g, escapeXml(ds.tahunAjaran));
+        if (ds.namaSekolah) docXml = docXml.replace(/SMK Negeri 1 Klungkung/g, escapeXml(ds.namaSekolah));
+        if (ds.kepsekNama) docXml = docXml.replace(/Sri Rejeki, S\.Pd\., M\.Pd\./g, escapeXml(ds.kepsekNama));
+        if (ds.kepsekNip) docXml = docXml.replace(/19770309 200903 2 010/g, escapeXml(ds.kepsekNip));
+
+        // Inject custom kop/ttd into batch docx if uploaded
+        if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
           try {
-            const ttdBasahBytes = base64DataUrlToUint8Array(activeBasah);
-            if (singleZip.file('word/media/image3.png')) singleZip.file('word/media/image3.png', ttdBasahBytes);
+            const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
+            if (singleZip.file('word/media/image1.jpg')) singleZip.file('word/media/image1.jpg', kopBytes);
+            if (singleZip.file('word/media/image2.jpeg')) singleZip.file('word/media/image2.jpeg', kopBytes);
           } catch (err) {}
         }
-      } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
-        try {
-          const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
-          if (singleZip.file('word/media/image3.png')) singleZip.file('word/media/image3.png', ttdBytes);
-        } catch (err) {}
-      }
-
-      // Lampiran rows
-      const tblStartIdx = docXml.indexOf('<w:tbl');
-      const tblEndIdx = docXml.indexOf('</w:tbl>', tblStartIdx) + 8;
-      if (tblStartIdx !== -1 && tblEndIdx !== -1) {
-        const tblXml = docXml.substring(tblStartIdx, tblEndIdx);
-        const rowMatches = tblXml.match(/<w:tr[\s\S]*?<\/w:tr>/g);
-        if (rowMatches && rowMatches.length >= 2) {
-          const headerRow = rowMatches[0];
-          let newTableRows = headerRow;
-
-          g.siswa.forEach((s, sIdx) => {
-            newTableRows += `
-              <w:tr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-                <w:tc><w:tcPr><w:tcW w:w="699" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:t>${sIdx + 1}</w:t></w:r></w:p></w:tc>
-                <w:tc><w:tcPr><w:tcW w:w="4050" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="left"/></w:pPr><w:r><w:t>${escapeXml(s.siswa || s.nama || '')}</w:t></w:r></w:p></w:tc>
-                <w:tc><w:tcPr><w:tcW w:w="1620" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:t>${escapeXml(s.kelas || '')}</w:t></w:r></w:p></w:tc>
-                <w:tc><w:tcPr><w:tcW w:w="3827" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="left"/></w:pPr><w:r><w:t>${escapeXml(s.tempat || '')}</w:t></w:r></w:p></w:tc>
-              </w:tr>
-            `;
-          });
-
-          const tblPrMatch = tblXml.match(/<w:tblPr[\s\S]*?<\/w:tblPr>/);
-          const tblGridMatch = tblXml.match(/<w:tblGrid[\s\S]*?<\/w:tblGrid>/);
-          const newTblXml = `<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${tblPrMatch ? tblPrMatch[0] : ''}${tblGridMatch ? tblGridMatch[0] : ''}${newTableRows}</w:tbl>`;
-          docXml = docXml.substring(0, tblStartIdx) + newTblXml + docXml.substring(tblEndIdx);
+        // Inject Custom TTD or TTD Basah into batch DOCX
+        if (!dOpt.showTtd) {
+          const activeBasah = getTtdBasahSrc();
+          if (activeBasah && activeBasah.startsWith('data:image/')) {
+            try {
+              const ttdBasahBytes = base64DataUrlToUint8Array(activeBasah);
+              if (singleZip.file('word/media/image3.png')) singleZip.file('word/media/image3.png', ttdBasahBytes);
+            } catch (err) {}
+          }
+        } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
+          try {
+            const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
+            if (singleZip.file('word/media/image3.png')) singleZip.file('word/media/image3.png', ttdBytes);
+          } catch (err) {}
         }
+
+        // Lampiran rows
+        const tblStartIdx = docXml.indexOf('<w:tbl');
+        const tblEndIdx = docXml.indexOf('</w:tbl>', tblStartIdx) + 8;
+        if (tblStartIdx !== -1 && tblEndIdx !== -1) {
+          const tblXml = docXml.substring(tblStartIdx, tblEndIdx);
+          const rowMatches = tblXml.match(/<w:tr[\s\S]*?<\/w:tr>/g);
+          if (rowMatches && rowMatches.length >= 2) {
+            const headerRow = rowMatches[0];
+            let newTableRows = headerRow;
+
+            g.siswa.forEach((s, sIdx) => {
+              newTableRows += `
+                <w:tr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:tc><w:tcPr><w:tcW w:w="699" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr><w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${sIdx + 1}</w:t></w:r></w:p></w:tc>
+                  <w:tc><w:tcPr><w:tcW w:w="4050" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr><w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${escapeXml(s.siswa || s.nama || '')}</w:t></w:r></w:p></w:tc>
+                  <w:tc><w:tcPr><w:tcW w:w="1620" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr><w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${escapeXml(s.kelas || '')}</w:t></w:r></w:p></w:tc>
+                  <w:tc><w:tcPr><w:tcW w:w="3827" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr><w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${escapeXml(s.tempat || '')}</w:t></w:r></w:p></w:tc>
+                </w:tr>
+              `;
+            });
+
+            const tblPrMatch = tblXml.match(/<w:tblPr[\s\S]*?<\/w:tblPr>/);
+            const tblGridMatch = tblXml.match(/<w:tblGrid[\s\S]*?<\/w:tblGrid>/);
+            const newTblXml = `<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${tblPrMatch ? tblPrMatch[0] : ''}${tblGridMatch ? tblGridMatch[0] : ''}${newTableRows}</w:tbl>`;
+            docXml = docXml.substring(0, tblStartIdx) + newTblXml + docXml.substring(tblEndIdx);
+          }
+        }
+
+        singleZip.file('word/document.xml', docXml);
+        const docxBlob = await singleZip.generateAsync({ type: 'uint8array' });
+        const safeG = g.guru.replace(/[^a-zA-Z0-9]/g, '_');
+        masterZip.file(`Surat_Pengantar_${(idx + 1).toString().padStart(2, '0')}_${safeG}.docx`, docxBlob);
       }
 
-      singleZip.file('word/document.xml', docXml);
-      const docxBlob = await singleZip.generateAsync({ type: 'uint8array' });
-      const safeG = g.guru.replace(/[^a-zA-Z0-9]/g, '_');
-      masterZip.file(`Surat_Pengantar_${(idx + 1).toString().padStart(2, '0')}_${safeG}.docx`, docxBlob);
-    }
+      const zipBlob = await masterZip.generateAsync({ type: 'blob' });
+      const fileName = 'Surat_Pengantar_PKL_Semua_Guru.zip';
 
-    const zipBlob = await masterZip.generateAsync({ type: 'blob' });
-    const fileName = 'Surat_Pengantar_PKL_Semua_Guru.zip';
-
-    if (typeof saveAs !== 'undefined') {
-      saveAs(zipBlob, fileName);
-    } else {
-      const url = URL.createObjectURL(zipBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      if (typeof saveAs !== 'undefined') {
+        saveAs(zipBlob, fileName);
+      } else {
+        const url = URL.createObjectURL(zipBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
     }
   } catch (err) {
     console.error('Error generating batch ZIP:', err);
-    alert('Terjadi kesalahan saat membuat file ZIP: ' + err.message);
+    alert('Terjadi kesalahan saat membuat arsip ZIP: ' + err.message);
   } finally {
     if (btn) btn.innerHTML = originalText;
     if (window.lucide) lucide.createIcons();
@@ -1925,13 +2083,17 @@ function openBatchPrintModal() {
     container.appendChild(label);
   });
 
+  modal.style.display = 'flex';
   modal.classList.remove('hidden');
 }
 
 // Close Batch Print Modal
 function closeBatchPrintModal() {
   const modal = document.getElementById('batchPrintModal');
-  if (modal) modal.classList.add('hidden');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+  }
 }
 
 // Toggle select all in Batch Print Modal
@@ -2171,6 +2333,7 @@ function openDatabaseModal() {
   if (!modal) return;
   renderDatabaseTable();
   updateDatabaseStatusBadge();
+  modal.style.display = 'flex';
   modal.classList.remove('hidden');
   if (window.lucide) {
     try { lucide.createIcons(); } catch(e) {}
@@ -2179,7 +2342,10 @@ function openDatabaseModal() {
 
 function closeDatabaseModal() {
   const modal = document.getElementById('databaseModal');
-  if (modal) modal.classList.add('hidden');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+  }
 }
 
 // Render Database Table in Manager Modal
@@ -2322,13 +2488,17 @@ function openStudentModal(mode, no) {
     document.getElementById('studentFormAlamat').value = '';
   }
 
+  modal.style.display = 'flex';
   modal.classList.remove('hidden');
   if (window.lucide) lucide.createIcons();
 }
 
 function closeStudentModal() {
   const modal = document.getElementById('studentModal');
-  if (modal) modal.classList.add('hidden');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+  }
 }
 
 async function saveStudentForm() {

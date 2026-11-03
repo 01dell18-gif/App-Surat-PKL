@@ -291,14 +291,11 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 paragraf_pembuka = req_data.get('paragraf_pembuka')
                 paragraf_penutup = req_data.get('paragraf_penutup')
 
-                temp_out = io.BytesIO()
-                # Create temporary docx in memory or temp file
-                temp_filename = f"_temp_{os.getpid()}_{hash(guru_nama)}.docx"
                 template_path = get_template_path()
                 
-                generate_surat_docx(
+                file_bytes = generate_surat_docx(
                     template_path=template_path,
-                    out_path=temp_filename,
+                    out_path=None,
                     guru_nama=guru_nama,
                     guru_nip=guru_nip,
                     tempat_pkl=tempat_pkl,
@@ -309,15 +306,13 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                     periode_pkl=periode_pkl,
                     tgl_penarikan=tgl_penarikan,
                     paragraf_pembuka=paragraf_pembuka,
-                    paragraf_penutup=paragraf_penutup
+                    paragraf_penutup=paragraf_penutup,
+                    nama_sekolah=req_data.get('nama_sekolah', 'SMK FYJ Channel'),
+                    tahun_ajaran=req_data.get('tahun_ajaran', '2026/2027'),
+                    kepsek_nama=req_data.get('kepsek_nama', 'Sri Rejeki, S.Pd., M.Pd.'),
+                    kepsek_nip=req_data.get('kepsek_nip', '19770309 200903 2 010'),
+                    alamat_pkl=req_data.get('alamat_pkl', '')
                 )
-
-                with open(temp_filename, 'rb') as f:
-                    file_bytes = f.read()
-                try:
-                    os.remove(temp_filename)
-                except:
-                    pass
 
                 safe_name = "".join(c for c in guru_nama if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
                 filename = f"Surat_Pengantar_PKL_{safe_name}.docx"
@@ -358,30 +353,36 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 zip_buffer = io.BytesIO()
                 template_path = get_template_path()
                 
+                settings = db_manager.get_all_settings()
+                nama_sekolah = req_data.get('nama_sekolah', settings.get('namaSekolah', 'SMK FYJ Channel'))
+                tahun_ajaran = req_data.get('tahun_ajaran', settings.get('tahunAjaran', '2026/2027'))
+                periode_pkl = req_data.get('periode_pkl', settings.get('periodePkl', '13 November 2026 sampai dengan 30 April 2027'))
+                kepsek_nama = req_data.get('kepsek_nama', settings.get('kepsekNama', 'Sri Rejeki, S.Pd., M.Pd.'))
+                kepsek_nip = req_data.get('kepsek_nip', settings.get('kepsekNip', '19770309 200903 2 010'))
+
                 with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as master_zip:
                     for idx, (g_name, info) in enumerate(guru_map.items(), 1):
-                        first_tempat = info['siswa'][0].get('tempat', '-') if info['siswa'] else '-'
-                        temp_name = f"_temp_batch_{idx}.docx"
-                        generate_surat_docx(
+                        tempat_set = set(s.get('tempat', '').strip() for s in info['siswa'] if s.get('tempat', '').strip())
+                        target_tempat = list(tempat_set)[0] if len(tempat_set) == 1 else ''
+                        doc_bytes = generate_surat_docx(
                             template_path=template_path,
-                            out_path=temp_name,
+                            out_path=None,
                             guru_nama=g_name,
                             guru_nip=info['nip'],
-                            tempat_pkl=first_tempat,
+                            tempat_pkl=target_tempat,
                             students=info['siswa'],
                             no_surat=no_surat,
                             tgl_surat=tgl_surat,
                             tgl_pelepasan=tgl_pelepasan,
+                            periode_pkl=periode_pkl,
                             tgl_penarikan=tgl_penarikan,
                             paragraf_pembuka=paragraf_pembuka,
-                            paragraf_penutup=paragraf_penutup
+                            paragraf_penutup=paragraf_penutup,
+                            nama_sekolah=nama_sekolah,
+                            tahun_ajaran=tahun_ajaran,
+                            kepsek_nama=kepsek_nama,
+                            kepsek_nip=kepsek_nip
                         )
-                        with open(temp_name, 'rb') as tf:
-                            doc_bytes = tf.read()
-                        try:
-                            os.remove(temp_name)
-                        except:
-                            pass
                         safe_g = "".join(c for c in g_name if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
                         master_zip.writestr(f"Surat_Pengantar_{idx:02d}_{safe_g}.docx", doc_bytes)
 
