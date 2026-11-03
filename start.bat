@@ -1,13 +1,13 @@
 @echo off
 setlocal enabledelayedexpansion
-title Aplikasi Surat Pengantar PKL - SMK FYJ Channel
+title Aplikasi Surat Pengantar PKL - SMKN 1 FYJ Channel
 color 0F
 
 :: Pindah ke direktori tempat file bat ini berada
 cd /d "%~dp0"
 
 echo ====================================================================
-echo        APLIKASI SURAT PENGANTAR PKL - SMK FYJ CHANNEL
+echo        APLIKASI SURAT PENGANTAR PKL - SMKN 1 FYJ CHANNEL
 echo ====================================================================
 echo.
 echo Memeriksa lingkungan sistem...

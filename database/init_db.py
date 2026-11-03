@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Script Inisialisasi Database Surat Pengantar PKL
-SMK FYJ Channel
+SMKN 1 FYJ Channel
 Menghasilkan:
 1. database/surat_pkl.db (SQLite 3 Database)
 2. database/surat_pkl.sql (SQL Dump Kompatibel SQLite / MySQL / MariaDB)
@@ -19,8 +19,8 @@ SQL_PATH = os.path.join(BASE_DIR, 'database', 'surat_pkl.sql')
 JSON_PATH = os.path.join(BASE_DIR, 'js', 'data_pkl.json')
 
 DEFAULT_SETTINGS = [
-    ('namaSekolah', 'SMK FYJ Channel', 'lembaga', 'Nama resmi sekolah / instansi'),
-    ('subJudulSekolah', 'SMK FYJ Channel • Tahun Ajaran 2026/2027', 'lembaga', 'Sub-judul sekolah di kop dan header'),
+    ('namaSekolah', 'SMKN 1 FYJ Channel', 'lembaga', 'Nama resmi sekolah / instansi'),
+    ('subJudulSekolah', 'SMKN 1 FYJ Channel • Tahun Ajaran 2026/2027', 'lembaga', 'Sub-judul sekolah di kop dan header'),
     ('alamatSekolah', 'Jalan Subali II, Banjar Siku, Desa Kamasan Telp. (0366) 23520 Klungkung', 'lembaga', 'Alamat lengkap instansi'),
     ('kepsekNama', 'Sri Rejeki, S.Pd., M.Pd.', 'kepsek', 'Nama lengkap dan gelar Kepala Sekolah'),
     ('kepsekPangkat', 'Pembina (IV/a)', 'kepsek', 'Pangkat dan golongan ruang Kepala Sekolah'),
@@ -184,7 +184,7 @@ def init_database():
     VALUES (?, ?, ?, ?, ?, ?)
     """, (
         'tpl_standar_resmi',
-        'Template Standar Resmi SMK FYJ Channel',
+        'Template Standar Resmi SMKN 1 FYJ Channel',
         DEFAULT_TEMPLATE_HTML.strip(),
         1,
         'active',
@@ -199,7 +199,7 @@ def init_database():
     sql_lines = []
     sql_lines.append("-- ========================================================")
     sql_lines.append("-- Database Schema & Data: Surat Pengantar PKL")
-    sql_lines.append("-- Instansi : SMK FYJ Channel")
+    sql_lines.append("-- Instansi : SMKN 1 FYJ Channel")
     sql_lines.append(f"-- Dibuat   : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     sql_lines.append("-- Kompatibel: MySQL, MariaDB, PostgreSQL, SQLite")
     sql_lines.append("-- ========================================================\n")
@@ -289,7 +289,7 @@ def init_database():
 
     sql_lines.append("-- Data Template Surat Resmi")
     sql_lines.append("LOCK TABLES `template_surat` WRITE;")
-    sql_lines.append(f"INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_standar_resmi', 'Template Standar Resmi SMK FYJ Channel', {escape_sql(DEFAULT_TEMPLATE_HTML.strip())}, 1, 'active');")
+    sql_lines.append(f"INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_standar_resmi', 'Template Standar Resmi SMKN 1 FYJ Channel', {escape_sql(DEFAULT_TEMPLATE_HTML.strip())}, 1, 'active');")
     sql_lines.append("UNLOCK TABLES;\n")
 
     # Views

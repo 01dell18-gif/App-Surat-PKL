@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Server Aplikasi Surat Pengantar PKL - SMK FYJ Channel
+Server Aplikasi Surat Pengantar PKL - SMKN 1 FYJ Channel
 Menyajikan antarmuka web dan API pembuatan dokumen DOCX
 """
 
@@ -307,7 +307,7 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                     tgl_penarikan=tgl_penarikan,
                     paragraf_pembuka=paragraf_pembuka,
                     paragraf_penutup=paragraf_penutup,
-                    nama_sekolah=req_data.get('nama_sekolah', 'SMK FYJ Channel'),
+                    nama_sekolah=req_data.get('nama_sekolah', 'SMKN 1 FYJ Channel'),
                     tahun_ajaran=req_data.get('tahun_ajaran', '2026/2027'),
                     kepsek_nama=req_data.get('kepsek_nama', 'Sri Rejeki, S.Pd., M.Pd.'),
                     kepsek_nip=req_data.get('kepsek_nip', '19770309 200903 2 010'),
@@ -354,7 +354,7 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 template_path = get_template_path()
                 
                 settings = db_manager.get_all_settings()
-                nama_sekolah = req_data.get('nama_sekolah', settings.get('namaSekolah', 'SMK FYJ Channel'))
+                nama_sekolah = req_data.get('nama_sekolah', settings.get('namaSekolah', 'SMKN 1 FYJ Channel'))
                 tahun_ajaran = req_data.get('tahun_ajaran', settings.get('tahunAjaran', '2026/2027'))
                 periode_pkl = req_data.get('periode_pkl', settings.get('periodePkl', '13 November 2026 sampai dengan 30 April 2027'))
                 kepsek_nama = req_data.get('kepsek_nama', settings.get('kepsekNama', 'Sri Rejeki, S.Pd., M.Pd.'))
@@ -414,7 +414,7 @@ def run_server(port=PORT):
 
     url = f"http://localhost:{port}"
     print(f"=" * 60)
-    print(f" Aplikasi Surat Pengantar PKL SMK FYJ Channel")
+    print(f" Aplikasi Surat Pengantar PKL - SMKN 1 FYJ Channel")
     print(f" Server berjalan di: {url}")
     print(f" Tekan Ctrl+C untuk menghentikan server.")
     print(f"=" * 60)

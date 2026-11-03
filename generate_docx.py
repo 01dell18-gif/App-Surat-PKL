@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generator Surat Pengantar Pembimbing PKL
-SMK FYJ Channel
+SMKN 1 FYJ Channel
 Menggunakan data dari database/surat_pkl.db / data_pkl.json
 Template: template_clean.docx
 """
@@ -15,11 +15,84 @@ import zipfile
 import argparse
 import xml.etree.ElementTree as ET
 from collections import defaultdict
+try:
+    from PIL import Image, ImageDraw, ImageFont
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
 
 NS = {
     'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
     'r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 }
+
+def create_ttd_elektronik_bytes(nama_sekolah="SMKN 1 FYJ Channel", kepsek_nama="Sri Rejeki, S.Pd., M.Pd.", kepsek_pangkat="Pembina (IV/a)", kepsek_nip="19770309 200903 2 010"):
+    """Menghasilkan berkas gambar JPEG TTD Elektronik dinamis sesuai sekolah & kepala sekolah."""
+    if not HAS_PIL:
+        return None
+    try:
+        width, height = 850, 256
+        im = Image.new('RGB', (width, height), color=(255, 255, 255))
+        draw = ImageDraw.Draw(im)
+        
+        # Outer border
+        draw.rectangle([(2, 2), (width - 3, height - 3)], outline=(120, 120, 120), width=3)
+        
+        # Logo Bali
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        logo_path = os.path.join(base_dir, 'assets', 'images', 'logo_bali.png')
+        if os.path.exists(logo_path):
+            logo = Image.open(logo_path)
+            logo = logo.resize((195, 198), Image.Resampling.LANCZOS)
+            im.paste(logo, (35, 28))
+            
+        font_regular = None
+        font_bold = None
+        for font_p in ['C:/Windows/Fonts/arial.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf']:
+            if os.path.exists(font_p):
+                font_regular = ImageFont.truetype(font_p, 20)
+                break
+        for font_p in ['C:/Windows/Fonts/arialbd.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf']:
+            if os.path.exists(font_p):
+                font_bold = ImageFont.truetype(font_p, 23)
+                break
+                
+        if not font_regular:
+            font_regular = ImageFont.load_default()
+        if not font_bold:
+            font_bold = font_regular
+            
+        x_text = 255
+        y = 25
+        
+        # Line 1: Header
+        text_hdr = 'Ditandatangani secara elektronik oleh :'
+        draw.text((x_text, y), text_hdr, fill=(30, 30, 30), font=font_regular)
+        bbox = draw.textbbox((x_text, y), text_hdr, font=font_regular)
+        draw.line([(x_text, bbox[3] + 2), (bbox[2], bbox[3] + 2)], fill=(30, 30, 30), width=1)
+        
+        # Line 2: KEPALA [SEKOLAH]
+        y += 34
+        draw.text((x_text, y), f'KEPALA {nama_sekolah.upper()}', fill=(0, 0, 0), font=font_bold)
+        
+        # Line 3: Nama Kepala Sekolah
+        y += 38
+        draw.text((x_text, y), kepsek_nama, fill=(0, 0, 0), font=font_bold)
+        
+        # Line 4: Pangkat
+        y += 37
+        draw.text((x_text, y), kepsek_pangkat, fill=(40, 40, 40), font=font_regular)
+        
+        # Line 5: NIP
+        y += 35
+        draw.text((x_text, y), f'NIP. {kepsek_nip}', fill=(40, 40, 40), font=font_regular)
+        
+        buf = io.BytesIO()
+        im.save(buf, format='JPEG', quality=95)
+        return buf.getvalue()
+    except Exception as e:
+        print('[WARN] Gagal membuat gambar TTD dinamis:', e)
+        return None
 
 def load_data(excel_path='Data_Pembagian_Tugas_PKL.xlsx', json_path='data_pkl.json'):
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -217,7 +290,7 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                         tgl_penarikan="30 April 2027",
                         paragraf_pembuka=None,
                         paragraf_penutup=None,
-                        nama_sekolah="SMK FYJ Channel",
+                        nama_sekolah="SMKN 1 FYJ Channel",
                         tahun_ajaran="2026/2027",
                         kepsek_nama="Sri Rejeki, S.Pd., M.Pd.",
                         kepsek_nip="19770309 200903 2 010",
@@ -346,6 +419,13 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
 
     new_doc_xml = ET.tostring(root, encoding='utf-8', xml_declaration=True)
     
+    # Generate dynamic electronic signature image for Word document
+    dynamic_ttd_bytes = create_ttd_elektronik_bytes(
+        nama_sekolah=nama_sekolah,
+        kepsek_nama=kepsek_nama,
+        kepsek_nip=kepsek_nip
+    )
+    
     if out_path:
         os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
         with zipfile.ZipFile(template_path, 'r') as zin:
@@ -353,6 +433,8 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                 for item in zin.infolist():
                     if item.filename == 'word/document.xml':
                         zout.writestr(item, new_doc_xml)
+                    elif item.filename == 'word/media/image3.png' and dynamic_ttd_bytes:
+                        zout.writestr(item, dynamic_ttd_bytes)
                     else:
                         zout.writestr(item, zin.read(item.filename))
         print(f"[OK] Surat tersimpan: {out_path} ({len(students)} siswa)")
@@ -364,13 +446,15 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                 for item in zin.infolist():
                     if item.filename == 'word/document.xml':
                         zout.writestr(item, new_doc_xml)
+                    elif item.filename == 'word/media/image3.png' and dynamic_ttd_bytes:
+                        zout.writestr(item, dynamic_ttd_bytes)
                     else:
                         zout.writestr(item, zin.read(item.filename))
         mem_buffer.seek(0)
         return mem_buffer.getvalue()
 
 def main():
-    parser = argparse.ArgumentParser(description="Generator Surat Pengantar PKL SMK FYJ Channel")
+    parser = argparse.ArgumentParser(description="Generator Surat Pengantar PKL SMKN 1 FYJ Channel")
     parser.add_argument('--template', default='template_clean.docx', help='Path ke file template Word')
     parser.add_argument('--outdir', default='hasil_surat_docx', help='Folder output file docx')
     parser.add_argument('--mode', choices=['per-du-di', 'per-guru'], default='per-guru', help='Mode pembuatan surat')

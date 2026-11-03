@@ -1,5 +1,5 @@
 /**
- * Aplikasi Surat Pengantar PKL - SMK FYJ Channel
+ * Aplikasi Surat Pengantar PKL - SMKN 1 FYJ Channel
  * Frontend Application Logic (Template Management & WYSIWYG Edition v2.2)
  */
 
@@ -7,7 +7,7 @@
 const DEFAULT_TEMPLATES = [
   {
     id: 'tpl_standar_resmi',
-    name: 'Template Standar Resmi SMK FYJ Channel',
+    name: 'Template Standar Resmi SMKN 1 FYJ Channel',
     isDefault: true,
     status: 'active',
     createdAt: '2026-11-03',
@@ -85,8 +85,8 @@ const DEFAULT_TEMPLATES = [
 
 // Default Application & Institution Settings
 const DEFAULT_APP_SETTINGS = {
-  namaSekolah: 'SMK FYJ Channel',
-  subJudulSekolah: 'SMK FYJ Channel • Tahun Ajaran 2026/2027',
+  namaSekolah: 'SMKN 1 FYJ Channel',
+  subJudulSekolah: 'SMKN 1 FYJ Channel • Tahun Ajaran 2026/2027',
   alamatSekolah: 'Jalan Subali II, Banjar Siku, Desa Kamasan Telp. (0366) 23520 Klungkung',
   kepsekNama: 'Sri Rejeki, S.Pd., M.Pd.',
   kepsekPangkat: 'Pembina (IV/a)',
@@ -166,10 +166,11 @@ function loadStoredSettings() {
     if (saved) {
       AppState.appSettings = Object.assign({}, DEFAULT_APP_SETTINGS, JSON.parse(saved));
       // Otomatis migrasikan nama default sekolah lama jika ada sisa cache di peramban
-      if (AppState.appSettings.namaSekolah === 'SMK Negeri 1 Klungkung' || AppState.appSettings.namaSekolah === 'SMK Negeri FYJ Channel') {
+      const oldVariants = ['SMK Negeri 1 Klungkung', 'SMK Negeri FYJ Channel', 'SMK FYJ Channel', 'SMK Negeri 1 KLUNGKUNG', 'SMKN 1 Klungkung'];
+      if (oldVariants.includes(AppState.appSettings.namaSekolah)) {
         AppState.appSettings.namaSekolah = DEFAULT_APP_SETTINGS.namaSekolah;
       }
-      if (AppState.appSettings.subJudulSekolah && AppState.appSettings.subJudulSekolah.includes('Klungkung')) {
+      if (!AppState.appSettings.subJudulSekolah || AppState.appSettings.subJudulSekolah.includes('Klungkung') || AppState.appSettings.subJudulSekolah.includes('SMK FYJ Channel') || AppState.appSettings.subJudulSekolah.includes('SMK Negeri FYJ Channel')) {
         AppState.appSettings.subJudulSekolah = DEFAULT_APP_SETTINGS.subJudulSekolah;
       }
     } else {
@@ -810,12 +811,28 @@ function renderPreview() {
   const docTtdArea = document.getElementById('docTtdArea');
   if (docTtdArea) {
     if (dOpt.showTtd) {
-      const ttdSrc = getTtdSrc();
-      docTtdArea.innerHTML = `
-        <div style="margin: 6px 0; text-align: left;">
-          <img src="${ttdSrc}" alt="TTD Elektronik" style="width: 220px; height: auto; display: block;">
-        </div>
-      `;
+      if (AppState.appSettings.ttdUrl) {
+        docTtdArea.innerHTML = `
+          <div style="margin: 6px 0; text-align: left;">
+            <img src="${AppState.appSettings.ttdUrl}" alt="TTD Elektronik" style="width: 220px; height: auto; display: block;">
+          </div>
+        `;
+      } else {
+        const logoBaliSrc = (typeof ASSETS !== 'undefined' && ASSETS.logoBali) ? ASSETS.logoBali : 'assets/images/logo_bali.png';
+        const namaSekolahUpper = (AppState.appSettings.namaSekolah || 'SMKN 1 FYJ CHANNEL').toUpperCase();
+        docTtdArea.innerHTML = `
+          <div style="margin: 6px 0; display: inline-flex; align-items: center; border: 1.5px solid #666; background: #ffffff; padding: 5px 8px; width: 235px; box-sizing: border-box; gap: 8px; font-family: Arial, sans-serif; text-align: left;">
+            <img src="${logoBaliSrc}" alt="Logo Bali" style="width: 48px; height: 50px; object-fit: contain; flex-shrink: 0; display: block;" onerror="this.src='assets/images/logo_bali.png'">
+            <div style="font-size: 6.8pt; line-height: 1.25; color: #111; overflow: hidden;">
+              <div style="text-decoration: underline; font-size: 6.2pt; margin-bottom: 2px; white-space: nowrap;">Ditandatangani secara elektronik oleh :</div>
+              <div style="font-weight: bold; font-size: 7.2pt; line-height: 1.2;">KEPALA ${escapeXml(namaSekolahUpper)}</div>
+              <div style="font-weight: bold; font-size: 7pt; margin-top: 2px;">${escapeXml(ds.kepsekNama)}</div>
+              <div style="font-size: 6.8pt; color: #333;">${escapeXml(ds.kepsekPangkat)}</div>
+              <div style="font-size: 6.8pt; color: #333;">NIP. ${escapeXml(ds.kepsekNip)}</div>
+            </div>
+          </div>
+        `;
+      }
     } else {
       // 2. TTD Basah (ttd_basah.png) + Nama & NIP
       const ttdBasahSrc = getTtdBasahSrc();
@@ -987,7 +1004,7 @@ function toggleEditorHtmlMode() {
 
 // Reset Editor to Official Standard Template
 function resetEditorToOfficialStandard() {
-  if (!confirm('Kembalikan naskah template ke redaksi standar resmi SMK FYJ Channel?')) return;
+  if (!confirm('Kembalikan naskah template ke redaksi standar resmi SMKN 1 FYJ Channel?')) return;
   const officialTpl = DEFAULT_TEMPLATES[0];
   const editor = document.getElementById('wysiwygEditor');
   const textarea = document.getElementById('htmlEditorTextarea');
@@ -1641,7 +1658,7 @@ async function downloadDocxClient() {
         tgl_pelepasan: ds.tglPelepasan || '13 November 2026',
         periode_pkl: ds.periodePkl || '13 November 2026 sampai dengan 30 April 2027',
         tgl_penarikan: ds.tglPenarikan || '30 April 2027',
-        nama_sekolah: ds.namaSekolah || AppState.appSettings.namaSekolah || 'SMK FYJ Channel',
+        nama_sekolah: ds.namaSekolah || AppState.appSettings.namaSekolah || 'SMKN 1 FYJ Channel',
         tahun_ajaran: ds.tahunAjaran || AppState.appSettings.tahunAjaran || '2026/2027',
         kepsek_nama: ds.kepsekNama || AppState.appSettings.kepsekNama || 'Sri Rejeki, S.Pd., M.Pd.',
         kepsek_nip: ds.kepsekNip || AppState.appSettings.kepsekNip || '19770309 200903 2 010'
@@ -1886,7 +1903,7 @@ async function downloadBatchZipClient() {
           tgl_pelepasan: ds.tglPelepasan || '13 November 2026',
           periode_pkl: ds.periodePkl || '13 November 2026 sampai dengan 30 April 2027',
           tgl_penarikan: ds.tglPenarikan || '30 April 2027',
-          nama_sekolah: ds.namaSekolah || AppState.appSettings.namaSekolah || 'SMK FYJ Channel',
+          nama_sekolah: ds.namaSekolah || AppState.appSettings.namaSekolah || 'SMKN 1 FYJ Channel',
           tahun_ajaran: ds.tahunAjaran || AppState.appSettings.tahunAjaran || '2026/2027',
           kepsek_nama: ds.kepsekNama || AppState.appSettings.kepsekNama || 'Sri Rejeki, S.Pd., M.Pd.',
           kepsek_nip: ds.kepsekNip || AppState.appSettings.kepsekNip || '19770309 200903 2 010'

@@ -1,7 +1,7 @@
 -- ========================================================
 -- Database Schema & Data: Surat Pengantar PKL
--- Instansi : SMK FYJ Channel
--- Dibuat   : 2026-11-03 15:32:57
+-- Instansi : SMKN 1 FYJ Channel
+-- Dibuat   : 2026-11-03 15:47:44
 -- Kompatibel: MySQL, MariaDB, PostgreSQL, SQLite
 -- ========================================================
 
@@ -313,8 +313,8 @@ CREATE TABLE `pengaturan` (
 -- Data Pengaturan Lembaga & Aplikasi
 LOCK TABLES `pengaturan` WRITE;
 INSERT INTO `pengaturan` (`kunci`, `nilai`, `kategori`, `keterangan`) VALUES
-('namaSekolah', 'SMK FYJ Channel', 'lembaga', 'Nama resmi sekolah / instansi'),
-('subJudulSekolah', 'SMK FYJ Channel • Tahun Ajaran 2026/2027', 'lembaga', 'Sub-judul sekolah di kop dan header'),
+('namaSekolah', 'SMKN 1 FYJ Channel', 'lembaga', 'Nama resmi sekolah / instansi'),
+('subJudulSekolah', 'SMKN 1 FYJ Channel • Tahun Ajaran 2026/2027', 'lembaga', 'Sub-judul sekolah di kop dan header'),
 ('alamatSekolah', 'Jalan Subali II, Banjar Siku, Desa Kamasan Telp. (0366) 23520 Klungkung', 'lembaga', 'Alamat lengkap instansi'),
 ('kepsekNama', 'Sri Rejeki, S.Pd., M.Pd.', 'kepsek', 'Nama lengkap dan gelar Kepala Sekolah'),
 ('kepsekPangkat', 'Pembina (IV/a)', 'kepsek', 'Pangkat dan golongan ruang Kepala Sekolah'),
@@ -348,7 +348,7 @@ CREATE TABLE `template_surat` (
 
 -- Data Template Surat Resmi
 LOCK TABLES `template_surat` WRITE;
-INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_standar_resmi', 'Template Standar Resmi SMK FYJ Channel', '<p style="margin-bottom: 8px;">Dengan hormat,</p>
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_standar_resmi', 'Template Standar Resmi SMKN 1 FYJ Channel', '<p style="margin-bottom: 8px;">Dengan hormat,</p>
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
   Dalam rangka pelaksanaan kegiatan Praktek Kerja Lapangan (PKL) bagi siswa/siswi {namaSekolah} Tahun Ajaran {tahunAjaran}, bersama ini kami menugaskan guru pembimbing untuk menyerahkan sekaligus mengantarkan siswa/siswi kami melaksanakan PKL di perusahaan/instansi yang Bapak/Ibu pimpin.
 </p>

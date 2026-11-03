@@ -57,7 +57,7 @@ def export_sql_dump():
         sql_lines = []
         sql_lines.append("-- ========================================================")
         sql_lines.append("-- Database Schema & Data: Surat Pengantar PKL")
-        sql_lines.append("-- Instansi : SMK FYJ Channel")
+        sql_lines.append("-- Instansi : SMKN 1 FYJ Channel")
         sql_lines.append(f"-- Diperbarui : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         sql_lines.append("-- Kompatibel : MySQL, MariaDB, PostgreSQL, SQLite")
         sql_lines.append("-- ========================================================\n")
