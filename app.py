@@ -23,10 +23,7 @@ def get_template_path():
         os.path.join(base_dir, 'assets', 'templates', 'template_clean.docx'),
         os.path.join(base_dir, 'template_clean.docx'),
         'assets/templates/template_clean.docx',
-        'template_clean.docx',
-        os.path.join(base_dir, 'referensi', 'SURAT PENGANTAR PEMBIMBING PKL.docx'),
-        os.path.join(base_dir, 'SURAT PENGANTAR PEMBIMBING PKL.docx'),
-        'referensi/SURAT PENGANTAR PEMBIMBING PKL.docx'
+        'template_clean.docx'
     ]
     for c in candidates:
         if c and os.path.exists(c):
@@ -269,6 +266,127 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 self.wfile.write(json.dumps({'success': success}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
+            return
+
+        if path == '/api/upload-asset':
+            try:
+                import base64
+                import time
+                req_data = json.loads(body.decode('utf-8'))
+                asset_type = req_data.get('type')  # 'kop', 'ttd', 'ttd_basah', 'logo'
+                data_url = req_data.get('data', '')
+                filename = req_data.get('filename', '')
+
+                valid_types = {
+                    'kop': 'kopUrl',
+                    'ttd': 'ttdUrl',
+                    'ttd_basah': 'ttdBasahUrl',
+                    'logo': 'logoWebUrl'
+                }
+
+                if asset_type not in valid_types:
+                    raise ValueError(f"Tipe aset tidak valid: {asset_type}")
+
+                # Tentukan ekstensi file
+                ext = '.png'
+                if '.' in filename:
+                    ext = '.' + filename.rsplit('.', 1)[1].lower()
+                elif 'image/jpeg' in data_url or 'image/jpg' in data_url:
+                    ext = '.jpg'
+                elif 'image/webp' in data_url:
+                    ext = '.webp'
+                elif 'image/svg+xml' in data_url:
+                    ext = '.svg'
+
+                # Ekstrak data base64
+                if ',' in data_url:
+                    raw_b64 = data_url.split(',', 1)[1]
+                else:
+                    raw_b64 = data_url
+                img_bytes = base64.b64decode(raw_b64)
+
+                # Folder target: assets/images
+                base_dir = os.path.dirname(os.path.abspath(__file__))
+                images_dir = os.path.join(base_dir, 'assets', 'images')
+                os.makedirs(images_dir, exist_ok=True)
+
+                # Hapus file lama jika ada penggantian berkas
+                prefix = f"upload_{asset_type}."
+                for f_name in os.listdir(images_dir):
+                    if f_name.startswith(prefix):
+                        try:
+                            os.remove(os.path.join(images_dir, f_name))
+                            print(f"[OK] File lama dihapus: {f_name}")
+                        except Exception as del_err:
+                            print(f"[WARN] Gagal menghapus file lama {f_name}: {del_err}")
+
+                # Simpan berkas baru
+                new_filename = f"upload_{asset_type}{ext}"
+                new_file_path = os.path.join(images_dir, new_filename)
+                with open(new_file_path, 'wb') as f:
+                    f.write(img_bytes)
+
+                rel_url = f"assets/images/{new_filename}"
+                v_url = f"{rel_url}?v={int(time.time())}"
+
+                # Perbarui pengaturan di SQLite Database
+                setting_key = valid_types[asset_type]
+                db_manager.save_settings({setting_key: rel_url})
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    'success': True,
+                    'url': v_url,
+                    'rel_path': rel_url,
+                    'key': setting_key,
+                    'message': f"Berkas {asset_type} berhasil disimpan di {rel_url}."
+                }).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
+            return
+
+        if path == '/api/delete-asset':
+            try:
+                req_data = json.loads(body.decode('utf-8'))
+                asset_type = req_data.get('type')
+
+                valid_types = {
+                    'kop': 'kopUrl',
+                    'ttd': 'ttdUrl',
+                    'ttd_basah': 'ttdBasahUrl',
+                    'logo': 'logoWebUrl'
+                }
+
+                if asset_type in valid_types:
+                    base_dir = os.path.dirname(os.path.abspath(__file__))
+                    images_dir = os.path.join(base_dir, 'assets', 'images')
+                    prefix = f"upload_{asset_type}."
+                    if os.path.exists(images_dir):
+                        for f_name in os.listdir(images_dir):
+                            if f_name.startswith(prefix):
+                                try:
+                                    os.remove(os.path.join(images_dir, f_name))
+                                    print(f"[OK] File dihapus: {f_name}")
+                                except Exception as del_err:
+                                    print(f"[WARN] Gagal menghapus {f_name}: {del_err}")
+
+                    setting_key = valid_types[asset_type]
+                    db_manager.save_settings({setting_key: ''})
+
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': True}).encode('utf-8'))
             except Exception as e:
                 self.send_response(500)
                 self.send_header('Content-Type', 'application/json')

@@ -1318,17 +1318,58 @@ function updateSettingsMediaPreviews() {
   }
 }
 
-// Kop Surat Handlers
-function handleKopFileUpload(e) {
-  if (e.target.files && e.target.files[0]) {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      AppState.appSettings.kopUrl = evt.target.result;
-      updateSettingsMediaPreviews();
-      showToast('Gambar kop surat berhasil diunggah!');
+// Helper Upload Asset Image directly to assets/images/ via Python backend (dengan penggantian berkas otomatis)
+async function uploadAssetToServer(type, file) {
+  const reader = new FileReader();
+  return new Promise((resolve) => {
+    reader.onload = async function(evt) {
+      const dataUrl = evt.target.result;
+      try {
+        const res = await fetch('/api/upload-asset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: type,
+            filename: file.name,
+            data: dataUrl
+          })
+        });
+        if (res.ok) {
+          const result = await res.json();
+          resolve(result.url || result.rel_path);
+          return;
+        }
+      } catch (err) {
+        console.warn('Backend upload-asset tidak aktif, menggunakan fallback data URL:', err);
+      }
+      resolve(dataUrl);
     };
     reader.readAsDataURL(file);
+  });
+}
+
+// Helper Delete Asset Image from assets/images/
+async function deleteAssetFromServer(type) {
+  try {
+    await fetch('/api/delete-asset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: type })
+    });
+  } catch (err) {
+    console.warn('Backend delete-asset tidak aktif:', err);
+  }
+}
+
+// Kop Surat Handlers
+async function handleKopFileUpload(e) {
+  if (e.target.files && e.target.files[0]) {
+    const file = e.target.files[0];
+    showToast('Mengunggah gambar kop surat ke folder assets...');
+    const savedUrl = await uploadAssetToServer('kop', file);
+    AppState.appSettings.kopUrl = savedUrl;
+    updateSettingsMediaPreviews();
+    showToast('Kop surat berhasil disimpan di folder assets!');
   }
 }
 
@@ -1344,7 +1385,8 @@ function applyKopUrl() {
   showToast('Tautan URL kop surat berhasil diterapkan!');
 }
 
-function resetKopToDefault() {
+async function resetKopToDefault() {
+  await deleteAssetFromServer('kop');
   AppState.appSettings.kopUrl = '';
   const input = document.getElementById('inputUrlKop');
   if (input) input.value = '';
@@ -1355,16 +1397,14 @@ function resetKopToDefault() {
 }
 
 // TTD Handlers
-function handleTtdFileUpload(e) {
+async function handleTtdFileUpload(e) {
   if (e.target.files && e.target.files[0]) {
     const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      AppState.appSettings.ttdUrl = evt.target.result;
-      updateSettingsMediaPreviews();
-      showToast('Berkas TTD elektronik / barcode berhasil diunggah!');
-    };
-    reader.readAsDataURL(file);
+    showToast('Mengunggah berkas TTD ke folder assets...');
+    const savedUrl = await uploadAssetToServer('ttd', file);
+    AppState.appSettings.ttdUrl = savedUrl;
+    updateSettingsMediaPreviews();
+    showToast('Berkas TTD elektronik berhasil disimpan di folder assets!');
   }
 }
 
@@ -1380,7 +1420,8 @@ function applyTtdUrl() {
   showToast('Tautan URL TTD berhasil diterapkan!');
 }
 
-function resetTtdToDefault() {
+async function resetTtdToDefault() {
+  await deleteAssetFromServer('ttd');
   AppState.appSettings.ttdUrl = '';
   const input = document.getElementById('inputUrlTtd');
   if (input) input.value = '';
@@ -1391,16 +1432,14 @@ function resetTtdToDefault() {
 }
 
 // TTD Basah Handlers
-function handleTtdBasahFileUpload(e) {
+async function handleTtdBasahFileUpload(e) {
   if (e.target.files && e.target.files[0]) {
     const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      AppState.appSettings.ttdBasahUrl = evt.target.result;
-      updateSettingsMediaPreviews();
-      showToast('Berkas TTD Basah berhasil diunggah!');
-    };
-    reader.readAsDataURL(file);
+    showToast('Mengunggah berkas TTD Basah ke folder assets...');
+    const savedUrl = await uploadAssetToServer('ttd_basah', file);
+    AppState.appSettings.ttdBasahUrl = savedUrl;
+    updateSettingsMediaPreviews();
+    showToast('Berkas TTD Basah berhasil disimpan di folder assets!');
   }
 }
 
@@ -1416,7 +1455,8 @@ function applyTtdBasahUrl() {
   showToast('Tautan URL TTD Basah berhasil diterapkan!');
 }
 
-function resetTtdBasahToDefault() {
+async function resetTtdBasahToDefault() {
+  await deleteAssetFromServer('ttd_basah');
   AppState.appSettings.ttdBasahUrl = '';
   const input = document.getElementById('inputUrlTtdBasah');
   if (input) input.value = '';
@@ -1427,16 +1467,14 @@ function resetTtdBasahToDefault() {
 }
 
 // Logo Web Handlers
-function handleLogoWebFileUpload(e) {
+async function handleLogoWebFileUpload(e) {
   if (e.target.files && e.target.files[0]) {
     const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      AppState.appSettings.logoWebUrl = evt.target.result;
-      updateSettingsMediaPreviews();
-      showToast('Logo web aplikasi berhasil diunggah!');
-    };
-    reader.readAsDataURL(file);
+    showToast('Mengunggah logo web ke folder assets...');
+    const savedUrl = await uploadAssetToServer('logo', file);
+    AppState.appSettings.logoWebUrl = savedUrl;
+    updateSettingsMediaPreviews();
+    showToast('Logo web aplikasi berhasil disimpan di folder assets!');
   }
 }
 
@@ -1452,7 +1490,8 @@ function applyLogoWebUrl() {
   showToast('Tautan URL logo web berhasil diterapkan!');
 }
 
-function resetLogoWebToDefault() {
+async function resetLogoWebToDefault() {
+  await deleteAssetFromServer('logo');
   AppState.appSettings.logoWebUrl = '';
   const input = document.getElementById('inputUrlLogoWeb');
   if (input) input.value = '';

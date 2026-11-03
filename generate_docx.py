@@ -142,9 +142,7 @@ def load_data(excel_path='Data_Pembagian_Tugas_PKL.xlsx', json_path='data_pkl.js
 
     excel_candidates = [
         excel_path,
-        os.path.join(base_dir, 'referensi', 'Data_Pembagian_Tugas_PKL.xlsx'),
-        os.path.join(base_dir, 'Data_Pembagian_Tugas_PKL.xlsx'),
-        'referensi/Data_Pembagian_Tugas_PKL.xlsx'
+        os.path.join(base_dir, 'Data_Pembagian_Tugas_PKL.xlsx')
     ]
     for p in excel_candidates:
         if p and os.path.exists(p):
@@ -425,6 +423,31 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
         kepsek_nama=kepsek_nama,
         kepsek_nip=kepsek_nip
     )
+
+    # Cek apakah ada berkas kustom hasil upload pengguna di assets/images/
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    images_dir = os.path.join(base_dir, 'assets', 'images')
+    custom_kop_bytes = None
+    custom_ttd_bytes = None
+    if os.path.exists(images_dir):
+        for f_name in os.listdir(images_dir):
+            if f_name.startswith('upload_kop.'):
+                try:
+                    with open(os.path.join(images_dir, f_name), 'rb') as kf:
+                        custom_kop_bytes = kf.read()
+                    break
+                except Exception as e:
+                    print('[WARN] Gagal membaca custom kop:', e)
+        for f_name in os.listdir(images_dir):
+            if f_name.startswith('upload_ttd.'):
+                try:
+                    with open(os.path.join(images_dir, f_name), 'rb') as tf:
+                        custom_ttd_bytes = tf.read()
+                    break
+                except Exception as e:
+                    print('[WARN] Gagal membaca custom ttd:', e)
+
+    ttd_final_bytes = custom_ttd_bytes if custom_ttd_bytes else dynamic_ttd_bytes
     
     if out_path:
         os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
@@ -433,8 +456,10 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                 for item in zin.infolist():
                     if item.filename == 'word/document.xml':
                         zout.writestr(item, new_doc_xml)
-                    elif item.filename == 'word/media/image3.png' and dynamic_ttd_bytes:
-                        zout.writestr(item, dynamic_ttd_bytes)
+                    elif item.filename == 'word/media/image1.jpg' and custom_kop_bytes:
+                        zout.writestr(item, custom_kop_bytes)
+                    elif item.filename == 'word/media/image3.png' and ttd_final_bytes:
+                        zout.writestr(item, ttd_final_bytes)
                     else:
                         zout.writestr(item, zin.read(item.filename))
         print(f"[OK] Surat tersimpan: {out_path} ({len(students)} siswa)")
@@ -446,8 +471,10 @@ def generate_surat_docx(template_path, out_path, guru_nama, guru_nip, tempat_pkl
                 for item in zin.infolist():
                     if item.filename == 'word/document.xml':
                         zout.writestr(item, new_doc_xml)
-                    elif item.filename == 'word/media/image3.png' and dynamic_ttd_bytes:
-                        zout.writestr(item, dynamic_ttd_bytes)
+                    elif item.filename == 'word/media/image1.jpg' and custom_kop_bytes:
+                        zout.writestr(item, custom_kop_bytes)
+                    elif item.filename == 'word/media/image3.png' and ttd_final_bytes:
+                        zout.writestr(item, ttd_final_bytes)
                     else:
                         zout.writestr(item, zin.read(item.filename))
         mem_buffer.seek(0)
@@ -473,9 +500,7 @@ def main():
         os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'templates', 'template_clean.docx'),
         os.path.join(os.path.dirname(os.path.abspath(__file__)), 'template_clean.docx'),
         'assets/templates/template_clean.docx',
-        'template_clean.docx',
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'referensi', 'SURAT PENGANTAR PEMBIMBING PKL.docx'),
-        'referensi/SURAT PENGANTAR PEMBIMBING PKL.docx'
+        'template_clean.docx'
     ]
     for tc in template_candidates:
         if tc and os.path.exists(tc):
