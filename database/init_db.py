@@ -66,6 +66,62 @@ DEFAULT_TEMPLATE_HTML = """<p style="margin-bottom: 8px;">Dengan hormat,</p>
   Demikian surat pengantar ini kami sampaikan, atas bantuan dan kerja sama yang baik kami ucapkan terima kasih.
 </p>"""
 
+TEMPLATE_KETERANGAN_HTML = """<p style="margin-bottom: 8px;">Yang bertanda tangan dibawah ini :</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{kepsekNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIP</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekNip}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Pangkat/Gol</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekPangkat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jabatan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">Kepala {namaSekolah}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Unit Kerja</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{namaSekolah}</td>
+  </tr>
+</table>
+
+<p style="margin-bottom: 8px;">Menerangkan kepada yang tersebut dibawah ini bahwa:</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{siswaNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIS</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{siswaNis}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jurusan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{siswaKelas}</td>
+  </tr>
+</table>
+
+<p style="text-indent: 30px; margin-bottom: 12px; text-align: justify; line-height: 1.5;">
+  Adalah benar telah melaksanakan PKL di <strong>{tempatPkl}</strong> selama 6 bulan dan yang bersangkutan telah melaksanakan tugasnya dengan baik dan penuh penuh tanggung jawab.
+</p>
+
+<p style="text-indent: 30px; margin-bottom: 14px; text-align: justify; line-height: 1.5;">
+  Demikian Surat Keterangan ini dibuat dengan benar untuk digunakan sebagaimana mestinya.
+</p>"""
+
 def escape_sql(val):
     if val is None:
         return "NULL"
@@ -189,6 +245,18 @@ def init_database():
         1,
         'active',
         '2026-11-03 12:00:00'
+    ))
+
+    cur.execute("""
+    INSERT OR REPLACE INTO template_surat (id, nama, html_content, is_default, status, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+        'tpl_surat_keterangan_pkl',
+        'Surat Keterangan PKL (Sesuai Contoh Word)',
+        TEMPLATE_KETERANGAN_HTML.strip(),
+        0,
+        'active',
+        '2026-11-04 10:00:00'
     ))
 
     conn.commit()

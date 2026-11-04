@@ -12,7 +12,7 @@ import zipfile
 import webbrowser
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import urllib.parse
-from generate_docx import generate_surat_docx, load_data
+from generate_docx import generate_surat_docx, generate_keterangan_docx, load_data
 from database import db_manager
 
 PORT = 8000
@@ -419,6 +419,9 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
         if path == '/api/generate-docx':
             try:
                 req_data = json.loads(body.decode('utf-8'))
+                template_id = req_data.get('template_id', '')
+                doc_type = req_data.get('doc_type', '')
+
                 guru_nama = req_data.get('guru_nama', '')
                 guru_nip = req_data.get('guru_nip', '')
                 tempat_pkl = req_data.get('tempat_pkl', '')
@@ -434,34 +437,70 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 show_ttd = req_data.get('show_ttd', True)
                 show_alamat = req_data.get('show_alamat', True)
                 paper_size = req_data.get('paper_size', 'f4')
+                nama_sekolah = req_data.get('nama_sekolah', 'SMKN 1 FYJ Channel')
+                tahun_ajaran = req_data.get('tahun_ajaran', '2026/2027')
+                kepsek_nama = req_data.get('kepsek_nama', 'Sri Rejeki, S.Pd., M.Pd.')
+                kepsek_pangkat = req_data.get('kepsek_pangkat', 'Pembina (IV/a)')
+                kepsek_nip = req_data.get('kepsek_nip', '19770309 200903 2 010')
+                alamat_pkl = req_data.get('alamat_pkl', '')
 
-                template_path = get_template_path()
-                
-                file_bytes = generate_surat_docx(
-                    template_path=template_path,
-                    out_path=None,
-                    guru_nama=guru_nama,
-                    guru_nip=guru_nip,
-                    tempat_pkl=tempat_pkl,
-                    students=students,
-                    no_surat=no_surat,
-                    tgl_surat=tgl_surat,
-                    tgl_pelepasan=tgl_pelepasan,
-                    periode_pkl=periode_pkl,
-                    tgl_penarikan=tgl_penarikan,
-                    paragraf_pembuka=paragraf_pembuka,
-                    paragraf_penutup=paragraf_penutup,
-                    nama_sekolah=req_data.get('nama_sekolah', 'SMKN 1 FYJ Channel'),
-                    tahun_ajaran=req_data.get('tahun_ajaran', '2026/2027'),
-                    kepsek_nama=req_data.get('kepsek_nama', 'Sri Rejeki, S.Pd., M.Pd.'),
-                    kepsek_pangkat=req_data.get('kepsek_pangkat', 'Pembina (IV/a)'),
-                    kepsek_nip=req_data.get('kepsek_nip', '19770309 200903 2 010'),
-                    alamat_pkl=req_data.get('alamat_pkl', ''),
-                    show_kop=show_kop,
-                    show_ttd=show_ttd,
-                    show_alamat=show_alamat,
-                    paper_size=paper_size
-                )
+                is_keterangan = (template_id == 'tpl_surat_keterangan_pkl' or doc_type == 'keterangan')
+
+                if is_keterangan:
+                    first_student = students[0] if (students and len(students) > 0) else {}
+                    siswa_nama = first_student.get('siswa') or first_student.get('nama') or req_data.get('siswa_nama', '')
+                    siswa_nis = first_student.get('nis', '-')
+                    siswa_kelas = first_student.get('kelas', '')
+                    tempat_pkl_ket = tempat_pkl or first_student.get('tempat', 'Marvella')
+
+                    file_bytes = generate_keterangan_docx(
+                        template_path=None,
+                        out_path=None,
+                        siswa_nama=siswa_nama,
+                        siswa_nis=siswa_nis,
+                        siswa_kelas=siswa_kelas,
+                        tempat_pkl=tempat_pkl_ket,
+                        no_surat=no_surat,
+                        tgl_surat=tgl_surat,
+                        nama_sekolah=nama_sekolah,
+                        kepsek_nama=kepsek_nama,
+                        kepsek_pangkat=kepsek_pangkat,
+                        kepsek_nip=kepsek_nip,
+                        show_kop=show_kop,
+                        show_ttd=show_ttd,
+                        paper_size=paper_size
+                    )
+                    safe_name = "".join(c for c in (siswa_nama or 'Siswa') if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
+                    filename = f"Surat_Keterangan_PKL_{safe_name}.docx"
+                else:
+                    template_path = get_template_path()
+                    file_bytes = generate_surat_docx(
+                        template_path=template_path,
+                        out_path=None,
+                        guru_nama=guru_nama,
+                        guru_nip=guru_nip,
+                        tempat_pkl=tempat_pkl,
+                        students=students,
+                        no_surat=no_surat,
+                        tgl_surat=tgl_surat,
+                        tgl_pelepasan=tgl_pelepasan,
+                        periode_pkl=periode_pkl,
+                        tgl_penarikan=tgl_penarikan,
+                        paragraf_pembuka=paragraf_pembuka,
+                        paragraf_penutup=paragraf_penutup,
+                        nama_sekolah=nama_sekolah,
+                        tahun_ajaran=tahun_ajaran,
+                        kepsek_nama=kepsek_nama,
+                        kepsek_pangkat=kepsek_pangkat,
+                        kepsek_nip=kepsek_nip,
+                        alamat_pkl=alamat_pkl,
+                        show_kop=show_kop,
+                        show_ttd=show_ttd,
+                        show_alamat=show_alamat,
+                        paper_size=paper_size
+                    )
+                    safe_name = "".join(c for c in guru_nama if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
+                    filename = f"Surat_Pengantar_PKL_{safe_name}.docx"
 
                 safe_name = "".join(c for c in guru_nama if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
                 filename = f"Surat_Pengantar_PKL_{safe_name}.docx"

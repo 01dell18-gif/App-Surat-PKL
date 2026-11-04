@@ -544,12 +544,12 @@
 
           <!-- JUDUL SURAT -->
           <div style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
-            <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
+            <div id="docJudulSurat" style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
             <div style="font-size: 11pt; margin-top: 2px;">Nomor: <span id="docNoSurat">B.10.000/9546/SMKN1KLK/DIKPORA</span></div>
           </div>
 
           <!-- TUJUAN SURAT -->
-          <div style="margin-bottom: 14px;">
+          <div id="docTujuanSuratContainer" style="margin-bottom: 14px;">
             <table style="width: 100%;">
               <tr>
                 <td style="width: 10%; vertical-align: top;">Kepada:</td>
@@ -576,8 +576,8 @@
           <!-- TANDA TANGAN KEPALA SEKOLAH -->
           <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px; page-break-inside: avoid;">
             <div style="width: 250px; text-align: left;">
-              <div>Klungkung, <span id="docTglSurat">06 Oktober 2026</span></div>
-              <div>Kepala <span id="docNamaSekolahTtd">SMKN 1 FYJ Channel</span></div>
+              <div id="docTitimangsaHeader"><div>Klungkung, <span id="docTglSurat">06 Oktober 2026</span></div></div>
+              <div id="docJabatanTtd"><div>Kepala <span id="docNamaSekolahTtd">SMKN 1 FYJ Channel</span></div></div>
               
               <!-- TTD Area (Injected by JS: TTD Elektronik atau TTD Basah + Nama + NIP) -->
               <div id="docTtdArea"></div>

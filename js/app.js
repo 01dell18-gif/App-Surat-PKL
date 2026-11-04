@@ -80,6 +80,68 @@ const DEFAULT_TEMPLATES = [
 <p style="text-indent: 30px; margin-bottom: 14px; text-align: justify;">
   Rincian nama siswa/siswi terlampir pada Lampiran 2 surat ini. Besar harapan kami agar kerja sama yang baik antara institusi pendidikan dan DU/DI terus terjalin erat. Atas perhatian dan kesediaan Bapak/Ibu, kami haturkan terima kasih.
 </p>`
+  },
+  {
+    id: 'tpl_surat_keterangan_pkl',
+    name: 'Surat Keterangan PKL (Sesuai Contoh Word)',
+    isDefault: false,
+    status: 'active',
+    createdAt: '2026-11-04',
+    htmlContent: `<p style="margin-bottom: 8px;">Yang bertanda tangan dibawah ini :</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{kepsekNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIP</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekNip}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Pangkat/Gol</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekPangkat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jabatan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">Kepala {namaSekolah}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Unit Kerja</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{namaSekolah}</td>
+  </tr>
+</table>
+
+<p style="margin-bottom: 8px;">Menerangkan kepada yang tersebut dibawah ini bahwa:</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{siswaNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIS</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{siswaNis}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jurusan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{siswaKelas}</td>
+  </tr>
+</table>
+
+<p style="text-indent: 30px; margin-bottom: 12px; text-align: justify; line-height: 1.5;">
+  Adalah benar telah melaksanakan PKL di <strong>{tempatPkl}</strong> selama 6 bulan dan yang bersangkutan telah melaksanakan tugasnya dengan baik dan penuh penuh tanggung jawab.
+</p>
+
+<p style="text-indent: 30px; margin-bottom: 14px; text-align: justify; line-height: 1.5;">
+  Demikian Surat Keterangan ini dibuat dengan benar untuk digunakan sebagaimana mestinya.
+</p>`
   }
 ];
 
@@ -352,6 +414,12 @@ function loadStoredTemplates() {
     const savedTemplates = localStorage.getItem('pkl_saved_templates_list');
     if (savedTemplates) {
       AppState.templates = JSON.parse(savedTemplates);
+      // Sinkronkan template bawaan baru jika belum ada di cache browser pengguna
+      DEFAULT_TEMPLATES.forEach(defTpl => {
+        if (!AppState.templates.some(t => t.id === defTpl.id)) {
+          AppState.templates.push(JSON.parse(JSON.stringify(defTpl)));
+        }
+      });
     } else {
       AppState.templates = JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
     }
@@ -771,6 +839,12 @@ function updateUIFromState() {
 function resolveTemplateVariables(templateHtml, letter, ds) {
   if (!templateHtml) return '';
   const s = AppState.appSettings || ds;
+  const firstStudent = (letter.students && letter.students.length > 0) ? letter.students[0] : null;
+  const siswaNama = firstStudent ? (firstStudent.siswa || firstStudent.nama) : (letter.siswa || '-');
+  const siswaNis = firstStudent ? (firstStudent.nis || '-') : '-';
+  const siswaKelas = firstStudent ? (firstStudent.kelas || '-') : '-';
+  const tempatPkl = letter.tempatPkl || (firstStudent ? firstStudent.tempat : 'Marvella');
+
   return templateHtml
     .replace(/{tahunAjaran}/g, s.tahunAjaran)
     .replace(/{namaSekolah}/g, s.namaSekolah)
@@ -786,8 +860,12 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{kepsekPangkat}/g, s.kepsekPangkat)
     .replace(/{guruNama}/g, letter.guruNama)
     .replace(/{guruNip}/g, letter.guruNip || '-')
-    .replace(/{tempatPkl}/g, letter.tempatPkl)
+    .replace(/{tempatPkl}/g, tempatPkl)
     .replace(/{alamatPkl}/g, letter.alamatPkl || '')
+    .replace(/{siswaNama}/g, siswaNama)
+    .replace(/{siswaNis}/g, siswaNis)
+    .replace(/{siswaKelas}/g, siswaKelas)
+    .replace(/{lamaPkl}/g, '6 bulan')
     .replace(/{jabatanGuru}/g, 'Guru Pembimbing PKL');
 }
 
@@ -797,6 +875,8 @@ function renderPreview() {
   const ds = AppState.docSettings;
   const dOpt = AppState.displayOptions;
   const activeTpl = getActiveTemplate();
+  const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
+                       (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
 
   // 1. Kop Surat (GARIS GANDA DIHILANGKAN KARENA KOP.PNG SUDAH MEMILIKI GARIS BAWAH RESMI)
   const kopContainer = document.getElementById('docKopContainer');
@@ -815,14 +895,24 @@ function renderPreview() {
     }
   }
 
-  // 2. Nomor Surat
+  // 2. Judul & Nomor Surat
+  const docJudulSurat = document.getElementById('docJudulSurat');
+  if (docJudulSurat) {
+    docJudulSurat.textContent = isKeterangan ? 'SURAT KETERANGAN' : 'SURAT PENGANTAR';
+  }
+
   const docNoSurat = document.getElementById('docNoSurat');
   if (docNoSurat) docNoSurat.textContent = ds.noSurat;
 
-  // 3. Tujuan Surat (Jika dipilih Semua Lokasi PKL, nama & alamat DU/DI tidak ditampilkan)
+  // 3. Tujuan Surat (Untuk Surat Keterangan tidak ditampilkan; Untuk Surat Pengantar jika dipilih Semua Lokasi PKL, nama & alamat DU/DI tidak ditampilkan)
+  const docTujuanSuratContainer = document.getElementById('docTujuanSuratContainer');
+  if (docTujuanSuratContainer) {
+    docTujuanSuratContainer.style.display = isKeterangan ? 'none' : 'block';
+  }
+
   const docNamaTempat = document.getElementById('docNamaTempat');
   if (docNamaTempat) {
-    if (letter.isSpecificTempat && letter.tempatPkl) {
+    if (!isKeterangan && letter.isSpecificTempat && letter.tempatPkl) {
       docNamaTempat.textContent = letter.tempatPkl;
       docNamaTempat.style.display = 'block';
     } else {
@@ -833,7 +923,7 @@ function renderPreview() {
 
   const docAlamatTempat = document.getElementById('docAlamatTempat');
   if (docAlamatTempat) {
-    if (letter.isSpecificTempat && dOpt.showAlamat && letter.alamatPkl) {
+    if (!isKeterangan && letter.isSpecificTempat && dOpt.showAlamat && letter.alamatPkl) {
       docAlamatTempat.textContent = letter.alamatPkl;
       docAlamatTempat.style.display = 'block';
     } else {
@@ -849,6 +939,15 @@ function renderPreview() {
   }
 
   // 5. Tanggal Surat & Tanda Tangan
+  const docTitimangsaHeader = document.getElementById('docTitimangsaHeader');
+  if (docTitimangsaHeader) {
+    if (isKeterangan) {
+      docTitimangsaHeader.innerHTML = `<div>Ditetapkan di Klungkung</div><div>Pada Tanggal <span id="docTglSurat">${ds.tglSurat}</span></div>`;
+    } else {
+      docTitimangsaHeader.innerHTML = `<div>Klungkung, <span id="docTglSurat">${ds.tglSurat}</span></div>`;
+    }
+  }
+
   const docTglSurat = document.getElementById('docTglSurat');
   if (docTglSurat) docTglSurat.textContent = ds.tglSurat;
 
@@ -860,9 +959,18 @@ function renderPreview() {
     docTtdArea.innerHTML = getTtdHtml(ds, dOpt);
   }
 
-  // 6. Lampiran 2 Tabel Siswa
+  // 6. Lampiran 2 Tabel Siswa (Disembunyikan otomatis jika Surat Keterangan agar tepat 1 halaman sesuai Word)
+  const pageLampiran = document.getElementById('pageLampiran');
+  const pageDividers = document.querySelectorAll('.page-break-divider');
+  if (pageLampiran) {
+    pageLampiran.style.display = isKeterangan ? 'none' : 'block';
+  }
+  pageDividers.forEach(div => {
+    div.style.display = isKeterangan ? 'none' : 'block';
+  });
+
   const tbody = document.getElementById('docTbodySiswa');
-  if (tbody) {
+  if (tbody && !isKeterangan) {
     tbody.innerHTML = '';
     if (letter.students.length === 0) {
       const tr = document.createElement('tr');
@@ -1707,11 +1815,15 @@ async function downloadDocxClient() {
     const ds = AppState.docSettings;
     const dOpt = AppState.displayOptions;
     const activeTpl = getActiveTemplate();
+    const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
+                         (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
 
     // 1. Coba unduh via backend Python API (jika server start.bat / app.py aktif)
     let downloadedViaBackend = false;
     try {
       const payload = {
+        template_id: activeTpl.id || '',
+        doc_type: isKeterangan ? 'keterangan' : 'pengantar',
         guru_nama: letter.guruNama || '',
         guru_nip: letter.guruNip || '',
         tempat_pkl: (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl : '',
@@ -1741,9 +1853,17 @@ async function downloadDocxClient() {
 
       if (res.ok) {
         const blob = await res.blob();
-        const safeName = (letter.guruNama || 'Surat').replace(/[^a-zA-Z0-9]/g, '_');
-        const safeTempat = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) : 'Semua_Lokasi';
-        const fileName = `Surat_Pengantar_PKL_${safeName}_${safeTempat}.docx`;
+        let fileName;
+        if (isKeterangan) {
+          const firstStudent = (letter.students && letter.students.length > 0) ? letter.students[0] : null;
+          const sName = firstStudent ? (firstStudent.siswa || firstStudent.nama || 'Siswa') : 'Siswa';
+          const safeSiswa = sName.replace(/[^a-zA-Z0-9]/g, '_');
+          fileName = `Surat_Keterangan_PKL_${safeSiswa}.docx`;
+        } else {
+          const safeName = (letter.guruNama || 'Surat').replace(/[^a-zA-Z0-9]/g, '_');
+          const safeTempat = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) : 'Semua_Lokasi';
+          fileName = `Surat_Pengantar_PKL_${safeName}_${safeTempat}.docx`;
+        }
 
         if (typeof saveAs !== 'undefined') {
           saveAs(blob, fileName);
@@ -1952,9 +2072,17 @@ async function downloadDocxClient() {
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       });
 
-      const safeName = (letter.guruNama || 'Surat').replace(/[^a-zA-Z0-9]/g, '_');
-      const safeTempat = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) : 'Semua_Lokasi';
-      const fileName = `Surat_Pengantar_PKL_${safeName}_${safeTempat}.docx`;
+      let fileName;
+      if (isKeterangan) {
+        const firstStudent = (letter.students && letter.students.length > 0) ? letter.students[0] : null;
+        const sName = firstStudent ? (firstStudent.siswa || firstStudent.nama || 'Siswa') : 'Siswa';
+        const safeSiswa = sName.replace(/[^a-zA-Z0-9]/g, '_');
+        fileName = `Surat_Keterangan_PKL_${safeSiswa}.docx`;
+      } else {
+        const safeName = (letter.guruNama || 'Surat').replace(/[^a-zA-Z0-9]/g, '_');
+        const safeTempat = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) : 'Semua_Lokasi';
+        fileName = `Surat_Pengantar_PKL_${safeName}_${safeTempat}.docx`;
+      }
 
       if (typeof saveAs !== 'undefined') {
         saveAs(blob, fileName);
@@ -2404,6 +2532,29 @@ async function checkAndSyncDatabaseBackend() {
         updateDatabaseStatusBadge();
         console.log(`[DB] Berhasil memuat ${data.length} data siswa dari database SQLite (database/surat_pkl.db).`);
       }
+    }
+
+    // Sinkronkan daftar template dari backend SQLite
+    try {
+      const tplRes = await fetch('/api/templates', { cache: 'no-store' });
+      if (tplRes.ok) {
+        const tpls = await tplRes.json();
+        if (Array.isArray(tpls) && tpls.length > 0) {
+          tpls.forEach(serverTpl => {
+            const existingIdx = AppState.templates.findIndex(t => t.id === serverTpl.id);
+            if (existingIdx !== -1) {
+              AppState.templates[existingIdx] = serverTpl;
+            } else {
+              AppState.templates.push(serverTpl);
+            }
+          });
+          saveTemplatesToStorage();
+          populateSidebarTemplateSelect();
+          renderTemplateTable();
+        }
+      }
+    } catch (tplErr) {
+      console.warn('[DB] Gagal sinkron template dari backend:', tplErr);
     }
   } catch (err) {
     AppState.isDatabaseConnected = false;

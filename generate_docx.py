@@ -686,6 +686,167 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
         mem_buffer.seek(0)
         return mem_buffer.getvalue()
 
+def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", siswa_nis="-", siswa_kelas="",
+                             tempat_pkl="", no_surat="B.10.429.1/8464/SMKN1KLK/DIKPORA", tgl_surat="07 Oktober 2026",
+                             nama_sekolah="SMKN 1 FYJ Channel", kepsek_nama="Sri Rejeki, S.Pd., M.Pd.",
+                             kepsek_pangkat="Pembina (IV/a)", kepsek_nip="19770309 200903 2 010",
+                             show_kop=True, show_ttd=True, paper_size="f4"):
+    """Menghasilkan berkas Word DOCX Surat Keterangan PKL sesuai Contoh Surat Keterangan PKL.docx."""
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        template_path,
+        os.path.join(base_dir, 'assets', 'templates', 'template_keterangan.docx'),
+        os.path.join(base_dir, 'Contoh Surat Keterangan PKL.docx'),
+        'assets/templates/template_keterangan.docx',
+        'Contoh Surat Keterangan PKL.docx'
+    ]
+    actual_tpl = None
+    for c in candidates:
+        if c and os.path.exists(c):
+            actual_tpl = c
+            break
+
+    if not actual_tpl:
+        raise FileNotFoundError("Template Surat Keterangan PKL tidak ditemukan.")
+
+    with zipfile.ZipFile(actual_tpl, 'r') as zin:
+        xml_content = zin.read('word/document.xml')
+        all_files = {name: zin.read(name) for name in zin.namelist()}
+
+    root = ET.fromstring(xml_content)
+    body = root.find(f'{{{NS["w"]}}}body')
+
+    # Update paper size
+    for sectPr in root.iter(f'{{{NS["w"]}}}sectPr'):
+        pgSz = sectPr.find(f'{{{NS["w"]}}}pgSz')
+        if pgSz is not None:
+            if paper_size == 'a4':
+                pgSz.set(f'{{{NS["w"]}}}w', '11906')
+                pgSz.set(f'{{{NS["w"]}}}h', '16838')
+            else:
+                pgSz.set(f'{{{NS["w"]}}}w', '12189')
+                pgSz.set(f'{{{NS["w"]}}}h', '18709')
+
+    # Check Kop visibility
+    if not show_kop and body is not None:
+        p_list = body.findall(f'{{{NS["w"]}}}p')
+        if p_list and p_list[0].findall(f'.//{{{NS["w"]}}}drawing'):
+            body.remove(p_list[0])
+
+    # Check TTD visibility
+    if not show_ttd and body is not None:
+        for p in list(body.findall(f'{{{NS["w"]}}}p')):
+            if p.findall(f'.//{{{NS["w"]}}}drawing'):
+                body.remove(p)
+
+    # Inject dynamic custom Kop image if available
+    try:
+        from database import db_manager
+        db_settings = db_manager.get_all_settings()
+        kop_url = db_settings.get('kopUrl', '')
+        if kop_url and 'word/media/image1.png' in all_files:
+            import base64
+            if kop_url.startswith('data:image/'):
+                all_files['word/media/image1.png'] = base64.b64decode(kop_url.split(',', 1)[1])
+            elif os.path.exists(os.path.join(base_dir, kop_url)):
+                with open(os.path.join(base_dir, kop_url), 'rb') as kf:
+                    all_files['word/media/image1.png'] = kf.read()
+    except Exception as img_err:
+        print(f"[WARN] Gagal menyisipkan kustom kop: {img_err}")
+
+    # Process paragraphs
+    for p in root.findall('.//w:p', NS):
+        text = ''.join(p.itertext()).strip()
+
+        # Nomor Surat
+        if 'B.10.429.1' in text or 'B.10.000' in text or ('Nomor:' in text and 'SURAT' not in text):
+            for t in p.findall('.//w:t', NS):
+                if 'B.10.429.1/8464/SMKN1KLK/DIKPORA' in (t.text or ''):
+                    t.text = t.text.replace('B.10.429.1/8464/SMKN1KLK/DIKPORA', no_surat)
+                elif 'B.10.000/9546/SMKN1KLK/DIKPORA' in (t.text or ''):
+                    t.text = t.text.replace('B.10.000/9546/SMKN1KLK/DIKPORA', no_surat)
+
+        # Identitas Kepala Sekolah
+        if 'Sri Rejeki' in text and kepsek_nama:
+            for t in p.findall('.//w:t', NS):
+                if 'Sri Rejeki' in (t.text or ''):
+                    t.text = kepsek_nama
+        if '19770309 200903 2 010' in text and kepsek_nip:
+            for t in p.findall('.//w:t', NS):
+                if '19770309 200903 2 010' in (t.text or ''):
+                    t.text = kepsek_nip
+        if ('Pembina, IV.a' in text or 'Pembina (IV/a)' in text) and kepsek_pangkat:
+            for t in p.findall('.//w:t', NS):
+                if 'Pembina, IV.a' in (t.text or '') or 'Pembina (IV/a)' in (t.text or ''):
+                    t.text = f':  {kepsek_pangkat}'
+        if 'SMK Negeri 1 Klungkung' in text and nama_sekolah:
+            for t in p.findall('.//w:t', NS):
+                if 'SMK Negeri 1 Klungkung' in (t.text or ''):
+                    t.text = t.text.replace('SMK Negeri 1 Klungkung', nama_sekolah)
+
+        # Identitas Siswa
+        if text.startswith('Nama:') and 'Sri' not in text and siswa_nama:
+            r = ET.SubElement(p, f'{{{NS["w"]}}}r')
+            rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')
+            rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
+            rf.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
+            b = ET.SubElement(rPr, f'{{{NS["w"]}}}b')
+            sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
+            sz.set(f'{{{NS["w"]}}}val', '24')
+            t = ET.SubElement(r, f'{{{NS["w"]}}}t')
+            t.text = f' {siswa_nama}'
+
+        if text.startswith('NIS:') and siswa_nis:
+            r = ET.SubElement(p, f'{{{NS["w"]}}}r')
+            rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')
+            rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
+            rf.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
+            sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
+            sz.set(f'{{{NS["w"]}}}val', '24')
+            t = ET.SubElement(r, f'{{{NS["w"]}}}t')
+            t.text = f' {siswa_nis}'
+
+        if text.startswith('Jurusan:') and siswa_kelas:
+            r = ET.SubElement(p, f'{{{NS["w"]}}}r')
+            rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')
+            rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
+            rf.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
+            sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
+            sz.set(f'{{{NS["w"]}}}val', '24')
+            t = ET.SubElement(r, f'{{{NS["w"]}}}t')
+            t.text = f' {siswa_kelas}'
+
+        # Tempat PKL
+        if 'Marvella' in text and tempat_pkl:
+            for t in p.findall('.//w:t', NS):
+                if 'Marvella' in (t.text or ''):
+                    t.text = t.text.replace('Marvella', tempat_pkl)
+
+        # Tanggal Surat
+        if 'Pada Tanggal' in text and tgl_surat:
+            for t in p.findall('.//w:t', NS):
+                if 'Oktober' in (t.text or '') or '202' in (t.text or ''):
+                    t.text = ''
+            t0 = p.find('.//w:t', NS)
+            if t0 is not None:
+                t0.text = f'Pada Tanggal {tgl_surat}'
+
+    all_files['word/document.xml'] = ET.tostring(root, encoding='utf-8')
+
+    out_buffer = io.BytesIO()
+    with zipfile.ZipFile(out_buffer, 'w', zipfile.ZIP_DEFLATED) as zout:
+        for name, data in all_files.items():
+            zout.writestr(name, data)
+
+    file_bytes = out_buffer.getvalue()
+
+    if out_path:
+        with open(out_path, 'wb') as f:
+            f.write(file_bytes)
+        print(f"[OK] Surat Keterangan PKL berhasil dibuat: {out_path}")
+
+    return file_bytes
+
 def main():
     parser = argparse.ArgumentParser(description="Generator Surat Pengantar PKL SMKN 1 FYJ Channel")
     parser.add_argument('--template', default='template_clean.docx', help='Path ke file template Word')
