@@ -152,7 +152,7 @@ const DEFAULT_TEMPLATES = [
   },
   {
     id: 'tpl_surat_keterangan_pkl',
-    name: 'Surat Keterangan PKL (Contoh Surat Keterangan PKL.docx)',
+    name: 'Surat Keterangan PKL',
     isDefault: false,
     status: 'active',
     createdAt: '2026-11-04',
@@ -507,7 +507,13 @@ function loadStoredTemplates() {
     if (savedTemplates) {
       AppState.templates = JSON.parse(savedTemplates);
       // Sinkronkan template bawaan baru jika belum ada di cache browser pengguna
-      // Sinkronkan selalu template keterangan bawaan jika masih versi lama
+      // Sinkronkan selalu nama & isi template keterangan bawaan ke versi terbaru
+      AppState.templates.forEach(t => {
+        if (t.id === 'tpl_surat_keterangan_pkl' || t.name === 'Surat Keterangan PKL (Contoh Surat Keterangan PKL.docx)') {
+          t.name = 'Surat Keterangan PKL';
+          needsSave = true;
+        }
+      });
       const ketTpl = AppState.templates.find(t => t.id === 'tpl_surat_keterangan_pkl');
       const defKet = DEFAULT_TEMPLATES.find(t => t.id === 'tpl_surat_keterangan_pkl');
       if (ketTpl && defKet && (ketTpl.htmlContent.includes('{siswaKelas} / {siswaJurusan}') || ketTpl.htmlContent.includes('Jurusan</td>\n    <td style="vertical-align: top;">:</td>\n    <td style="vertical-align: top;">{siswaKelas}</td>'))) {

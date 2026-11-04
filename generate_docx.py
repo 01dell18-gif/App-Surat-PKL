@@ -725,9 +725,8 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
         template_path,
         os.path.join(base_dir, 'assets', 'templates', 'template_keterangan_clean.docx'),
         os.path.join(base_dir, 'assets', 'templates', 'template_keterangan.docx'),
-        os.path.join(base_dir, 'Contoh Surat Keterangan PKL.docx'),
-        'assets/templates/template_keterangan.docx',
-        'Contoh Surat Keterangan PKL.docx'
+        'assets/templates/template_keterangan_clean.docx',
+        'assets/templates/template_keterangan.docx'
     ]
     actual_tpl = None
     for c in candidates:

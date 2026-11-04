@@ -190,28 +190,6 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
             return
 
-        if path == '/api/db/import':
-            try:
-                import base64
-                req_data = json.loads(body.decode('utf-8'))
-                filename = req_data.get('filename', '')
-                file_b64 = req_data.get('data', '')
-                if ',' in file_b64:
-                    file_b64 = file_b64.split(',', 1)[1]
-                file_bytes = base64.b64decode(file_b64)
-
-                result = db_manager.restore_database_from_file(file_bytes, filename)
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json; charset=utf-8')
-                self.end_headers()
-                self.wfile.write(json.dumps(result, ensure_ascii=False).encode('utf-8'))
-            except Exception as e:
-                self.send_response(500)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
-            return
-
         if path == '/api/siswa':
             try:
                 student_data = json.loads(body.decode('utf-8'))
@@ -664,33 +642,54 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
         self.end_headers()
 
 def run_server(port=PORT):
-    server_address = ('', port)
-    try:
-        httpd = HTTPServer(server_address, PKLRequestHandler)
-    except OSError:
-        port = port + 1
-        server_address = ('', port)
-        httpd = HTTPServer(server_address, PKLRequestHandler)
+    httpd = None
+    actual_port = port
+    # Mencari port yang tersedia mulai dari port yang diminta
+    for p in range(port, port + 30):
+        try:
+            server_address = ('', p)
+            httpd = HTTPServer(server_address, PKLRequestHandler)
+            actual_port = p
+            break
+        except OSError:
+            continue
 
-    url = f"http://localhost:{port}"
-    print(f"=" * 60)
-    print(f" Aplikasi Surat Pengantar PKL - SMKN 1 FYJ Channel")
-    print(f" Server berjalan di: {url}")
-    print(f" Tekan Ctrl+C untuk menghentikan server.")
-    print(f"=" * 60)
+    if not httpd:
+        raise RuntimeError(f"Tidak dapat mengikat port pada rentang {port} - {port + 30}. Harap tutup aplikasi yang menggunakan port tersebut.")
+
+    url = f"http://localhost:{actual_port}"
+    print("=" * 64)
+    print("    APLIKASI SURAT PENGANTAR PKL - SMKN 1 FYJ CHANNEL")
+    print(f"    Server Berjalan di : {url}")
+    print("    Database SQLite    : database/surat_pkl.db")
+    print("    Status Koneksi     : AKTIF & SIAP DIGUNAKAN")
+    print("=" * 64)
+    print(" [INFO] Peramban web akan terbuka secara otomatis.")
+    print(" [INFO] Jangan tutup jendela command prompt ini selama menggunakan web.")
+    print(" [INFO] Tekan Ctrl + C untuk menghentikan server.")
+    print("=" * 64)
     
     try:
         webbrowser.open(url)
-    except:
+    except Exception:
         pass
         
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nServer dimatikan.")
+        print("\n[OK] Server dihentikan oleh pengguna.")
         httpd.server_close()
 
 if __name__ == '__main__':
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else PORT
-    run_server(port)
+    try:
+        port = int(sys.argv[1]) if len(sys.argv) > 1 else PORT
+        run_server(port)
+    except Exception as err:
+        print(f"\n[ERROR FATAL] Terjadi masalah saat menjalankan server: {err}")
+        import traceback
+        traceback.print_exc()
+        try:
+            input("\nTekan tombol Enter untuk menutup jendela...")
+        except Exception:
+            pass
 
