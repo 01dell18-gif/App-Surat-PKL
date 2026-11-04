@@ -514,7 +514,8 @@ function loadStoredTemplates() {
       if (ketTpl && defKet && (
         ketTpl.htmlContent.includes('{siswaKelas} / {siswaJurusan}') || 
         ketTpl.htmlContent.includes('{siswaNisn}') ||
-        !ketTpl.htmlContent.includes('{siswaNisNisn}')
+        !ketTpl.htmlContent.includes('{siswaNisNisn}') ||
+        (ketTpl.htmlContent.match(/{siswaNama}/g) || []).length > 1
       )) {
         ketTpl.htmlContent = defKet.htmlContent;
         needsSave = true;
@@ -3240,6 +3241,11 @@ async function checkAndSyncDatabaseBackend() {
         const tpls = await tplRes.json();
         if (Array.isArray(tpls) && tpls.length > 0) {
           tpls.forEach(serverTpl => {
+            // Bersihkan jika ada template bawaan yang memiliki duplikasi baris Nama
+            if (serverTpl.id === 'tpl_surat_keterangan_pkl') {
+              const defKet = DEFAULT_TEMPLATES.find(t => t.id === 'tpl_surat_keterangan_pkl');
+              if (defKet) serverTpl.htmlContent = defKet.htmlContent;
+            }
             const existingIdx = AppState.templates.findIndex(t => t.id === serverTpl.id);
             if (existingIdx !== -1) {
               AppState.templates[existingIdx] = serverTpl;
