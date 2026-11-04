@@ -160,7 +160,10 @@ def init_database():
         guru VARCHAR(255) NOT NULL,
         nip VARCHAR(50) DEFAULT '',
         siswa VARCHAR(255) NOT NULL,
+        nis VARCHAR(50) DEFAULT '',
+        nisn VARCHAR(50) DEFAULT '',
         kelas VARCHAR(50) NOT NULL,
+        jurusan VARCHAR(100) DEFAULT '',
         tempat VARCHAR(255) NOT NULL,
         alamat TEXT DEFAULT '',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -215,14 +218,17 @@ def init_database():
     # Insert Data Siswa
     for r in records:
         cur.execute("""
-        INSERT INTO siswa_pkl (no_urut, guru, nip, siswa, kelas, tempat, alamat)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO siswa_pkl (no_urut, guru, nip, siswa, nis, nisn, kelas, jurusan, tempat, alamat)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             r.get('no', 0),
             r.get('guru', ''),
             r.get('nip', ''),
             r.get('siswa', ''),
+            r.get('nis', ''),
+            r.get('nisn', ''),
             r.get('kelas', ''),
+            r.get('jurusan', ''),
             r.get('tempat', ''),
             r.get('alamat', '')
         ))
@@ -284,7 +290,10 @@ def init_database():
   `guru` VARCHAR(255) NOT NULL,
   `nip` VARCHAR(50) DEFAULT '',
   `siswa` VARCHAR(255) NOT NULL,
+  `nis` VARCHAR(50) DEFAULT '',
+  `nisn` VARCHAR(50) DEFAULT '',
   `kelas` VARCHAR(50) NOT NULL,
+  `jurusan` VARCHAR(100) DEFAULT '',
   `tempat` VARCHAR(255) NOT NULL,
   `alamat` TEXT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -306,16 +315,19 @@ def init_database():
             v_guru = escape_sql(r.get('guru', ''))
             v_nip = escape_sql(r.get('nip', ''))
             v_siswa = escape_sql(r.get('siswa', ''))
+            v_nis = escape_sql(r.get('nis', ''))
+            v_nisn = escape_sql(r.get('nisn', ''))
             v_kelas = escape_sql(r.get('kelas', ''))
+            v_jurusan = escape_sql(r.get('jurusan', ''))
             v_tempat = escape_sql(r.get('tempat', ''))
             v_alamat = escape_sql(r.get('alamat', ''))
-            val_rows.append(f"({v_no}, {v_guru}, {v_nip}, {v_siswa}, {v_kelas}, {v_tempat}, {v_alamat})")
+            val_rows.append(f"({v_no}, {v_guru}, {v_nip}, {v_siswa}, {v_nis}, {v_nisn}, {v_kelas}, {v_jurusan}, {v_tempat}, {v_alamat})")
         
         # Batch insert by 50 rows
         batch_size = 50
         for i in range(0, len(val_rows), batch_size):
             chunk = val_rows[i:i+batch_size]
-            sql_lines.append("INSERT INTO `siswa_pkl` (`no_urut`, `guru`, `nip`, `siswa`, `kelas`, `tempat`, `alamat`) VALUES\n" + ",\n".join(chunk) + ";")
+            sql_lines.append("INSERT INTO `siswa_pkl` (`no_urut`, `guru`, `nip`, `siswa`, `nis`, `nisn`, `kelas`, `jurusan`, `tempat`, `alamat`) VALUES\n" + ",\n".join(chunk) + ";")
     sql_lines.append("UNLOCK TABLES;\n")
 
     # Table: pengaturan

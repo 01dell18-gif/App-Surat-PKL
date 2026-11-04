@@ -474,8 +474,10 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 if is_keterangan:
                     first_student = students[0] if (students and len(students) > 0) else {}
                     siswa_nama = first_student.get('siswa') or first_student.get('nama') or req_data.get('siswa_nama', '')
-                    siswa_nis = first_student.get('nis', '-')
-                    siswa_kelas = first_student.get('kelas', '')
+                    siswa_nis = first_student.get('nis') or req_data.get('siswa_nis', '-')
+                    siswa_nisn = first_student.get('nisn') or req_data.get('siswa_nisn', '-')
+                    siswa_kelas = first_student.get('kelas') or req_data.get('siswa_kelas', '')
+                    siswa_jurusan = first_student.get('jurusan') or req_data.get('siswa_jurusan', '')
                     tempat_pkl_ket = tempat_pkl or first_student.get('tempat', 'Marvella')
 
                     file_bytes = generate_keterangan_docx(
@@ -483,7 +485,9 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                         out_path=None,
                         siswa_nama=siswa_nama,
                         siswa_nis=siswa_nis,
+                        siswa_nisn=siswa_nisn,
                         siswa_kelas=siswa_kelas,
+                        siswa_jurusan=siswa_jurusan,
                         tempat_pkl=tempat_pkl_ket,
                         no_surat=no_surat,
                         tgl_surat=tgl_surat,

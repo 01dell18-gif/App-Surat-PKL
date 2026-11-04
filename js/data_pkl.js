@@ -1,5 +1,5 @@
-// Initial PKL Data extracted from Data_Pembagian_Tugas_PKL.xlsx
-const DEFAULT_PKL_DATA = [
+// Initial PKL data records with NIS, NISN, Jurusan
+const INITIAL_PKL_RECORDS = [
   {
     "no": 1,
     "guru": "Ida Ayu Agung Endrayani, S.Pd.",
@@ -7,7 +7,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Sri Damayanti",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / SEMARAPURA KLOD",
-    "alamat": "Jl. Rama Ling. Semarapura Kelod, Kel. Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Rama Ling. Semarapura Kelod, Kel. Semarapura Kelod, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 2,
@@ -16,7 +19,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Made Sari Astini",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / KUSANEGARA",
-    "alamat": "Jl. Kusanegara Banjar Dinas Bandung, Kel. Gunaksa, Kec. Dawan, Kab. Klungkung"
+    "alamat": "Jl. Kusanegara Banjar Dinas Bandung, Kel. Gunaksa, Kec. Dawan, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 3,
@@ -25,7 +31,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Nyoman Manik Dalem Maharani",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / KUSANEGARA",
-    "alamat": "Jl. Kusanegara Banjar Dinas Bandung, Kel. Gunaksa, Kec. Dawan, Kab. Klungkung"
+    "alamat": "Jl. Kusanegara Banjar Dinas Bandung, Kel. Gunaksa, Kec. Dawan, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 4,
@@ -34,7 +43,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Putu Purnamawati",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / SEMARAPURA KLOD",
-    "alamat": "Jl. Rama Ling. Semarapura Kelod, Kel. Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Rama Ling. Semarapura Kelod, Kel. Semarapura Kelod, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 5,
@@ -43,7 +55,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Ari Widnyana",
     "kelas": "XII TSM",
     "tempat": "Gemilang Motor",
-    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 6,
@@ -52,7 +67,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Kadek Angga Trisnawan",
     "kelas": "XII TSM",
     "tempat": "Gemilang Motor",
-    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 7,
@@ -61,7 +79,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Made Adi Mahardika",
     "kelas": "XII TSM",
     "tempat": "Gemilang Motor",
-    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 8,
@@ -70,7 +91,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ketut Ananta Wardana",
     "kelas": "XII AK",
     "tempat": "LPD Desa Pekraman Gelgel",
-    "alamat": "Jl. Watu Renggong, Gelgel, Kec. Klungkung, Kab Klungkung"
+    "alamat": "Jl. Watu Renggong, Gelgel, Kec. Klungkung, Kab Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 9,
@@ -79,7 +103,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Luh Nyoman Tri Githa Pramesti",
     "kelas": "XII AK",
     "tempat": "LPD Desa Pekraman Gelgel",
-    "alamat": "Jl. Watu Renggong, Gelgel, kec. Klungkung, Kab Klungkung"
+    "alamat": "Jl. Watu Renggong, Gelgel, kec. Klungkung, Kab Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 10,
@@ -88,7 +115,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Anisa Safila",
     "kelas": "XII BD 2",
     "tempat": "Toko Oneska Digital Store",
-    "alamat": "Jl. Subali II, Br. Siku, Desa Kamasan, Klungkung"
+    "alamat": "Jl. Subali II, Br. Siku, Desa Kamasan, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 11,
@@ -97,7 +127,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Luh Made Purnama Dewi",
     "kelas": "XII BD 2",
     "tempat": "Toko Indrajaya",
-    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung"
+    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 12,
@@ -106,7 +139,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Ayu Septianingsih",
     "kelas": "XII BD 2",
     "tempat": "Toko Indrajaya",
-    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung"
+    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 13,
@@ -115,7 +151,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Komang Ayu Seri Musthikarani",
     "kelas": "XII MP 1",
     "tempat": "PT. PLN (PERSERO) ULP KLUNGKUNG",
-    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG"
+    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 14,
@@ -124,7 +163,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Made Nitarianti",
     "kelas": "XII MP 1",
     "tempat": "PT. PLN (PERSERO) ULP KLUNGKUNG",
-    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG"
+    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 15,
@@ -133,7 +175,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Ika Pradevi",
     "kelas": "XII MP 1",
     "tempat": "PT. PLN (PERSERO) ULP KLUNGKUNG",
-    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG"
+    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 16,
@@ -142,7 +187,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Anggun Putri Pramesti",
     "kelas": "XII AK",
     "tempat": "PT. Pegadaian Persero Cabang Klungkung",
-    "alamat": "Jl. Gn. Batukaru No.9, Semarapura Kelod Kangin, Kec. Klungkung"
+    "alamat": "Jl. Gn. Batukaru No.9, Semarapura Kelod Kangin, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 17,
@@ -151,7 +199,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Ketut Catur Rahayu",
     "kelas": "XII AK",
     "tempat": "PT. Pegadaian Persero Cabang Klungkung",
-    "alamat": "Jl. Gn. Batukaru No.9, Semarapura Kelod Kangin, Kec. Klungkung"
+    "alamat": "Jl. Gn. Batukaru No.9, Semarapura Kelod Kangin, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 18,
@@ -160,7 +211,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Anggik Deswandari",
     "kelas": "XII AK",
     "tempat": "PT. Pegadaian Persero Cabang Klungkung",
-    "alamat": "Jl. Gn. Batukaru No.9, Semarapura Kelod Kangin, Kec. Klungkung"
+    "alamat": "Jl. Gn. Batukaru No.9, Semarapura Kelod Kangin, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 19,
@@ -169,7 +223,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Made Ari Diana Sari",
     "kelas": "XII LPB",
     "tempat": "PT. BRI Persero, Tbk. Cabang Klungkung",
-    "alamat": "Jl. Gunung Batukaru, No. 7, Semarapura Kelod Kangin, Kec. Klungkung"
+    "alamat": "Jl. Gunung Batukaru, No. 7, Semarapura Kelod Kangin, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 20,
@@ -178,7 +235,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Komang Sucitra",
     "kelas": "XII BD 2",
     "tempat": "UD Merta Sari",
-    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung"
+    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 21,
@@ -187,7 +247,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Made Windya Arsana",
     "kelas": "XII BD 2",
     "tempat": "UD Merta Sari",
-    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung"
+    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 22,
@@ -196,7 +259,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Ayu Dwipayani",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / BANJARANGKAN",
-    "alamat": "Jl. Ida Bagus Puja Takmung, Kec. Bajarangkan Klungkung"
+    "alamat": "Jl. Ida Bagus Puja Takmung, Kec. Bajarangkan Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 23,
@@ -205,7 +271,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Widiantari",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / GAJAH MADA KLUNGKUNG",
-    "alamat": "Jl. Gajah Mada Nomor 35B, Lingkungan Bendul, Kel. Semarapura Tengah,.Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Gajah Mada Nomor 35B, Lingkungan Bendul, Kel. Semarapura Tengah,.Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 24,
@@ -214,7 +283,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Sariasih",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / GAJAH MADA KLUNGKUNG",
-    "alamat": "Jl. Gajah Mada Nomor 35B, Lingkungan Bendul, Kel. Semarapura Tengah,.Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Gajah Mada Nomor 35B, Lingkungan Bendul, Kel. Semarapura Tengah,.Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 25,
@@ -223,7 +295,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Sutawan",
     "kelas": "XII BD 2",
     "tempat": "Toko Indrajaya",
-    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung"
+    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 26,
@@ -232,7 +307,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Galang Damai Dinata",
     "kelas": "XII BD 2",
     "tempat": "Toko Indrajaya",
-    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung"
+    "alamat": "Jl. Raya Gelgel, Desa Tojan, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 27,
@@ -241,7 +319,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Komang Pebri Andika Saputra",
     "kelas": "XII TSM",
     "tempat": "PT. Nusantara Surya Sakti (NSS)",
-    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 28,
@@ -250,7 +331,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Anak Agung Istri Prima Pebrianti",
     "kelas": "XII LPB",
     "tempat": "PT. BPR Tridarma Putri Klungkung",
-    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec.Klungkung"
+    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 29,
@@ -259,7 +343,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Gede Risky Adi Permana",
     "kelas": "XII LPB",
     "tempat": "Tefa Bank Mini SMK N 1 Klungkung",
-    "alamat": "Jl Subali II Br Siku Desa Kamasan Klungkung"
+    "alamat": "Jl Subali II Br Siku Desa Kamasan Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 30,
@@ -268,7 +355,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gusti Made Diah Purnama Sari",
     "kelas": "XII LPB",
     "tempat": "PT. BPR Tridarma Putri Klungkung",
-    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec.Klungkung"
+    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 31,
@@ -277,7 +367,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Resa Pradnya Andika",
     "kelas": "XII TSM",
     "tempat": "Ahas Cemerlang Motor",
-    "alamat": "Jl Flamboyan 66 Klungkung"
+    "alamat": "Jl Flamboyan 66 Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 32,
@@ -286,7 +379,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gusti Ngurah Sathya Dananjaya",
     "kelas": "XII TSM",
     "tempat": "SS 21 S Honda Motor",
-    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 33,
@@ -295,7 +391,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Kadek Kusuma Cahyadi",
     "kelas": "XII TSM",
     "tempat": "SS 21 S Honda Motor",
-    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 34,
@@ -304,7 +403,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Ketut Catur Yoga Saputra",
     "kelas": "XII TSM",
     "tempat": "SS 21 S Honda Motor",
-    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 35,
@@ -313,7 +415,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Putu Pande Sedaya Tana",
     "kelas": "XII TSM",
     "tempat": "SS 21 S Honda Motor",
-    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 36,
@@ -322,7 +427,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Wayan Surya Nanta",
     "kelas": "XII TSM",
     "tempat": "Ahas Cemerlang Motor",
-    "alamat": "Jl Flamboyan 66 Klungkung"
+    "alamat": "Jl Flamboyan 66 Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 37,
@@ -331,7 +439,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Muhammad Azizul Hakim",
     "kelas": "XII TSM",
     "tempat": "SS 21 S Honda Motor",
-    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 38,
@@ -340,7 +451,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Yusuf Ardiansyah",
     "kelas": "XII TSM",
     "tempat": "SS 21 S Honda Motor",
-    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 39,
@@ -349,7 +463,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Roberto Christiano",
     "kelas": "XII TSM",
     "tempat": "SS 21 S Honda Motor",
-    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Untung Suropati No.45, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 40,
@@ -358,7 +475,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Dian Cahyani",
     "kelas": "XII DKV",
     "tempat": "Mandala Gold",
-    "alamat": "Jl. Kecubung, Semarapura Kelod, Kab. Klungkung"
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 41,
@@ -367,7 +487,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Ayu Intan Pratiwi",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / LEBIH",
-    "alamat": "Jl. By Pass IB Mantra Kel. Lebih Beten Klod, Kec. Lebih, Kab. Gianyar"
+    "alamat": "Jl. By Pass IB Mantra Kel. Lebih Beten Klod, Kec. Lebih, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 42,
@@ -376,7 +499,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Purnama Sari",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / LEBIH",
-    "alamat": "Jl. By Pass IB Mantra Kel. Lebih Beten Klod, Kec. Lebih, Kab. Gianyar"
+    "alamat": "Jl. By Pass IB Mantra Kel. Lebih Beten Klod, Kec. Lebih, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 43,
@@ -385,7 +511,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Putri Jayanti",
     "kelas": "XII BD 2",
     "tempat": "Koperasi Nirmala",
-    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung"
+    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 44,
@@ -394,7 +523,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Nengah Febriani",
     "kelas": "XII BD 2",
     "tempat": "Koperasi Nirmala",
-    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung"
+    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 45,
@@ -403,7 +535,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Redno Fedrianzah",
     "kelas": "XII TSM",
     "tempat": "PT. Nusantara Surya Sakti (NSS)",
-    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 46,
@@ -412,7 +547,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Novi Armatiana",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Lestari",
-    "alamat": "Jln. Flamboyan No.56, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung"
+    "alamat": "Jln. Flamboyan No.56, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 47,
@@ -421,7 +559,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Indah Muliarni",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Visual Farma II",
-    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung"
+    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 48,
@@ -430,7 +571,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Kadek Gita Anindita Kemulan",
     "kelas": "XII DKV",
     "tempat": "E Sanctuary Ubud",
-    "alamat": "Jl. Raya Br. Tunon, Singakerta, Kecamatan Ubud, Kab. Gianyar, Bali"
+    "alamat": "Jl. Raya Br. Tunon, Singakerta, Kecamatan Ubud, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 49,
@@ -439,7 +583,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Ita Sutriani",
     "kelas": "XII DKV",
     "tempat": "E Sanctuary Ubud",
-    "alamat": "Jl. Raya Br. Tunon, Singakerta, Kecamatan Ubud, Kab. Gianyar, Bali"
+    "alamat": "Jl. Raya Br. Tunon, Singakerta, Kecamatan Ubud, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 50,
@@ -448,7 +595,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Arkananta Maulana Putra Apriliansyah",
     "kelas": "XII TSM",
     "tempat": "Karisma Motor",
-    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 51,
@@ -457,7 +607,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Kadek Ipan Junata",
     "kelas": "XII TSM",
     "tempat": "Karisma Motor",
-    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 52,
@@ -466,7 +619,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Putu Bayu Saputra",
     "kelas": "XII TSM",
     "tempat": "Karisma Motor",
-    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 53,
@@ -475,7 +631,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ida Ayu Sinta Dewi",
     "kelas": "XII LPB",
     "tempat": "PT. BPD Cabang Klungkung",
-    "alamat": "Jl. Gajah Mada, Semarapura Kelod Kangin, Kec. Klungkung"
+    "alamat": "Jl. Gajah Mada, Semarapura Kelod Kangin, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 54,
@@ -484,7 +643,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Intan Satrya Wati",
     "kelas": "XII LPB",
     "tempat": "PT. BPD Cabang Klungkung",
-    "alamat": "Jl. Gajah Mada, Semarapura Kelod Kangin, Kec. Klungkung"
+    "alamat": "Jl. Gajah Mada, Semarapura Kelod Kangin, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 55,
@@ -493,7 +655,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Desak Nyoman Widya Sari",
     "kelas": "XII MP 1",
     "tempat": "PT.SUMBER ALFARIA TRIJAYA TBK.",
-    "alamat": "Jalan. Prof Ida Bagus Mantra, Lingkungan Siut, Desa Tulikup, Gianyar"
+    "alamat": "Jalan. Prof Ida Bagus Mantra, Lingkungan Siut, Desa Tulikup, Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 56,
@@ -502,7 +667,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Rini Cahyani",
     "kelas": "XII MP 1",
     "tempat": "PT.SUMBER ALFARIA TRIJAYA TBK.",
-    "alamat": "Jalan. Prof Ida Bagus Mantra, Lingkungan Siut, Desa Tulikup, Gianyar"
+    "alamat": "Jalan. Prof Ida Bagus Mantra, Lingkungan Siut, Desa Tulikup, Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 57,
@@ -511,7 +679,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Ayu Aprilia Dewi",
     "kelas": "XII MP 2",
     "tempat": "BADAN PUSAT STATISTIK KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Gajah Mada, Akah, Kec. Klungkung, Kabupaten Klungkung, Bali 80714"
+    "alamat": "Jl. Gajah Mada, Akah, Kec. Klungkung, Kabupaten Klungkung, Bali 80714",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 58,
@@ -520,7 +691,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Listia Dewi",
     "kelas": "XII MP 2",
     "tempat": "BADAN PUSAT STATISTIK KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Gajah Mada, Akah, Kec. Klungkung, Kabupaten Klungkung, Bali 80714"
+    "alamat": "Jl. Gajah Mada, Akah, Kec. Klungkung, Kabupaten Klungkung, Bali 80714",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 59,
@@ -529,7 +703,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Triana Pusparani",
     "kelas": "XII MP 2",
     "tempat": "BADAN PUSAT STATISTIK KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Gajah Mada, Akah, Kec. Klungkung, Kabupaten Klungkung, Bali 80714"
+    "alamat": "Jl. Gajah Mada, Akah, Kec. Klungkung, Kabupaten Klungkung, Bali 80714",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 60,
@@ -538,7 +715,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Aprilia Lestari",
     "kelas": "XII MP 1",
     "tempat": "BPJS KESEHATAN KLUNGKUNG",
-    "alamat": "Jl. Gajah Mada No.55, Kec. Klungkung, Kabupaten Klungkung"
+    "alamat": "Jl. Gajah Mada No.55, Kec. Klungkung, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 61,
@@ -547,7 +727,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Sintia Wati",
     "kelas": "XII MP 1",
     "tempat": "BPJS KESEHATAN KLUNGKUNG",
-    "alamat": "Jl. Gajah Mada No.55, Kec. Klungkung, Kabupaten Klungkung"
+    "alamat": "Jl. Gajah Mada No.55, Kec. Klungkung, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 62,
@@ -556,7 +739,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ida Bagus Yuda Pratama",
     "kelas": "XII MP 2",
     "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 63,
@@ -565,7 +751,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Irsyad Adiba Hafas Zidansyah",
     "kelas": "XII MP 2",
     "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 64,
@@ -574,7 +763,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Sriyanti",
     "kelas": "XII MP 2",
     "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 65,
@@ -583,7 +775,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Sutri Prantini",
     "kelas": "XII MP 2",
     "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 66,
@@ -592,7 +787,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Dewa Ayu Meira Dianra Sari",
     "kelas": "XII AK",
     "tempat": "Koperasi Surya Artha Sedana Klungkung",
-    "alamat": "Jl. Sahadewa, Semarapura Kangin, Klungkung"
+    "alamat": "Jl. Sahadewa, Semarapura Kangin, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 67,
@@ -601,7 +799,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Ayu Krisna Candra Dewi",
     "kelas": "XII AK",
     "tempat": "Koperasi Surya Artha Sedana Klungkung",
-    "alamat": "Jl. Sahadewa, Semarapura Kangin, Klungkung"
+    "alamat": "Jl. Sahadewa, Semarapura Kangin, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 68,
@@ -610,7 +811,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Diah Darmayanti",
     "kelas": "XII AK",
     "tempat": "PT. BRI Persero, Tbk. Cabang Klungkung",
-    "alamat": "Jl. Gunung Batukaru, No. 7, Semarapura Kelod Kangin, Kec. Klungkung"
+    "alamat": "Jl. Gunung Batukaru, No. 7, Semarapura Kelod Kangin, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 69,
@@ -619,7 +823,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Wayan Chandra Rusita Devi",
     "kelas": "XII AK",
     "tempat": "Koperasi Surya Artha Sedana Klungkung",
-    "alamat": "Jl. Sahadewa, Semarapura Kangin, Klungkung"
+    "alamat": "Jl. Sahadewa, Semarapura Kangin, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 70,
@@ -628,7 +835,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gusti Ngurah Agus Januarta",
     "kelas": "XII MP 1",
     "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 71,
@@ -637,7 +847,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Nengah Septia Dewi",
     "kelas": "XII MP 1",
     "tempat": "CV. MANGGALA SURYA GEMILANG KLUNGKUNG",
-    "alamat": "Jalan Flamboyan 55X Klungkung"
+    "alamat": "Jalan Flamboyan 55X Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 72,
@@ -646,7 +859,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Eka Pramita Sari",
     "kelas": "XII MP 1",
     "tempat": "CV. MANGGALA SURYA GEMILANG KLUNGKUNG",
-    "alamat": "Jalan Flamboyan 55X Klungkung"
+    "alamat": "Jalan Flamboyan 55X Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 73,
@@ -655,7 +871,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gusti Ayu Wika Ariestari",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / SIYUT",
-    "alamat": "Jl. By Pass I.B Mantra Lingk. Siyut, Kel. Tulikup, Kec. Gianyar"
+    "alamat": "Jl. By Pass I.B Mantra Lingk. Siyut, Kel. Tulikup, Kec. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 74,
@@ -664,7 +883,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Kadek Suki Oktami",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / SIYUT",
-    "alamat": "Jl. By Pass I.B Mantra Lingk. Siyut, Kel. Tulikup, Kec. Gianyar"
+    "alamat": "Jl. By Pass I.B Mantra Lingk. Siyut, Kel. Tulikup, Kec. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 75,
@@ -673,7 +895,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Putu Agus Mahendra",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM SARI BUWANA",
-    "alamat": "Jl. By Pass Ida Bagus Mantra Banjar Rangkan, Kelurahan Ketewel, Kec. Sukawati, Kab. Gianyar"
+    "alamat": "Jl. By Pass Ida Bagus Mantra Banjar Rangkan, Kelurahan Ketewel, Kec. Sukawati, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 76,
@@ -682,7 +907,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Rizki Ananta Ramadhani",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM SARI BUWANA",
-    "alamat": "Jl. By Pass Ida Bagus Mantra Banjar Rangkan, Kelurahan Ketewel, Kec. Sukawati, Kab. Gianyar"
+    "alamat": "Jl. By Pass Ida Bagus Mantra Banjar Rangkan, Kelurahan Ketewel, Kec. Sukawati, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 77,
@@ -691,7 +919,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Pande Wayan Yonika Damayani",
     "kelas": "XII BD 2",
     "tempat": "Mini Mart El Mart",
-    "alamat": "Jl. Rama Klungkung"
+    "alamat": "Jl. Rama Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 78,
@@ -700,7 +931,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Lia Trisnayanti",
     "kelas": "XII BD 2",
     "tempat": "Mini Mart El Mart",
-    "alamat": "Jl. Rama Klungkung"
+    "alamat": "Jl. Rama Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 79,
@@ -709,7 +943,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Wayan Wira Pradnyana",
     "kelas": "XII DKV",
     "tempat": "Kenak Medika Hospital Ubud",
-    "alamat": "Mas, Kecamatan Ubud, Kabupaten Gianyar, Bali"
+    "alamat": "Mas, Kecamatan Ubud, Kabupaten Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 80,
@@ -718,7 +955,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Selpi",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM BETEN KELOD",
-    "alamat": "Jl. I.B Mantra Br. Lebih Beten Klod, Kel. Lebih, Kec.Gianyar, Kab. Gianyar"
+    "alamat": "Jl. I.B Mantra Br. Lebih Beten Klod, Kel. Lebih, Kec.Gianyar, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 81,
@@ -727,7 +967,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Sinta Purnama Yanti",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM BETEN KELOD",
-    "alamat": "Jl. I.B Mantra Br. Lebih Beten Klod, Kel. Lebih, Kec.Gianyar, Kab. Gianyar"
+    "alamat": "Jl. I.B Mantra Br. Lebih Beten Klod, Kel. Lebih, Kec.Gianyar, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 82,
@@ -736,7 +979,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Candra Wiguna",
     "kelas": "XII TSM",
     "tempat": "Karisma Motor",
-    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 83,
@@ -745,7 +991,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Aldo Valentino",
     "kelas": "XII TSM",
     "tempat": "Ahas Cemerlang Motor",
-    "alamat": "Jl Flamboyan 66 Klungkung"
+    "alamat": "Jl Flamboyan 66 Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 84,
@@ -754,7 +1003,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Kadek Angga Aditya Putra",
     "kelas": "XII TSM",
     "tempat": "Aries 1 Motor",
-    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 85,
@@ -763,7 +1015,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Kadek Dwi Adi Darma Yudhi",
     "kelas": "XII TSM",
     "tempat": "Gemilang Motor",
-    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Flamboyan No.53, Semarapura Kauh, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 86,
@@ -772,7 +1027,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Ketut Rianta",
     "kelas": "XII TSM",
     "tempat": "Ahas Cemerlang Motor",
-    "alamat": "Jl Flamboyan 66 Klungkung"
+    "alamat": "Jl Flamboyan 66 Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 87,
@@ -781,7 +1039,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Made Div Aditya Pramana",
     "kelas": "XII TSM",
     "tempat": "Aries 1 Motor",
-    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 88,
@@ -790,7 +1051,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Ngurah Komang Ari Artana",
     "kelas": "XII TSM",
     "tempat": "Ahas Cemerlang Motor",
-    "alamat": "Jl Flamboyan 66 Klungkung"
+    "alamat": "Jl Flamboyan 66 Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 89,
@@ -799,7 +1063,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Juliantara Putra",
     "kelas": "XII TSM",
     "tempat": "Aries 1 Motor",
-    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 90,
@@ -808,7 +1075,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Wiranto Sanjaya",
     "kelas": "XII TSM",
     "tempat": "Aries 1 Motor",
-    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Ciung Wanara-Gianyar No.1 A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 91,
@@ -817,7 +1087,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Putu Juniarta",
     "kelas": "XII AK",
     "tempat": "PT. BPR Tridarma Putri Klungkung",
-    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec.Klungkung"
+    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 92,
@@ -826,7 +1099,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Ratih Sancikadewi",
     "kelas": "XII AK",
     "tempat": "PT. BPR Tridarma Putri Klungkung",
-    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec. Klungkung"
+    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 93,
@@ -835,7 +1111,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Santiasih",
     "kelas": "XII AK",
     "tempat": "PT. BPR Tridarma Putri Klungkung",
-    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec. Klungkung"
+    "alamat": "Jl. Diponogoro, No. 25, Semarapura, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 94,
@@ -844,7 +1123,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gusti Ayu Putu Candra Widiantari",
     "kelas": "XII LPB",
     "tempat": "PT. BPR Sari Jaya Sedana Sampalan Klungkung",
-    "alamat": "JL. Raya Sampalan,No. 88x,Dawan Klungkung"
+    "alamat": "JL. Raya Sampalan,No. 88x,Dawan Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 95,
@@ -853,7 +1135,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ida Ayu Indah Gangga Swari",
     "kelas": "XII LPB",
     "tempat": "PT. BPR Sari Jaya Sedana Sampalan Klungkung",
-    "alamat": "JL. Raya Sampalan,No. 88x,Dawan Klungkung"
+    "alamat": "JL. Raya Sampalan,No. 88x,Dawan Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 96,
@@ -862,7 +1147,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gusti Ayu Diana Kristiani",
     "kelas": "XII MP 1",
     "tempat": "BPJS TENAGA KERJA KAB.GIANYAR",
-    "alamat": "Jalan Dharma Giri, Bypass Buruan, Gianyar, Bali 80581"
+    "alamat": "Jalan Dharma Giri, Bypass Buruan, Gianyar, Bali 80581",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 97,
@@ -871,7 +1159,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Darma Yanti",
     "kelas": "XII MP 1",
     "tempat": "DINAS PEKERJAAN UMUM, PENATAAN RUANG PERUMAHAN DAN KAWASAN PEMUKIMAN KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Gajah Mada No.47, Semarapura Tengah, Kec. Klungkung, Kabupaten Klungkung"
+    "alamat": "Jl. Gajah Mada No.47, Semarapura Tengah, Kec. Klungkung, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 98,
@@ -880,7 +1171,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Diah Anandita Permata",
     "kelas": "XII MP 1",
     "tempat": "DINAS PEKERJAAN UMUM, PENATAAN RUANG PERUMAHAN DAN KAWASAN PEMUKIMAN KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Gajah Mada No.47, Semarapura Tengah, Kec. Klungkung, Kabupaten Klungkung"
+    "alamat": "Jl. Gajah Mada No.47, Semarapura Tengah, Kec. Klungkung, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 99,
@@ -889,7 +1183,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Luh Sri Nadi",
     "kelas": "XII MP 1",
     "tempat": "DINAS PEKERJAAN UMUM, PENATAAN RUANG PERUMAHAN DAN KAWASAN PEMUKIMAN KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Gajah Mada No.47, Semarapura Tengah, Kec. Klungkung, Kabupaten Klungkung"
+    "alamat": "Jl. Gajah Mada No.47, Semarapura Tengah, Kec. Klungkung, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 100,
@@ -898,7 +1195,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Anak Agung Istri Amira Vebriani",
     "kelas": "XII MP 2",
     "tempat": "( MPP) PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Gajah Mada No.50 Semarapura"
+    "alamat": "Jalan Gajah Mada No.50 Semarapura",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 101,
@@ -907,7 +1207,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Ayu Larasati",
     "kelas": "XII MP 2",
     "tempat": "( MPP) PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Gajah Mada No.50 Semarapura"
+    "alamat": "Jalan Gajah Mada No.50 Semarapura",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 102,
@@ -916,7 +1219,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Padmawati",
     "kelas": "XII MP 2",
     "tempat": "( MPP) PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Gajah Mada No.50 Semarapura"
+    "alamat": "Jalan Gajah Mada No.50 Semarapura",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 103,
@@ -925,7 +1231,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Luh Vika Widyawati",
     "kelas": "XII MP 2",
     "tempat": "( MPP) PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Gajah Mada No.50 Semarapura"
+    "alamat": "Jalan Gajah Mada No.50 Semarapura",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 104,
@@ -934,7 +1243,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Eka Widiantari",
     "kelas": "XII MP 2",
     "tempat": "( MPP) PENANAMAN MODAL DAN PELAYANAN TERPADU SATU PINTU KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Gajah Mada No.50 Semarapura"
+    "alamat": "Jalan Gajah Mada No.50 Semarapura",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 105,
@@ -943,7 +1255,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Ary Sudiantara",
     "kelas": "XII MP 1",
     "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 106,
@@ -952,7 +1267,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Nesa Wira Arsana",
     "kelas": "XII MP 1",
     "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 107,
@@ -961,7 +1279,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Tri Jaya Winnata",
     "kelas": "XII MP 2",
     "tempat": "SMK NEGERI 1 KLUNGKUNG",
-    "alamat": "Jalan Subali II , Banjar Siku Desa Kamasan,Klungkung"
+    "alamat": "Jalan Subali II , Banjar Siku Desa Kamasan,Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 108,
@@ -970,7 +1291,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Sang Made Arta Mahendra",
     "kelas": "XII MP 2",
     "tempat": "DINAS PENDIDIKAN KEPEMUDAAN DAN OLAHRAGA KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung"
+    "alamat": "Jalan Ngurah Rai, Semarapura, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 109,
@@ -979,7 +1303,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Afrilia",
     "kelas": "XII LPB",
     "tempat": "PT. BPR Nusamba Manggis Klungkung",
-    "alamat": "Jl. Untung Surapati No. 14. Semarapura, Kec. Klungkung"
+    "alamat": "Jl. Untung Surapati No. 14. Semarapura, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 110,
@@ -988,7 +1315,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ida Ayu Nyoman Reditya Oktaviani",
     "kelas": "XII LPB",
     "tempat": "PT. BPR Tata Anjungsari Klungkung",
-    "alamat": "Jl. Darmawangsa, No. 05 Semarapura"
+    "alamat": "Jl. Darmawangsa, No. 05 Semarapura",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 111,
@@ -997,7 +1327,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Rina Agustina",
     "kelas": "XII LPB",
     "tempat": "PT. BPR Nusamba Manggis Klungkung",
-    "alamat": "Jl. Untung Surapati No. 14. Semarapura, Kec. Klungkung"
+    "alamat": "Jl. Untung Surapati No. 14. Semarapura, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 112,
@@ -1006,7 +1339,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Meisya Fazrina",
     "kelas": "XII MP 1",
     "tempat": "PT. PLN (PERSERO) UP3 BALI TIMUR",
-    "alamat": "Jalan Batu Tabih 53 Semarapura Klungkung"
+    "alamat": "Jalan Batu Tabih 53 Semarapura Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 113,
@@ -1015,7 +1351,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Ayu Widiantari",
     "kelas": "XII MP 1",
     "tempat": "BPJS TENAGA KERJA KAB.GIANYAR",
-    "alamat": "Jalan Dharma Giri, Bypass Buruan, Gianyar, Bali 80581"
+    "alamat": "Jalan Dharma Giri, Bypass Buruan, Gianyar, Bali 80581",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 114,
@@ -1024,7 +1363,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Luh Ayu Purnama Dewi",
     "kelas": "XII MP 1",
     "tempat": "PT. PLN (PERSERO) ULP KLUNGKUNG",
-    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG"
+    "alamat": "JALAN NGURAH RAI NO 40 SEMARAPURA TENGAH, KLUNGKUNG",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 115,
@@ -1033,7 +1375,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Ayu Bintang",
     "kelas": "XII MP 2",
     "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 116,
@@ -1042,7 +1387,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Diah Arthasari",
     "kelas": "XII MP 2",
     "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 117,
@@ -1051,7 +1399,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Pande Putu Galuh Risanti Indira Yunika",
     "kelas": "XII MP 2",
     "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 118,
@@ -1060,7 +1411,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Luh Desiyani",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / BANJARANGKAN",
-    "alamat": "Jl. Ida Bagus Puja Takmung, Kec. Bajarangkan Klungkung"
+    "alamat": "Jl. Ida Bagus Puja Takmung, Kec. Bajarangkan Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 119,
@@ -1069,7 +1423,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Dewa Ayu Raras Variati",
     "kelas": "XII BD 2",
     "tempat": "Toko Bisma",
-    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung"
+    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 120,
@@ -1078,7 +1435,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Kadek Purnawirawan",
     "kelas": "XII BD 2",
     "tempat": "Toko Bisma",
-    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung"
+    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 121,
@@ -1087,7 +1447,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Meta Febriantari",
     "kelas": "XII BD 2",
     "tempat": "Toko Bisma",
-    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung"
+    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 122,
@@ -1096,7 +1459,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ida Ayu Putu Diah Kamiswari",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Sinar Santi",
-    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung"
+    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 123,
@@ -1105,7 +1471,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Luh Ade Galuh Pratiwi",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Sinar Santi",
-    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung"
+    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 124,
@@ -1114,7 +1483,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Wayan Nanda Pradnya Suari",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Tirta Farma",
-    "alamat": "Jln. Raya Gelgel, Desa Gelgel, Kec Klungkung, Kab.Klungkung"
+    "alamat": "Jln. Raya Gelgel, Desa Gelgel, Kec Klungkung, Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 125,
@@ -1123,7 +1495,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Elyska Kirana Putri",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Galiran",
-    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 126,
@@ -1132,7 +1507,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Mauli Diana Rahayu Putri",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Galiran",
-    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 127,
@@ -1141,7 +1519,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Sri Diah Lastari",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Galiran",
-    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 128,
@@ -1150,7 +1531,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Widya Wulandari",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Galiran",
-    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 129,
@@ -1159,7 +1543,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Dian Candra Pratiwi",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Permata Farma",
-    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung"
+    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 130,
@@ -1168,7 +1555,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Widya Krista Yanti",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Permata Farma",
-    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung"
+    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 131,
@@ -1177,7 +1567,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Wayan Ani Arthayasih",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Permata Farma",
-    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung"
+    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 132,
@@ -1186,7 +1579,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Yoneda Yebleb",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Permata Farma",
-    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung"
+    "alamat": "Jln.Plawa No.3A Semarapura Klod, Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 133,
@@ -1195,7 +1591,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gusti Ayu Indah Pertiwi",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Sekar Sari",
-    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung"
+    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 134,
@@ -1204,7 +1603,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Leges Aria Sentani",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Sekar Sari",
-    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung"
+    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 135,
@@ -1213,7 +1615,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Luh Komang Divya Santhi",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Sekar Sari",
-    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung"
+    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 136,
@@ -1222,7 +1627,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Galih Pratiwi Setiawan",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Sekar Sari",
-    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung"
+    "alamat": "Jln. Raya Takmung, No. 01 X Desa Takmung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 137,
@@ -1231,7 +1639,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Dwi Retno Ayu Ningrum",
     "kelas": "XII TKJ",
     "tempat": "PT. GAYA MASA TEKNIKA",
-    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 138,
@@ -1240,7 +1651,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Adi Putra",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM SUKAWATI",
-    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Gelumpang, Desa Sukawati, Kec. Sukawati, Kab. Gianyar"
+    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Gelumpang, Desa Sukawati, Kec. Sukawati, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 139,
@@ -1249,7 +1663,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Trisna Yuni Astari",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM SUKAWATI",
-    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Gelumpang, Desa Sukawati, Kec. Sukawati, Kab. Gianyar"
+    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Gelumpang, Desa Sukawati, Kec. Sukawati, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 140,
@@ -1258,7 +1675,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Ketut Alit Rupawan",
     "kelas": "XII BD 2",
     "tempat": "Koperasi Nirmala",
-    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung"
+    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 141,
@@ -1267,7 +1687,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Bintang Triasih",
     "kelas": "XII AK",
     "tempat": "Hotel Komune -Gianyar",
-    "alamat": "Jl Pantai Keramas Gianyar"
+    "alamat": "Jl Pantai Keramas Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 142,
@@ -1276,7 +1699,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Pande Made Shasmita Aurellia Putri",
     "kelas": "XII AK",
     "tempat": "Maua Olea Ubud",
-    "alamat": "Jl. Raya Pengosekan, Mas, Kecamatan Ubud, Kabupaten Gianyar, Bali 80571"
+    "alamat": "Jl. Raya Pengosekan, Mas, Kecamatan Ubud, Kabupaten Gianyar, Bali 80571",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 143,
@@ -1285,7 +1711,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Akbar Alfiansah",
     "kelas": "XII TKJ",
     "tempat": "CV. BALI MEDIA COMPUTAMA (BMC)",
-    "alamat": "Jl. Pantai Purnama, Sukawati, Kec. Sukawati, Kab. Gianyar, Bali"
+    "alamat": "Jl. Pantai Purnama, Sukawati, Kec. Sukawati, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 144,
@@ -1294,7 +1723,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Adtya Wedha Paramartha",
     "kelas": "XII TKJ",
     "tempat": "CV. BALI MEDIA COMPUTAMA (BMC)",
-    "alamat": "Jl. Pantai Purnama, Sukawati, Kec. Sukawati, Kab. Gianyar, Bali"
+    "alamat": "Jl. Pantai Purnama, Sukawati, Kec. Sukawati, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 145,
@@ -1303,7 +1735,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Made Pradnya Wahyu Radheya",
     "kelas": "XII TKJ",
     "tempat": "CV. BALI MEDIA COMPUTAMA (BMC)",
-    "alamat": "Jl. Pantai Purnama, Sukawati, Kec. Sukawati, Kab. Gianyar, Bali"
+    "alamat": "Jl. Pantai Purnama, Sukawati, Kec. Sukawati, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 146,
@@ -1312,7 +1747,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Komang Giri Artawan",
     "kelas": "XII TKJ",
     "tempat": "PT. NANDIKA INTI GLOBAL",
-    "alamat": "Jalan Matahari X, Desa Satra, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jalan Matahari X, Desa Satra, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 147,
@@ -1321,7 +1759,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Rizky Adib Irlan Syah",
     "kelas": "XII TKJ",
     "tempat": "PT. NANDIKA INTI GLOBAL",
-    "alamat": "Jalan Matahari X, Desa Satra, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jalan Matahari X, Desa Satra, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 148,
@@ -1330,7 +1771,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Rizqy Al Farraby",
     "kelas": "XII TKJ",
     "tempat": "PT. NANDIKA INTI GLOBAL",
-    "alamat": "Jalan Matahari X, Desa Satra, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jalan Matahari X, Desa Satra, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 149,
@@ -1339,7 +1783,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Bintang Nopiani",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Banjarangkan Farma",
-    "alamat": "Jln. Raya Banjarangkan No.36 Kec. Banjarangkan Kab. Klungkung"
+    "alamat": "Jln. Raya Banjarangkan No.36 Kec. Banjarangkan Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 150,
@@ -1348,7 +1795,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Anggraeni",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Banjarangkan Farma",
-    "alamat": "Jln. Raya Banjarangkan No.36 Kec. Banjarangkan Kab. Klungkung"
+    "alamat": "Jln. Raya Banjarangkan No.36 Kec. Banjarangkan Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 151,
@@ -1357,7 +1807,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Wayan Novi Lestari",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Visual Farma II",
-    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung"
+    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 152,
@@ -1366,7 +1819,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Gusti Ayu Putu Alita Bintang Lestari",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Banjarangkan Farma",
-    "alamat": "Jln. Raya Banjarangkan No.36 Kec. Banjarangkan Kab. Klungkung"
+    "alamat": "Jln. Raya Banjarangkan No.36 Kec. Banjarangkan Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 153,
@@ -1375,7 +1831,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Pande Ni Putu Adisty Kusuma Jati",
     "kelas": "XII MP 1",
     "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 154,
@@ -1384,7 +1843,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Made Suci Manik Astari",
     "kelas": "XII MP 2",
     "tempat": "UPTD PPRD KABUPATEN KLUNGKUNG (SAMSAT KLUNGKUNG)",
-    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711"
+    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 155,
@@ -1393,7 +1855,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Mei Wulandari",
     "kelas": "XII MP 2",
     "tempat": "UPTD PPRD KABUPATEN KLUNGKUNG (SAMSAT KLUNGKUNG)",
-    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711"
+    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 156,
@@ -1402,7 +1867,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Ayu Melani Ratna Dewi",
     "kelas": "XII DKV",
     "tempat": "Satya Studio Digital Printing",
-    "alamat": "Jl. Ngurah Rai, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Ngurah Rai, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 157,
@@ -1411,7 +1879,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Dewa Ayu Awidiya Sari",
     "kelas": "XII AK",
     "tempat": "KUD Panca Satya Dawan",
-    "alamat": "Jl. Sawo Kabeh, Desa Dawan Kelod, Kec. Dawan, Klungkung"
+    "alamat": "Jl. Sawo Kabeh, Desa Dawan Kelod, Kec. Dawan, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 158,
@@ -1420,7 +1891,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Luh Putu Candra Cahyani",
     "kelas": "XII AK",
     "tempat": "KPP Pratama Gianyar",
-    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec.Blahbatuh, Buruan, Kec. Gianyar"
+    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec.Blahbatuh, Buruan, Kec. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 159,
@@ -1429,7 +1903,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Wayan Kartika Adi Putra",
     "kelas": "XII TKJ",
     "tempat": "PT. GAYA MASA TEKNIKA",
-    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 160,
@@ -1438,7 +1915,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Agus Billy Fedrico",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Tirta Farma",
-    "alamat": "Jln. Raya Gelgel, Desa Gelgel, Kec Klungkung, Kab.Klungkung"
+    "alamat": "Jln. Raya Gelgel, Desa Gelgel, Kec Klungkung, Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 161,
@@ -1447,7 +1927,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Agus Eka Widya Pradnyana",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Tirta Farma",
-    "alamat": "Jln. Raya Gelgel, Desa Gelgel, Kec Klungkung, Kab.Klungkung"
+    "alamat": "Jln. Raya Gelgel, Desa Gelgel, Kec Klungkung, Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 162,
@@ -1456,7 +1939,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Martini Lestari",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Visual Farma II",
-    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung"
+    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 163,
@@ -1465,7 +1951,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Made Agus Bayu Widi",
     "kelas": "XII TSM",
     "tempat": "PT. Nusantara Surya Sakti (NSS)",
-    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 164,
@@ -1474,7 +1963,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Lorensius Kaka Lalo",
     "kelas": "XII TSM",
     "tempat": "PT. Nusantara Surya Sakti (NSS)",
-    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 165,
@@ -1483,7 +1975,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Putu Agus Pratama Putra",
     "kelas": "XII TKJ",
     "tempat": "ARIK COMPUTER",
-    "alamat": "Jl. Ahmad Yani, Semarapura Kaja, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Ahmad Yani, Semarapura Kaja, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 166,
@@ -1492,7 +1987,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Kadek Dodik Ramayoga",
     "kelas": "XII TSM",
     "tempat": "PT. Nusantara Surya Sakti (NSS)",
-    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 167,
@@ -1501,7 +1999,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Komang Bayu Septi Permana",
     "kelas": "XII TSM",
     "tempat": "PT. Nusantara Surya Sakti (NSS)",
-    "alamat": "Jl. Kecubung, Semarapura Kelod, Kabupaten Klungkung, Bali"
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kabupaten Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 168,
@@ -1510,7 +2011,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Putu Rendy Galang Permana",
     "kelas": "XII DKV",
     "tempat": "Bali Stars Promosindo Ubud",
-    "alamat": "Jl. Cok Rai Pudak, Mas, Kecamatan Ubud, Kab. Gianyar, Bali"
+    "alamat": "Jl. Cok Rai Pudak, Mas, Kecamatan Ubud, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 169,
@@ -1519,7 +2023,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Ghina Anastasia Putri",
     "kelas": "XII DKV",
     "tempat": "Bali Stars Promosindo Ubud",
-    "alamat": "Jl. Cok Rai Pudak, Mas, Kecamatan Ubud, Kab. Gianyar, Bali"
+    "alamat": "Jl. Cok Rai Pudak, Mas, Kecamatan Ubud, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 170,
@@ -1528,7 +2035,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Dewik",
     "kelas": "XII AK",
     "tempat": "Koperasi Serba Usaha Nirmala Klungkung",
-    "alamat": "Jl. Bypass. Prof Ida Bagus Mantra, Dusun Lepang, Desa Takmung Klungkung"
+    "alamat": "Jl. Bypass. Prof Ida Bagus Mantra, Dusun Lepang, Desa Takmung Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 171,
@@ -1537,7 +2047,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Dian Ambarwati",
     "kelas": "XII AK",
     "tempat": "Koperasi Serba Usaha Nirmala Klungkung",
-    "alamat": "Jl. Bypass. Prof Ida Bagus Mantra, Dusun Lepang, Desa Takmung Klungkung"
+    "alamat": "Jl. Bypass. Prof Ida Bagus Mantra, Dusun Lepang, Desa Takmung Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 172,
@@ -1546,7 +2059,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Ayu Santika",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Visual Farma II",
-    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung"
+    "alamat": "Dsn. Tengah Desa Akah ,Kec Klungkung ,Kab.Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 173,
@@ -1555,7 +2071,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Made Sugiarta",
     "kelas": "XII TKJ",
     "tempat": "PT. GAYA MASA TEKNIKA",
-    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 174,
@@ -1564,7 +2083,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Putu Adi Ari Endrawan",
     "kelas": "XII TKJ",
     "tempat": "PT. GAYA MASA TEKNIKA",
-    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 175,
@@ -1573,7 +2095,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Komang Jano Artha",
     "kelas": "XII TKJ",
     "tempat": "PT. GAYA MASA TEKNIKA",
-    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 176,
@@ -1582,7 +2107,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Ketut Sinta",
     "kelas": "XII TKJ",
     "tempat": "PT. GAYA MASA TEKNIKA",
-    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 177,
@@ -1591,7 +2119,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Sila Triana Sari",
     "kelas": "XII TKJ",
     "tempat": "PT. GAYA MASA TEKNIKA",
-    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali"
+    "alamat": "Jl. Pohon Jati, Sanur, Denpasar Selatan, Kota Denpasar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 178,
@@ -1600,7 +2131,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Putu Gede Eka Yogantara Pratmaja",
     "kelas": "XII DKV",
     "tempat": "Gede Duta Visual",
-    "alamat": "Gg. Sari Indah No.4, Tonja, Kec. Denpasar Utara, Kota Denpasar, Bali"
+    "alamat": "Gg. Sari Indah No.4, Tonja, Kec. Denpasar Utara, Kota Denpasar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 179,
@@ -1609,7 +2143,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Raditya Nugraha",
     "kelas": "XII DKV",
     "tempat": "Gede Duta Visual",
-    "alamat": "Gg. Sari Indah No.4, Tonja, Kec. Denpasar Utara, Kota Denpasar, Bali"
+    "alamat": "Gg. Sari Indah No.4, Tonja, Kec. Denpasar Utara, Kota Denpasar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 180,
@@ -1618,7 +2155,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "M. Afgansyah Al-Maghfirah",
     "kelas": "XII TKJ",
     "tempat": "UD. PRIMA COMPUTER",
-    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali"
+    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 181,
@@ -1627,7 +2167,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Desak Ketut Patniki Astuti",
     "kelas": "XII AK",
     "tempat": "Hotel Whyndham Tamansari Jivva Resort Klungkung",
-    "alamat": "Pantai Lepang, Jl. Subak Lepang No.16, Takmung, Kec. Banjarangkan"
+    "alamat": "Pantai Lepang, Jl. Subak Lepang No.16, Takmung, Kec. Banjarangkan",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 182,
@@ -1636,7 +2179,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Dian Maharani",
     "kelas": "XII AK",
     "tempat": "Hotel Whyndham Tamansari Jivva Resort Klungkung",
-    "alamat": "Pantai Lepang, Jl. Subak Lepang No.16, Takmung, Kec. Banjarangkan"
+    "alamat": "Pantai Lepang, Jl. Subak Lepang No.16, Takmung, Kec. Banjarangkan",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 183,
@@ -1645,7 +2191,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ketut Mahardika",
     "kelas": "XII TSM",
     "tempat": "Karisma Motor",
-    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 184,
@@ -1654,7 +2203,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Nyoman Yudhi Triananda Wibawa",
     "kelas": "XII TSM",
     "tempat": "Karisma Motor",
-    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Untung Suropati No.15A, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Sepeda Motor"
   },
   {
     "no": 185,
@@ -1663,7 +2215,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Nabila Tusak Diah",
     "kelas": "XII LPB",
     "tempat": "PT. BPR Tata Anjungsari Klungkung",
-    "alamat": "Jl. Darmawangsa, No. 05 Semarapura"
+    "alamat": "Jl. Darmawangsa, No. 05 Semarapura",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan"
   },
   {
     "no": 186,
@@ -1672,7 +2227,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Agustinus Poka Mete",
     "kelas": "XII TKJ",
     "tempat": "CV. MELODY INDAH COMPUTER",
-    "alamat": "Jl. Ngurah Rai Pertokoan Pasar Gianyar Blok III No 14 Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Ngurah Rai Pertokoan Pasar Gianyar Blok III No 14 Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 187,
@@ -1681,7 +2239,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Putu Pasek Prawira Putra",
     "kelas": "XII TKJ",
     "tempat": "CV. MELODY INDAH COMPUTER",
-    "alamat": "Jl. Ngurah Rai Pertokoan Pasar Gianyar Blok III No 14 Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Ngurah Rai Pertokoan Pasar Gianyar Blok III No 14 Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 188,
@@ -1690,7 +2251,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Komang Raka Danaswara",
     "kelas": "XII DKV",
     "tempat": "Bali Stars Promosindo Gianyar",
-    "alamat": "Jl. Dharma Giri, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Dharma Giri, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 189,
@@ -1699,7 +2263,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Made Dharma Mahardika",
     "kelas": "XII DKV",
     "tempat": "Bali Stars Promosindo Gianyar",
-    "alamat": "Jl. Dharma Giri, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Dharma Giri, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 190,
@@ -1708,7 +2275,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Komang Aditya",
     "kelas": "XII DKV",
     "tempat": "Bali Stars Promosindo Gianyar",
-    "alamat": "Jl. Dharma Giri, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Dharma Giri, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 191,
@@ -1717,7 +2287,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Ranita Dewi",
     "kelas": "XII DKV",
     "tempat": "Marvella",
-    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 192,
@@ -1726,7 +2299,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Rismayani Darma Swari",
     "kelas": "XII DKV",
     "tempat": "Marvella",
-    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 193,
@@ -1735,7 +2311,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Wayan Satya Dharma",
     "kelas": "XII DKV",
     "tempat": "Satya Studio Digital Printing",
-    "alamat": "Jl. Ngurah Rai, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali"
+    "alamat": "Jl. Ngurah Rai, Semarapura Tengah, Kec. Klungkung, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 194,
@@ -1744,7 +2323,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Dewa Ayu Made Dwi Artika Darmayanti",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM NEGARI",
-    "alamat": "Jl. By Pass Profesor Ida Bagus Mantra Lingk Negari, Kel. Negari, Kec. Banjarangkan, Kab. Klungkung"
+    "alamat": "Jl. By Pass Profesor Ida Bagus Mantra Lingk Negari, Kel. Negari, Kec. Banjarangkan, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 195,
@@ -1753,7 +2335,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Henny Herdi Yani",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM NEGARI",
-    "alamat": "Jl. By Pass Profesor Ida Bagus Mantra Lingk Negari, Kel. Negari, Kec. Banjarangkan, Kab. Klungkung"
+    "alamat": "Jl. By Pass Profesor Ida Bagus Mantra Lingk Negari, Kel. Negari, Kec. Banjarangkan, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 196,
@@ -1762,7 +2347,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Made Sukma Yanti",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / BATU TABIH",
-    "alamat": "Jl. Batu Tabih Ling Takmung Desa Takmung Kec. Banjarangkan, Kab. Klungkung"
+    "alamat": "Jl. Batu Tabih Ling Takmung Desa Takmung Kec. Banjarangkan, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 197,
@@ -1771,7 +2359,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Putu Aryadinata",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / BATU TABIH",
-    "alamat": "Jl. Batu Tabih Ling Takmung Desa Takmung Kec. Banjarangkan, Kab. Klungkung"
+    "alamat": "Jl. Batu Tabih Ling Takmung Desa Takmung Kec. Banjarangkan, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 198,
@@ -1780,7 +2371,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Kadek Agus Apriana Bajesti Putra",
     "kelas": "XII BD 2",
     "tempat": "Koperasi Nirmala",
-    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung"
+    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 199,
@@ -1789,7 +2383,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Luh Putu Frema Sugi Maharani",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / PESINGGAHAN",
-    "alamat": "Jl. Raya Goa Lawah Link. Suwitra Yasa, Desa Pesinggahan, Kec. Dawan, Kab. Klungkung"
+    "alamat": "Jl. Raya Goa Lawah Link. Suwitra Yasa, Desa Pesinggahan, Kec. Dawan, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 200,
@@ -1798,7 +2395,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Sari Astuti",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / PESINGGAHAN",
-    "alamat": "Jl. Raya Goa Lawah Link. Suwitra Yasa, Desa Pesinggahan, Kec. Dawan, Kab. Klungkung"
+    "alamat": "Jl. Raya Goa Lawah Link. Suwitra Yasa, Desa Pesinggahan, Kec. Dawan, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 201,
@@ -1807,7 +2407,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Putu Aditya Suputra",
     "kelas": "XII BD 2",
     "tempat": "Toko Bisma",
-    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung"
+    "alamat": "Jl. Raya Gelgel, Desa Gelgel, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 202,
@@ -1816,7 +2419,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Intan Merliani Putri",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Galiran",
-    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 203,
@@ -1825,7 +2431,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Winda Wulandewi",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Galiran",
-    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung"
+    "alamat": "Jln. Puputan Semarapura No.108, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 204,
@@ -1834,7 +2443,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Gek Danaya Anindia",
     "kelas": "XII DKV",
     "tempat": "Mandala Gold",
-    "alamat": "Jl. Kecubung, Semarapura Kelod, Kab. Klungkung"
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 205,
@@ -1843,7 +2455,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Luh Putu Sekar Darma Yanti",
     "kelas": "XII DKV",
     "tempat": "Mandala Gold",
-    "alamat": "Jl. Kecubung, Semarapura Kelod, Kab. Klungkung"
+    "alamat": "Jl. Kecubung, Semarapura Kelod, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 206,
@@ -1852,7 +2467,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Sinta Widyantini",
     "kelas": "XII AK",
     "tempat": "KUD Panca Satya Dawan",
-    "alamat": "Jl. Sawo Kabeh, Desa Dawan Kelod, Kec. Dawan, Klungkung"
+    "alamat": "Jl. Sawo Kabeh, Desa Dawan Kelod, Kec. Dawan, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 207,
@@ -1861,7 +2479,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Sanjiani",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / NGURAH RAI KLUNGKUNG",
-    "alamat": "Jl. Ngurah Rai Ling. Pegending Kel. Semarapura Kauh, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Ngurah Rai Ling. Pegending Kel. Semarapura Kauh, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 208,
@@ -1870,7 +2491,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Eka Candra Dewi",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / NGURAH RAI KLUNGKUNG",
-    "alamat": "Jl. Ngurah Rai Ling. Pegending Kel. Semarapura Kauh, Kec. Klungkung, Kab. Klungkung"
+    "alamat": "Jl. Ngurah Rai Ling. Pegending Kel. Semarapura Kauh, Kec. Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 209,
@@ -1879,7 +2503,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Kadek Desta Prawira",
     "kelas": "XII BD 2",
     "tempat": "Koperasi Nirmala",
-    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung"
+    "alamat": "Jl. Raya By Pass Ida Bagus Mantra Desa Lepang, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 210,
@@ -1888,7 +2515,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gusti Ngurah Wijana",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM KETEWEL",
-    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Subur, Kel. Ketewel, Kec. Sukawati, Kab. Gianyar"
+    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Subur, Kel. Ketewel, Kec. Sukawati, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 211,
@@ -1897,7 +2527,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Kadek Yogi Iswara",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / KETEWEL GIANYAR",
-    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Subur, Kel. Ketewel, Kec. Sukawati, Kab. Gianyar"
+    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Subur, Kel. Ketewel, Kec. Sukawati, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 212,
@@ -1906,7 +2539,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Nyoman Candra Paranarta",
     "kelas": "XII BD 1",
     "tempat": "PT. Sumber Alfaria Trijaya Tbk / IBM KETEWEL",
-    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Subur, Kel. Ketewel, Kec. Sukawati, Kab. Gianyar"
+    "alamat": "Jl. By Pass Ida Bagus Mantra Lingk. Subur, Kel. Ketewel, Kec. Sukawati, Kab. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 213,
@@ -1915,7 +2551,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Luh Nova Sinta Riari",
     "kelas": "XII BD 2",
     "tempat": "UD Merta Sari",
-    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung"
+    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 214,
@@ -1924,7 +2563,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Putu Vera Agustin",
     "kelas": "XII BD 2",
     "tempat": "UD Merta Sari",
-    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung"
+    "alamat": "Jl. Raya Nandini No.7 Desa Kamasan Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Bisnis Digital"
   },
   {
     "no": 215,
@@ -1933,7 +2575,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Dewa Ayu Juniantari",
     "kelas": "XII MP 2",
     "tempat": "DINAS SOSIAL PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK",
-    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung"
+    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 216,
@@ -1942,7 +2587,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Puspa Aryanti",
     "kelas": "XII MP 2",
     "tempat": "DINAS SOSIAL PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK",
-    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung"
+    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 217,
@@ -1951,7 +2599,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Radit",
     "kelas": "XII TKJ",
     "tempat": "UD. PRIMA COMPUTER",
-    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali"
+    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 218,
@@ -1960,7 +2611,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Rizka Nurdiandari",
     "kelas": "XII TKJ",
     "tempat": "UD. PRIMA COMPUTER",
-    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali"
+    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 219,
@@ -1969,7 +2623,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Putra Sang Pajar",
     "kelas": "XII TKJ",
     "tempat": "UD. PRIMA COMPUTER",
-    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali"
+    "alamat": "Jl. Raya Batu Tabih, Takmung, Kec. Banjarangkan, Kab. Klungkung, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Teknik Komputer dan Jaringan"
   },
   {
     "no": 220,
@@ -1978,7 +2635,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Anak Agung Dewi Suryaningrat",
     "kelas": "XII MP 1",
     "tempat": "KEMENTRIAN AGAMA KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Gajah Mada No 72 Semarapura"
+    "alamat": "Jalan Gajah Mada No 72 Semarapura",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 221,
@@ -1987,7 +2647,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Dewa Ayu Bulan Sriasih",
     "kelas": "XII MP 1",
     "tempat": "KEMENTRIAN AGAMA KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Gajah Mada No 72 Semarapura"
+    "alamat": "Jalan Gajah Mada No 72 Semarapura",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 222,
@@ -1996,7 +2659,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Luh Lisna Diantari",
     "kelas": "XII MP 1",
     "tempat": "KEMENTRIAN AGAMA KABUPATEN KLUNGKUNG",
-    "alamat": "Jalan Gajah Mada No 72 Semarapura"
+    "alamat": "Jalan Gajah Mada No 72 Semarapura",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 223,
@@ -2005,7 +2671,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Adelia Putri",
     "kelas": "XII MP 2",
     "tempat": "UPTD PPRD KABUPATEN KLUNGKUNG (SAMSAT KLUNGKUNG)",
-    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711"
+    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 224,
@@ -2014,7 +2683,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Tia Dewi",
     "kelas": "XII MP 2",
     "tempat": "UPTD PPRD KABUPATEN KLUNGKUNG (SAMSAT KLUNGKUNG)",
-    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711"
+    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 225,
@@ -2023,7 +2695,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Putu Juli Ayu Antari",
     "kelas": "XII MP 2",
     "tempat": "UPTD PPRD KABUPATEN KLUNGKUNG (SAMSAT KLUNGKUNG)",
-    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711"
+    "alamat": "Jalan Ngurah Rai No.3, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung, Bali 80711",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 226,
@@ -2032,7 +2707,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Munifa Inayatur Rohma",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Lestari",
-    "alamat": "Jln. Flamboyan No.56, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung"
+    "alamat": "Jln. Flamboyan No.56, Semarapura Kauh, Kec. Klungkung, Kabupaten Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 227,
@@ -2041,7 +2719,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Suadnyani Megeng",
     "kelas": "XII AK",
     "tempat": "KPP Pratama Gianyar",
-    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec. Blahbatuh, Buruan, Kec. Gianyar"
+    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec. Blahbatuh, Buruan, Kec. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 228,
@@ -2050,7 +2731,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Echa Setyawati",
     "kelas": "XII AK",
     "tempat": "KPP Pratama Gianyar",
-    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec.Blahbatuh, Buruan, Kec. Gianyar"
+    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec.Blahbatuh, Buruan, Kec. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 229,
@@ -2059,7 +2743,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Eka Pandewi",
     "kelas": "XII AK",
     "tempat": "KPP Pratama Gianyar",
-    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec.Blahbatuh, Buruan, Kec. Gianyar"
+    "alamat": "Jalan By Pass Dharma Giri Desa Buruan, Kec.Blahbatuh, Buruan, Kec. Gianyar",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 230,
@@ -2068,7 +2755,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Yenny Febri Yanthy Ningsih",
     "kelas": "XII AK",
     "tempat": "Hotel Sanna Ubud",
-    "alamat": "Jl. Tegallalang, Br. Tengah, Tegalalang, Gianyar, Bali"
+    "alamat": "Jl. Tegallalang, Br. Tengah, Tegalalang, Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 231,
@@ -2077,7 +2767,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Ketut Melia Purnama Sari",
     "kelas": "XII MP 1",
     "tempat": "PT. PLN (PERSERO) UP3 BALI TIMUR",
-    "alamat": "Jalan Batu Tabih 53 Semarapura Klungkung"
+    "alamat": "Jalan Batu Tabih 53 Semarapura Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 232,
@@ -2086,7 +2779,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Tiara Yuliyanti",
     "kelas": "XII MP 1",
     "tempat": "PT. PLN (PERSERO) UP3 BALI TIMUR",
-    "alamat": "Jalan Batu Tabih 53 Semarapura Klungkung"
+    "alamat": "Jalan Batu Tabih 53 Semarapura Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 233,
@@ -2095,7 +2791,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Made Ayu Dwi Apriliani",
     "kelas": "XII DKV",
     "tempat": "Marvella",
-    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 234,
@@ -2104,7 +2803,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Queena Bilqist Mulyadi Putri",
     "kelas": "XII DKV",
     "tempat": "Marvella",
-    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Astina Timur, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 235,
@@ -2113,7 +2815,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Anak Agung Gede Dika Pradipta",
     "kelas": "XII DKV",
     "tempat": "Sayonara Photo",
-    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 236,
@@ -2122,7 +2827,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Ary Kesuma Suputra",
     "kelas": "XII DKV",
     "tempat": "Sayonara Photo",
-    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 237,
@@ -2131,7 +2839,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Gede Rian Primayoga",
     "kelas": "XII DKV",
     "tempat": "Sayonara Photo",
-    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 238,
@@ -2140,7 +2851,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Made Wahyu Adikusuma",
     "kelas": "XII DKV",
     "tempat": "Sayonara Photo",
-    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali"
+    "alamat": "Jl. Kesatrian No.7A, Gianyar, Kec. Gianyar, Kab. Gianyar, Bali",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Desain Komunikasi Visual"
   },
   {
     "no": 239,
@@ -2149,7 +2863,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Dewa Ayu Sri Widyastuti",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Sinar Santi",
-    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung"
+    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 240,
@@ -2158,7 +2875,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Komang Edi Setiawan.",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Radika",
-    "alamat": "Jln. Raya banjarangkan No.53 Kec. Banjarangkan Kab. Klungkung"
+    "alamat": "Jln. Raya banjarangkan No.53 Kec. Banjarangkan Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 241,
@@ -2167,7 +2887,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Evinayanti",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Sinar Santi",
-    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung"
+    "alamat": "Jln. Flamboyan No. 37 Semarapura, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 242,
@@ -2176,7 +2899,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Made Juniari",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Radika",
-    "alamat": "Jln. Raya banjarangkan No.53 Kec. Banjarangkan Kab. Klungkung"
+    "alamat": "Jln. Raya banjarangkan No.53 Kec. Banjarangkan Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 243,
@@ -2185,7 +2911,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Aisyah Dwi Agusthina",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Griya Candra",
-    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung"
+    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 244,
@@ -2194,7 +2923,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Tri Maetarani",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Griya Candra",
-    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung"
+    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 245,
@@ -2203,7 +2935,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Trisna Dewi",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Griya Candra",
-    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung"
+    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 246,
@@ -2212,7 +2947,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Rizqiana Ayudianingsih",
     "kelas": "XII LPKKK 2",
     "tempat": "Apotek Griya Candra",
-    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung"
+    "alamat": "Jln. Raya Besakih No.125, Ds. Akah, Kec, Klungkung, Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 247,
@@ -2221,7 +2959,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Wayan Agus Septiadi",
     "kelas": "XII AK",
     "tempat": "Koperasi Sri Amerta Semaya Klungkung",
-    "alamat": "Jl. Kenyeri XIV No 18 Galiran Klungkung"
+    "alamat": "Jl. Kenyeri XIV No 18 Galiran Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 248,
@@ -2230,7 +2971,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Stefany Devita Putri",
     "kelas": "XII AK",
     "tempat": "PT Federal International Finance - Klungkung",
-    "alamat": "Jl Ngurah Rai No 17 Klungkung"
+    "alamat": "Jl Ngurah Rai No 17 Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 249,
@@ -2239,7 +2983,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Wita Sinta Pradnyani",
     "kelas": "XII AK",
     "tempat": "PT Federal International Finance - Klungkung",
-    "alamat": "Jl Ngurah Rai No 17 Klungkung"
+    "alamat": "Jl Ngurah Rai No 17 Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Akuntansi dan Keuangan Lembaga"
   },
   {
     "no": 250,
@@ -2248,7 +2995,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Ayu Lestari",
     "kelas": "XII MP 1",
     "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 251,
@@ -2257,7 +3007,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Risna Kumala Dewi",
     "kelas": "XII MP 1",
     "tempat": "DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL KABUPATEN KLUNGKUNG",
-    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung"
+    "alamat": "Jl. Flamboyan No.27, Semarapura Kelod, Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 252,
@@ -2266,7 +3019,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Komang Indah Jesika Dewi",
     "kelas": "XII MP 2",
     "tempat": "DINAS SOSIAL PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK",
-    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung"
+    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 253,
@@ -2275,7 +3031,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Eka Semara Putri",
     "kelas": "XII MP 2",
     "tempat": "DINAS SOSIAL PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK",
-    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung"
+    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 254,
@@ -2284,7 +3043,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Putu Puspawati",
     "kelas": "XII MP 2",
     "tempat": "DINAS SOSIAL PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK",
-    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung"
+    "alamat": "Jl. Gajah Mada No. 70,Semarapura Tengah, Kec. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Manajemen Perkantoran"
   },
   {
     "no": 255,
@@ -2293,7 +3055,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "I Dewa Ayu Dwi Cahya Indrayani",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Karisma",
-    "alamat": "Jln. Bima Sampalan Tengah Kab. Klungkung"
+    "alamat": "Jln. Bima Sampalan Tengah Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 256,
@@ -2302,7 +3067,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Ayu Arsani",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Karisma",
-    "alamat": "Jln. Bima Sampalan Tengah Kab. Klungkung"
+    "alamat": "Jln. Bima Sampalan Tengah Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 257,
@@ -2311,7 +3079,10 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Kadek Diah Dwi Adnyani",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Karisma",
-    "alamat": "Jln. Bima Sampalan Tengah kab. Klungkung"
+    "alamat": "Jln. Bima Sampalan Tengah kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   },
   {
     "no": 258,
@@ -2320,6 +3091,9 @@ const DEFAULT_PKL_DATA = [
     "siswa": "Ni Made Shita Wulandari",
     "kelas": "XII LPKKK 1",
     "tempat": "Apotek Karisma",
-    "alamat": "Jln. Bima Sampalan Tengah Kab. Klungkung"
+    "alamat": "Jln. Bima Sampalan Tengah Kab. Klungkung",
+    "nis": "",
+    "nisn": "",
+    "jurusan": "Layanan Perbankan Syariah"
   }
 ];

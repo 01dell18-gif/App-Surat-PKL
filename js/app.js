@@ -1,3 +1,30 @@
+// Helper: Deduce major (Jurusan) from class name (Kelas)
+function getJurusanFromKelas(kelas) {
+  if (!kelas) return '';
+  const k = kelas.toString().toUpperCase().trim();
+  if (k.includes('BD')) return 'Bisnis Digital';
+  if (k.includes('DKV')) return 'Desain Komunikasi Visual';
+  if (k.includes('AK')) return 'Akuntansi dan Keuangan Lembaga';
+  if (k.includes('LPKKK') || k.includes('LPK')) return 'Layanan Perbankan Syariah';
+  if (k.includes('LPB')) return 'Layanan Perbankan';
+  if (k.includes('MP')) return 'Manajemen Perkantoran';
+  if (k.includes('TKJ')) return 'Teknik Komputer dan Jaringan';
+  if (k.includes('TSM')) return 'Teknik Sepeda Motor';
+  return '';
+}
+
+// Auto-fill jurusan input when user types kelas in student modal
+function autoFillJurusan(kelas) {
+  const jurInput = document.getElementById('studentFormJurusan');
+  if (jurInput && (!jurInput.value || jurInput.dataset.autofilled === 'true')) {
+    const j = getJurusanFromKelas(kelas);
+    if (j) {
+      jurInput.value = j;
+      jurInput.dataset.autofilled = 'true';
+    }
+  }
+}
+
 /**
  * Aplikasi Surat Pengantar PKL - SMKN 1 FYJ Channel
  * Frontend Application Logic (Template Management & WYSIWYG Edition v2.2)
@@ -129,9 +156,14 @@ const DEFAULT_TEMPLATES = [
     <td style="vertical-align: top;">{siswaNis}</td>
   </tr>
   <tr>
-    <td style="vertical-align: top;">Jurusan</td>
+    <td style="vertical-align: top;">NISN</td>
     <td style="vertical-align: top;">:</td>
-    <td style="vertical-align: top;">{siswaKelas}</td>
+    <td style="vertical-align: top;">{siswaNisn}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Kelas / Jurusan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{siswaKelas} / {siswaJurusan}</td>
   </tr>
 </table>
 
@@ -170,10 +202,13 @@ const AppState = {
   records: [],
   gurus: [],
   places: [],
-  selectedMode: 'per-guru', // 'per-guru' | 'per-du-di'
+  selectedMode: 'per-guru', // 'per-guru' | 'per-du-di' | 'per-siswa'
   selectedGuruIdx: 0,
   selectedTempatFilter: 'all',
   selectedDuDiIdx: 0,
+  selectedSiswaFilterPerGuru: 'all',
+  selectedSiswaFilterPerDuDi: 'all',
+  selectedSiswaIdx: 0,
   
   // Settings Dokumen & Lembaga
   appSettings: Object.assign({}, DEFAULT_APP_SETTINGS),
@@ -532,7 +567,7 @@ function rebuildIndices() {
 
 // Populate Dropdown Menus
 function populateDropdowns() {
-  // Populate Guru Dropdown
+  // 1. Populate Guru Dropdown
   const guruSelect = document.getElementById('guruSelect');
   if (guruSelect) {
     guruSelect.innerHTML = '';
@@ -548,10 +583,13 @@ function populateDropdowns() {
     guruSelect.value = AppState.selectedGuruIdx;
   }
 
-  // Populate Tempat Filter Dropdown for Selected Guru
+  // 2. Populate Tempat Filter Dropdown for Selected Guru
   updateTempatFilterDropdown();
 
-  // Populate DU/DI Select for Mode Per Tempat PKL
+  // 3. Populate Siswa Filter Dropdown for Selected Guru
+  updateSiswaFilterPerGuruDropdown();
+
+  // 4. Populate DU/DI Select for Mode Per Tempat PKL
   const dudiSelect = document.getElementById('dudiSelect');
   if (dudiSelect) {
     dudiSelect.innerHTML = '';
@@ -566,6 +604,91 @@ function populateDropdowns() {
     }
     dudiSelect.value = AppState.selectedDuDiIdx;
   }
+
+  // 5. Populate Siswa Filter Dropdown for Selected DU/DI
+  updateSiswaFilterPerDuDiDropdown();
+
+  // 6. Populate Siswa Select for Mode Per Siswa
+  populateSiswaSelect();
+}
+
+// Update Sub-dropdown of Students for currently selected Guru
+function updateSiswaFilterPerGuruDropdown() {
+  const sel = document.getElementById('siswaFilterSelectPerGuru');
+  if (!sel) return;
+  const currentGuru = AppState.gurus[AppState.selectedGuruIdx];
+  if (!currentGuru) return;
+
+  let students = currentGuru.siswa;
+  if (AppState.selectedTempatFilter !== 'all') {
+    students = students.filter(s => s.tempat === AppState.selectedTempatFilter);
+  }
+
+  sel.innerHTML = '';
+  const optAll = document.createElement('option');
+  optAll.value = 'all';
+  optAll.textContent = `★ Semua Siswa (${students.length} Siswa)`;
+  sel.appendChild(optAll);
+
+  students.forEach((s, idx) => {
+    const opt = document.createElement('option');
+    opt.value = s.siswa;
+    opt.textContent = `${idx + 1}. ${s.siswa} (${s.kelas})`;
+    sel.appendChild(opt);
+  });
+
+  const validVals = ['all', ...students.map(s => s.siswa)];
+  if (!validVals.includes(AppState.selectedSiswaFilterPerGuru)) {
+    AppState.selectedSiswaFilterPerGuru = 'all';
+  }
+  sel.value = AppState.selectedSiswaFilterPerGuru;
+}
+
+// Update Sub-dropdown of Students for currently selected DU/DI
+function updateSiswaFilterPerDuDiDropdown() {
+  const sel = document.getElementById('siswaFilterSelectPerDuDi');
+  if (!sel) return;
+  const currentPlace = AppState.places[AppState.selectedDuDiIdx];
+  if (!currentPlace) return;
+
+  const students = currentPlace.siswa;
+  sel.innerHTML = '';
+  const optAll = document.createElement('option');
+  optAll.value = 'all';
+  optAll.textContent = `★ Semua Siswa (${students.length} Siswa)`;
+  sel.appendChild(optAll);
+
+  students.forEach((s, idx) => {
+    const opt = document.createElement('option');
+    opt.value = s.siswa;
+    opt.textContent = `${idx + 1}. ${s.siswa} (${s.kelas})`;
+    sel.appendChild(opt);
+  });
+
+  const validVals = ['all', ...students.map(s => s.siswa)];
+  if (!validVals.includes(AppState.selectedSiswaFilterPerDuDi)) {
+    AppState.selectedSiswaFilterPerDuDi = 'all';
+  }
+  sel.value = AppState.selectedSiswaFilterPerDuDi;
+}
+
+// Populate Per-Siswa Mode Dropdown
+function populateSiswaSelect() {
+  const sel = document.getElementById('siswaSelect');
+  if (!sel) return;
+  sel.innerHTML = '';
+
+  AppState.records.forEach((r, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = `${idx + 1}. ${r.siswa} - ${r.kelas} (${r.tempat || '-'})`;
+    sel.appendChild(opt);
+  });
+
+  if (AppState.selectedSiswaIdx >= AppState.records.length) {
+    AppState.selectedSiswaIdx = 0;
+  }
+  sel.value = AppState.selectedSiswaIdx;
 }
 
 // Populate Sidebar Template Selector
@@ -765,25 +888,37 @@ function updatePaperSizeClass() {
   }
 }
 
-// Switch between Selection Modes: 'per-guru' vs 'per-du-di'
+// Switch between Selection Modes: 'per-guru' vs 'per-du-di' vs 'per-siswa'
 function setSelectionMode(mode) {
   AppState.selectedMode = mode;
   const btnPerGuru = document.getElementById('btnModePerGuru');
   const btnPerDuDi = document.getElementById('btnModePerDuDi');
+  const btnPerSiswa = document.getElementById('btnModePerSiswa');
   const panelPerGuru = document.getElementById('panelPerGuru');
   const panelPerDuDi = document.getElementById('panelPerDuDi');
+  const panelPerSiswa = document.getElementById('panelPerSiswa');
 
-  if (mode === 'per-guru') {
-    btnPerGuru.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow-sm transition";
-    btnPerDuDi.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition";
-    panelPerGuru.classList.remove('hidden');
-    panelPerDuDi.classList.add('hidden');
-  } else {
-    btnPerDuDi.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow-sm transition";
-    btnPerGuru.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition";
-    panelPerDuDi.classList.remove('hidden');
-    panelPerGuru.classList.add('hidden');
+  const activeCls = "py-2 text-[11px] font-semibold rounded-lg bg-indigo-600 text-white shadow-sm transition truncate px-1 text-center";
+  const inactiveCls = "py-2 text-[11px] font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition truncate px-1 text-center";
+
+  if (btnPerGuru) btnPerGuru.className = mode === 'per-guru' ? activeCls : inactiveCls;
+  if (btnPerDuDi) btnPerDuDi.className = mode === 'per-du-di' ? activeCls : inactiveCls;
+  if (btnPerSiswa) btnPerSiswa.className = mode === 'per-siswa' ? activeCls : inactiveCls;
+
+  if (panelPerGuru) {
+    if (mode === 'per-guru') panelPerGuru.classList.remove('hidden');
+    else panelPerGuru.classList.add('hidden');
   }
+  if (panelPerDuDi) {
+    if (mode === 'per-du-di') panelPerDuDi.classList.remove('hidden');
+    else panelPerDuDi.classList.add('hidden');
+  }
+  if (panelPerSiswa) {
+    if (mode === 'per-siswa') panelPerSiswa.classList.remove('hidden');
+    else panelPerSiswa.classList.add('hidden');
+  }
+
+  updateUIFromState();
   renderPreview();
 }
 
@@ -792,7 +927,9 @@ function onGuruChange() {
   const select = document.getElementById('guruSelect');
   AppState.selectedGuruIdx = parseInt(select.value, 10);
   AppState.selectedTempatFilter = 'all';
+  AppState.selectedSiswaFilterPerGuru = 'all';
   updateTempatFilterDropdown();
+  updateSiswaFilterPerGuruDropdown();
   updateUIFromState();
   renderPreview();
 }
@@ -801,6 +938,21 @@ function onGuruChange() {
 function onTempatFilterChange() {
   const select = document.getElementById('tempatFilterSelect');
   AppState.selectedTempatFilter = select.value;
+  AppState.selectedSiswaFilterPerGuru = 'all';
+  updateSiswaFilterPerGuruDropdown();
+  updateUIFromState();
+  renderPreview();
+}
+
+// Event handler when user changes Siswa filter for Guru or DU/DI
+function onSiswaFilterChange(context) {
+  if (context === 'per-guru') {
+    const sel = document.getElementById('siswaFilterSelectPerGuru');
+    if (sel) AppState.selectedSiswaFilterPerGuru = sel.value;
+  } else if (context === 'per-du-di') {
+    const sel = document.getElementById('siswaFilterSelectPerDuDi');
+    if (sel) AppState.selectedSiswaFilterPerDuDi = sel.value;
+  }
   updateUIFromState();
   renderPreview();
 }
@@ -809,6 +961,18 @@ function onTempatFilterChange() {
 function onDuDiChange() {
   const select = document.getElementById('dudiSelect');
   AppState.selectedDuDiIdx = parseInt(select.value, 10);
+  AppState.selectedSiswaFilterPerDuDi = 'all';
+  updateSiswaFilterPerDuDiDropdown();
+  updateUIFromState();
+  renderPreview();
+}
+
+// Event handler when user selects a Student in Per Siswa mode
+function onSiswaChange() {
+  const select = document.getElementById('siswaSelect');
+  if (select) {
+    AppState.selectedSiswaIdx = parseInt(select.value, 10) || 0;
+  }
   updateUIFromState();
   renderPreview();
 }
@@ -828,20 +992,47 @@ function getCurrentLetterData() {
       targetAlamat = filteredSiswa.length > 0 ? (filteredSiswa[0].alamat || '') : '';
     }
 
+    if (AppState.selectedSiswaFilterPerGuru && AppState.selectedSiswaFilterPerGuru !== 'all') {
+      filteredSiswa = filteredSiswa.filter(s => s.siswa === AppState.selectedSiswaFilterPerGuru);
+      if (filteredSiswa.length > 0) {
+        targetTempat = filteredSiswa[0].tempat;
+        targetAlamat = filteredSiswa[0].alamat || targetAlamat;
+      }
+    }
+
+    const firstStudent = filteredSiswa[0] || null;
+
     return {
       guruNama: guruData.guru,
       guruNip: guruData.nip || '-',
       tempatPkl: targetTempat,
       alamatPkl: targetAlamat,
-      isSpecificTempat: isSpecificTempat,
+      isSpecificTempat: isSpecificTempat || (AppState.selectedSiswaFilterPerGuru !== 'all'),
       students: filteredSiswa,
-      totalSiswa: filteredSiswa.length
+      totalSiswa: filteredSiswa.length,
+      siswa: firstStudent ? (firstStudent.siswa || firstStudent.nama) : '-',
+      nis: firstStudent ? (firstStudent.nis || '-') : '-',
+      nisn: firstStudent ? (firstStudent.nisn || '-') : '-',
+      kelas: firstStudent ? (firstStudent.kelas || '-') : '-',
+      jurusan: firstStudent ? (firstStudent.jurusan || getJurusanFromKelas(firstStudent.kelas) || '-') : '-'
     };
-  } else {
+  } else if (AppState.selectedMode === 'per-du-di') {
     // Mode per DU/DI
     const placeData = AppState.places[AppState.selectedDuDiIdx] || { tempat: '-', alamat: '', gurus: [], siswa: [] };
-    const guruFirst = placeData.gurus.length > 0 ? placeData.gurus[0].guru : '-';
-    const nipFirst = placeData.gurus.length > 0 ? placeData.gurus[0].nip : '-';
+    let students = placeData.siswa;
+
+    if (AppState.selectedSiswaFilterPerDuDi && AppState.selectedSiswaFilterPerDuDi !== 'all') {
+      students = students.filter(s => s.siswa === AppState.selectedSiswaFilterPerDuDi);
+    }
+
+    let guruFirst = placeData.gurus.length > 0 ? placeData.gurus[0].guru : '-';
+    let nipFirst = placeData.gurus.length > 0 ? placeData.gurus[0].nip : '-';
+    if (students.length > 0 && students[0].guru) {
+      guruFirst = students[0].guru;
+      nipFirst = students[0].nip || nipFirst;
+    }
+
+    const firstStudent = students[0] || null;
 
     return {
       guruNama: guruFirst,
@@ -849,8 +1040,42 @@ function getCurrentLetterData() {
       tempatPkl: placeData.tempat,
       alamatPkl: placeData.alamat,
       isSpecificTempat: true,
-      students: placeData.siswa,
-      totalSiswa: placeData.siswa.length
+      students: students,
+      totalSiswa: students.length,
+      siswa: firstStudent ? (firstStudent.siswa || firstStudent.nama) : '-',
+      nis: firstStudent ? (firstStudent.nis || '-') : '-',
+      nisn: firstStudent ? (firstStudent.nisn || '-') : '-',
+      kelas: firstStudent ? (firstStudent.kelas || '-') : '-',
+      jurusan: firstStudent ? (firstStudent.jurusan || getJurusanFromKelas(firstStudent.kelas) || '-') : '-'
+    };
+  } else {
+    // Mode per Siswa
+    const rec = AppState.records[AppState.selectedSiswaIdx] || AppState.records[0] || {
+      no: 1,
+      siswa: '-',
+      nis: '-',
+      nisn: '-',
+      kelas: '-',
+      jurusan: '-',
+      guru: '-',
+      nip: '-',
+      tempat: '-',
+      alamat: ''
+    };
+
+    return {
+      guruNama: rec.guru || '-',
+      guruNip: rec.nip || '-',
+      tempatPkl: rec.tempat || '-',
+      alamatPkl: rec.alamat || '',
+      isSpecificTempat: true,
+      students: [rec],
+      totalSiswa: 1,
+      siswa: rec.siswa,
+      nis: rec.nis || '-',
+      nisn: rec.nisn || '-',
+      kelas: rec.kelas || '-',
+      jurusan: rec.jurusan || getJurusanFromKelas(rec.kelas) || '-'
     };
   }
 }
@@ -870,6 +1095,25 @@ function updateUIFromState() {
   if (infoTempatTujuan) {
     infoTempatTujuan.textContent = letter.isSpecificTempat ? letter.tempatPkl : `Semua Lokasi PKL (${letter.totalSiswa} Siswa)`;
   }
+
+  // Update Detail Siswa Terpilih (jika 1 siswa difilter atau mode per-siswa)
+  const detailRow = document.getElementById('infoSiswaDetailRow');
+  if (detailRow) {
+    if (letter.totalSiswa === 1 && letter.students && letter.students.length > 0) {
+      const s = letter.students[0];
+      detailRow.classList.remove('hidden');
+      const sNama = document.getElementById('infoDetailSiswaNama');
+      const sNis = document.getElementById('infoDetailSiswaNis');
+      const sNisn = document.getElementById('infoDetailSiswaNisn');
+      const sJurusan = document.getElementById('infoDetailSiswaJurusan');
+      if (sNama) sNama.textContent = s.siswa || s.nama || '-';
+      if (sNis) sNis.textContent = s.nis || '-';
+      if (sNisn) sNisn.textContent = s.nisn || '-';
+      if (sJurusan) sJurusan.textContent = s.jurusan || getJurusanFromKelas(s.kelas) || s.kelas || '-';
+    } else {
+      detailRow.classList.add('hidden');
+    }
+  }
 }
 
 // Helper: Substitute dynamic variables into template HTML
@@ -879,7 +1123,9 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
   const firstStudent = (letter.students && letter.students.length > 0) ? letter.students[0] : null;
   const siswaNama = firstStudent ? (firstStudent.siswa || firstStudent.nama) : (letter.siswa || '-');
   const siswaNis = firstStudent ? (firstStudent.nis || '-') : '-';
+  const siswaNisn = firstStudent ? (firstStudent.nisn || '-') : '-';
   const siswaKelas = firstStudent ? (firstStudent.kelas || '-') : '-';
+  const siswaJurusan = firstStudent ? (firstStudent.jurusan || getJurusanFromKelas(firstStudent.kelas) || '-') : '-';
   const tempatPkl = letter.tempatPkl || (firstStudent ? firstStudent.tempat : 'Marvella');
 
   return templateHtml
@@ -901,7 +1147,9 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{alamatPkl}/g, letter.alamatPkl || '')
     .replace(/{siswaNama}/g, siswaNama)
     .replace(/{siswaNis}/g, siswaNis)
+    .replace(/{siswaNisn}/g, siswaNisn)
     .replace(/{siswaKelas}/g, siswaKelas)
+    .replace(/{siswaJurusan}/g, siswaJurusan)
     .replace(/{lamaPkl}/g, '6 bulan')
     .replace(/{jabatanGuru}/g, 'Guru Pembimbing PKL');
 }
@@ -2800,7 +3048,10 @@ function renderDatabaseTable() {
     const matchSearch = !q || 
       (r.guru && r.guru.toLowerCase().includes(q)) ||
       (r.siswa && r.siswa.toLowerCase().includes(q)) ||
+      (r.nis && r.nis.toLowerCase().includes(q)) ||
+      (r.nisn && r.nisn.toLowerCase().includes(q)) ||
       (r.kelas && r.kelas.toLowerCase().includes(q)) ||
+      (r.jurusan && r.jurusan.toLowerCase().includes(q)) ||
       (r.tempat && r.tempat.toLowerCase().includes(q));
     const matchKelas = fKelas === 'all' || r.kelas === fKelas;
     return matchSearch && matchKelas;
@@ -2810,7 +3061,7 @@ function renderDatabaseTable() {
 
   tbody.innerHTML = '';
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400 text-xs">Tidak ada data siswa ditemukan.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-slate-400 text-xs">Tidak ada data siswa ditemukan.</td></tr>`;
     return;
   }
 
@@ -2832,7 +3083,10 @@ function renderDatabaseTable() {
     tr.innerHTML = `
       <td class="p-2.5 text-center font-medium">${idx + 1}</td>
       <td class="p-2.5 font-semibold text-slate-900">${r.siswa || ''}</td>
+      <td class="p-2.5 text-center font-mono text-[11px] text-slate-600">${r.nis || '-'}</td>
+      <td class="p-2.5 text-center font-mono text-[11px] text-slate-600">${r.nisn || '-'}</td>
       <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[11px]">${r.kelas || ''}</span></td>
+      <td class="p-2.5 text-slate-700 text-[11px]">${r.jurusan || getJurusanFromKelas(r.kelas) || '-'}</td>
       <td class="p-2.5">${r.guru || ''}</td>
       <td class="p-2.5 font-medium text-indigo-700">${r.tempat || ''}</td>
       <td class="p-2.5 text-slate-500 max-w-xs truncate" title="${r.alamat || ''}">${r.alamat || '-'}</td>
@@ -2906,7 +3160,10 @@ function openStudentModal(mode, no) {
 
     document.getElementById('studentFormNo').value = rec.no;
     document.getElementById('studentFormNama').value = rec.siswa || '';
+    document.getElementById('studentFormNis').value = rec.nis || '';
+    document.getElementById('studentFormNisn').value = rec.nisn || '';
     document.getElementById('studentFormKelas').value = rec.kelas || '';
+    document.getElementById('studentFormJurusan').value = rec.jurusan || getJurusanFromKelas(rec.kelas) || '';
     document.getElementById('studentFormGuru').value = rec.guru || '';
     document.getElementById('studentFormNip').value = rec.nip || '';
     document.getElementById('studentFormTempat').value = rec.tempat || '';
@@ -2919,7 +3176,10 @@ function openStudentModal(mode, no) {
 
     document.getElementById('studentFormNo').value = '';
     document.getElementById('studentFormNama').value = '';
+    document.getElementById('studentFormNis').value = '';
+    document.getElementById('studentFormNisn').value = '';
     document.getElementById('studentFormKelas').value = '';
+    document.getElementById('studentFormJurusan').value = '';
     const curGuru = AppState.gurus[AppState.selectedGuruIdx];
     document.getElementById('studentFormGuru').value = curGuru ? curGuru.guru : '';
     document.getElementById('studentFormNip').value = curGuru ? curGuru.nip : '';
@@ -2943,7 +3203,11 @@ function closeStudentModal() {
 async function saveStudentForm() {
   const noVal = document.getElementById('studentFormNo').value;
   const nama = document.getElementById('studentFormNama').value.trim();
+  const nis = (document.getElementById('studentFormNis') ? document.getElementById('studentFormNis').value.trim() : '');
+  const nisn = (document.getElementById('studentFormNisn') ? document.getElementById('studentFormNisn').value.trim() : '');
   const kelas = document.getElementById('studentFormKelas').value.trim();
+  const rawJurusan = (document.getElementById('studentFormJurusan') ? document.getElementById('studentFormJurusan').value.trim() : '');
+  const jurusan = rawJurusan || getJurusanFromKelas(kelas);
   const guru = document.getElementById('studentFormGuru').value.trim();
   const nip = document.getElementById('studentFormNip').value.trim();
   const tempat = document.getElementById('studentFormTempat').value.trim();
@@ -2960,7 +3224,10 @@ async function saveStudentForm() {
     const idx = AppState.records.findIndex(r => r.no === no);
     if (idx !== -1) {
       AppState.records[idx].siswa = nama;
+      AppState.records[idx].nis = nis;
+      AppState.records[idx].nisn = nisn;
       AppState.records[idx].kelas = kelas;
+      AppState.records[idx].jurusan = jurusan;
       AppState.records[idx].guru = guru;
       AppState.records[idx].nip = nip;
       AppState.records[idx].tempat = tempat;
@@ -2972,7 +3239,7 @@ async function saveStudentForm() {
         await fetch('/api/siswa/update', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ no: no, siswa: nama, kelas: kelas, guru: guru, nip: nip, tempat: tempat, alamat: alamat })
+          body: JSON.stringify({ no: no, siswa: nama, nis: nis, nisn: nisn, kelas: kelas, jurusan: jurusan, guru: guru, nip: nip, tempat: tempat, alamat: alamat })
         });
       } catch (e) {
         console.warn('Backend update error:', e);
@@ -2986,7 +3253,10 @@ async function saveStudentForm() {
     const newRec = {
       no: newNo,
       siswa: nama,
+      nis: nis,
+      nisn: nisn,
       kelas: kelas,
+      jurusan: jurusan,
       guru: guru,
       nip: nip,
       tempat: tempat,
@@ -3094,7 +3364,10 @@ function handleExcelUpload(e) {
       const colGuru = headers.findIndex(h => h.includes('guru'));
       const colNip = headers.findIndex(h => h.includes('nip'));
       const colSiswa = headers.findIndex(h => h.includes('siswa'));
+      const colNis = headers.findIndex(h => h === 'nis' || h.includes('nomor induk') || h.includes('nis '));
+      const colNisn = headers.findIndex(h => h.includes('nisn'));
       const colKelas = headers.findIndex(h => h.includes('kelas'));
+      const colJurusan = headers.findIndex(h => h.includes('jurusan') || h.includes('keahlian') || h.includes('prodi'));
       const colTempat = headers.findIndex(h => h.includes('tempat'));
       const colAlamat = headers.findIndex(h => h.includes('alamat'));
 
@@ -3105,12 +3378,18 @@ function handleExcelUpload(e) {
         const siswa = row[colSiswa !== -1 ? colSiswa : 3] || '';
         if (!siswa) continue;
 
+        const kelasVal = (row[colKelas !== -1 ? colKelas : 4] || '').toString().trim();
+        const jurVal = (colJurusan !== -1 ? row[colJurusan] : '') || getJurusanFromKelas(kelasVal);
+
         newRecords.push({
           no: i,
           guru: (row[colGuru !== -1 ? colGuru : 1] || '').toString().trim(),
           nip: (row[colNip !== -1 ? colNip : 2] || '').toString().trim(),
           siswa: siswa.toString().trim(),
-          kelas: (row[colKelas !== -1 ? colKelas : 4] || '').toString().trim(),
+          nis: (colNis !== -1 ? (row[colNis] || '') : '').toString().trim(),
+          nisn: (colNisn !== -1 ? (row[colNisn] || '') : '').toString().trim(),
+          kelas: kelasVal,
+          jurusan: (jurVal || '').toString().trim(),
           tempat: (row[colTempat !== -1 ? colTempat : 5] || '').toString().trim(),
           alamat: (row[colAlamat !== -1 ? colAlamat : 6] || '').toString().trim()
         });
@@ -3151,7 +3430,10 @@ function exportRecordsToExcel() {
     'Nama Guru': r.guru || '',
     'NIP': r.nip || '',
     'Nama Siswa': r.siswa || '',
+    'NIS': r.nis || '',
+    'NISN': r.nisn || '',
     'Kelas': r.kelas || '',
+    'Jurusan': r.jurusan || getJurusanFromKelas(r.kelas) || '',
     'Tempat PKL': r.tempat || '',
     'Alamat PKL': r.alamat || ''
   }));

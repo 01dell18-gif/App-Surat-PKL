@@ -693,8 +693,7 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
         mem_buffer.seek(0)
         return mem_buffer.getvalue()
 
-def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", siswa_nis="-", siswa_kelas="",
-                             tempat_pkl="", no_surat="B.10.429.1/8464/SMKN1KLK/DIKPORA", tgl_surat="07 Oktober 2026",
+def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", siswa_nis="-", siswa_nisn="-", siswa_kelas="", siswa_jurusan="", tempat_pkl="", no_surat="B.10.429.1/8464/SMKN1KLK/DIKPORA", tgl_surat="07 Oktober 2026",
                              nama_sekolah="SMKN 1 FYJ Channel", kepsek_nama="Sri Rejeki, S.Pd., M.Pd.",
                              kepsek_pangkat="Pembina (IV/a)", kepsek_nip="19770309 200903 2 010",
                              show_kop=True, show_ttd=True, paper_size="f4"):
@@ -808,7 +807,7 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
             t = ET.SubElement(r, f'{{{NS["w"]}}}t')
             t.text = f' {siswa_nama}'
 
-        if text.startswith('NIS:') and siswa_nis:
+        if text.startswith('NIS:'):
             r = ET.SubElement(p, f'{{{NS["w"]}}}r')
             rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')
             rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
@@ -816,9 +815,19 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
             sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
             sz.set(f'{{{NS["w"]}}}val', '24')
             t = ET.SubElement(r, f'{{{NS["w"]}}}t')
-            t.text = f' {siswa_nis}'
+            nis_val = siswa_nis if (siswa_nis and siswa_nis != '-') else ''
+            nisn_val = siswa_nisn if (siswa_nisn and siswa_nisn != '-') else ''
+            if nis_val and nisn_val:
+                t.text = f' {nis_val} / NISN: {nisn_val}'
+            elif nis_val:
+                t.text = f' {nis_val}'
+            elif nisn_val:
+                t.text = f' NISN: {nisn_val}'
+            else:
+                t.text = ' -'
 
-        if text.startswith('Jurusan:') and siswa_kelas:
+        jur_val = siswa_jurusan or siswa_kelas
+        if text.startswith('Jurusan:') and jur_val:
             r = ET.SubElement(p, f'{{{NS["w"]}}}r')
             rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')
             rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
@@ -826,7 +835,7 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
             sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
             sz.set(f'{{{NS["w"]}}}val', '24')
             t = ET.SubElement(r, f'{{{NS["w"]}}}t')
-            t.text = f' {siswa_kelas}'
+            t.text = f' {jur_val}'
 
         # Tempat PKL
         if 'Marvella' in text and tempat_pkl:

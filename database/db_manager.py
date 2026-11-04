@@ -42,7 +42,7 @@ def export_sql_dump():
         cur = conn.cursor()
 
         # Baca seluruh siswa_pkl
-        cur.execute("SELECT no_urut, guru, nip, siswa, kelas, tempat, alamat FROM siswa_pkl ORDER BY no_urut ASC, id ASC")
+        cur.execute("SELECT no_urut, guru, nip, siswa, nis, nisn, kelas, jurusan, tempat, alamat FROM siswa_pkl ORDER BY no_urut ASC, id ASC")
         records = cur.fetchall()
 
         # Baca pengaturan
@@ -74,7 +74,10 @@ def export_sql_dump():
   `guru` VARCHAR(255) NOT NULL,
   `nip` VARCHAR(50) DEFAULT '',
   `siswa` VARCHAR(255) NOT NULL,
+  `nis` VARCHAR(50) DEFAULT '',
+  `nisn` VARCHAR(50) DEFAULT '',
   `kelas` VARCHAR(50) NOT NULL,
+  `jurusan` VARCHAR(100) DEFAULT '',
   `tempat` VARCHAR(255) NOT NULL,
   `alamat` TEXT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -96,15 +99,18 @@ def export_sql_dump():
                 v_guru = escape_sql(r['guru'])
                 v_nip = escape_sql(r['nip'])
                 v_siswa = escape_sql(r['siswa'])
+                v_nis = escape_sql(r['nis'])
+                v_nisn = escape_sql(r['nisn'])
                 v_kelas = escape_sql(r['kelas'])
+                v_jurusan = escape_sql(r['jurusan'])
                 v_tempat = escape_sql(r['tempat'])
                 v_alamat = escape_sql(r['alamat'])
-                val_rows.append(f"({v_no}, {v_guru}, {v_nip}, {v_siswa}, {v_kelas}, {v_tempat}, {v_alamat})")
+                val_rows.append(f"({v_no}, {v_guru}, {v_nip}, {v_siswa}, {v_nis}, {v_nisn}, {v_kelas}, {v_jurusan}, {v_tempat}, {v_alamat})")
             
             batch_size = 50
             for i in range(0, len(val_rows), batch_size):
                 chunk = val_rows[i:i+batch_size]
-                sql_lines.append("INSERT INTO `siswa_pkl` (`no_urut`, `guru`, `nip`, `siswa`, `kelas`, `tempat`, `alamat`) VALUES\n" + ",\n".join(chunk) + ";")
+                sql_lines.append("INSERT INTO `siswa_pkl` (`no_urut`, `guru`, `nip`, `siswa`, `nis`, `nisn`, `kelas`, `jurusan`, `tempat`, `alamat`) VALUES\n" + ",\n".join(chunk) + ";")
         sql_lines.append("UNLOCK TABLES;\n")
 
         # Table: pengaturan
@@ -176,7 +182,7 @@ def get_all_records():
     conn = get_connection()
     try:
         cur = conn.cursor()
-        cur.execute("SELECT id, no_urut, guru, nip, siswa, kelas, tempat, alamat FROM siswa_pkl ORDER BY no_urut ASC, id ASC")
+        cur.execute("SELECT id, no_urut, guru, nip, siswa, nis, nisn, kelas, jurusan, tempat, alamat FROM siswa_pkl ORDER BY no_urut ASC, id ASC")
         rows = cur.fetchall()
         result = []
         for r in rows:
@@ -186,7 +192,10 @@ def get_all_records():
                 'guru': r['guru'] or '',
                 'nip': r['nip'] or '',
                 'siswa': r['siswa'] or '',
+                'nis': r['nis'] or '',
+                'nisn': r['nisn'] or '',
                 'kelas': r['kelas'] or '',
+                'jurusan': r['jurusan'] or '',
                 'tempat': r['tempat'] or '',
                 'alamat': r['alamat'] or ''
             })
@@ -206,14 +215,17 @@ def add_student_record(data):
         no_val = data.get('no') or max_no
 
         cur.execute("""
-        INSERT INTO siswa_pkl (no_urut, guru, nip, siswa, kelas, tempat, alamat)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO siswa_pkl (no_urut, guru, nip, siswa, nis, nisn, kelas, jurusan, tempat, alamat)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             no_val,
             data.get('guru', '').strip(),
             data.get('nip', '').strip(),
             data.get('siswa', '').strip(),
+            data.get('nis', '').strip(),
+            data.get('nisn', '').strip(),
             data.get('kelas', '').strip(),
+            data.get('jurusan', '').strip(),
             data.get('tempat', '').strip(),
             data.get('alamat', '').strip()
         ))
@@ -227,7 +239,10 @@ def add_student_record(data):
             'guru': data.get('guru', '').strip(),
             'nip': data.get('nip', '').strip(),
             'siswa': data.get('siswa', '').strip(),
+            'nis': data.get('nis', '').strip(),
+            'nisn': data.get('nisn', '').strip(),
             'kelas': data.get('kelas', '').strip(),
+            'jurusan': data.get('jurusan', '').strip(),
             'tempat': data.get('tempat', '').strip(),
             'alamat': data.get('alamat', '').strip()
         }
@@ -245,7 +260,7 @@ def update_student_record(data):
         if id_val:
             cur.execute("""
             UPDATE siswa_pkl
-            SET guru = ?, nip = ?, siswa = ?, kelas = ?, tempat = ?, alamat = ?, updated_at = CURRENT_TIMESTAMP
+            SET guru = ?, nip = ?, siswa = ?, nis = ?, nisn = ?, kelas = ?, jurusan = ?, tempat = ?, alamat = ?, updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
             """, (
                 data.get('guru', '').strip(),
@@ -259,7 +274,7 @@ def update_student_record(data):
         elif no_val:
             cur.execute("""
             UPDATE siswa_pkl
-            SET guru = ?, nip = ?, siswa = ?, kelas = ?, tempat = ?, alamat = ?, updated_at = CURRENT_TIMESTAMP
+            SET guru = ?, nip = ?, siswa = ?, nis = ?, nisn = ?, kelas = ?, jurusan = ?, tempat = ?, alamat = ?, updated_at = CURRENT_TIMESTAMP
             WHERE no_urut = ?
             """, (
                 data.get('guru', '').strip(),
@@ -307,14 +322,17 @@ def save_all_records(records):
         for idx, r in enumerate(records, 1):
             no_val = r.get('no', idx)
             cur.execute("""
-            INSERT INTO siswa_pkl (no_urut, guru, nip, siswa, kelas, tempat, alamat)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO siswa_pkl (no_urut, guru, nip, siswa, nis, nisn, kelas, jurusan, tempat, alamat)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 no_val,
                 r.get('guru', ''),
                 r.get('nip', ''),
                 r.get('siswa', ''),
+                r.get('nis', ''),
+                r.get('nisn', ''),
                 r.get('kelas', ''),
+                r.get('jurusan', ''),
                 r.get('tempat', ''),
                 r.get('alamat', '')
             ))
@@ -555,7 +573,10 @@ def restore_database_from_file(file_bytes, filename=''):
                 guru VARCHAR(255) NOT NULL,
                 nip VARCHAR(50) DEFAULT '',
                 siswa VARCHAR(255) NOT NULL,
+                nis VARCHAR(50) DEFAULT '',
+                nisn VARCHAR(50) DEFAULT '',
                 kelas VARCHAR(50) NOT NULL,
+                jurusan VARCHAR(100) DEFAULT '',
                 tempat VARCHAR(255) NOT NULL,
                 alamat TEXT DEFAULT '',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
