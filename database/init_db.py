@@ -31,7 +31,7 @@ DEFAULT_SETTINGS = [
     ('tglPenarikan', '30 April 2027', 'jadwal', 'Tanggal penarikan siswa dari DU/DI'),
     ('tglSurat', '06 Oktober 2026', 'jadwal', 'Tanggal penerbitan surat pengantar resmi'),
     ('noSurat', 'B.10.000/9546/SMKN1KLK/DIKPORA', 'jadwal', 'Nomor surat dinas standar'),
-    ('kopUrl', '', 'media', 'Path / URL kustom kop surat (kosong = bawaan kop.png)'),
+    ('kopUrl', '', 'media', 'Path / URL kustom kop surat (kosong = bawaan kop_fyj.png)'),
     ('ttdUrl', '', 'media', 'Path / URL kustom TTD barcode elektronik (kosong = bawaan ttdelektronik.jpg)'),
     ('ttdBasahUrl', '', 'media', 'Path / URL kustom TTD basah (kosong = bawaan ttd_basah.png)'),
     ('logoWebUrl', '', 'media', 'Path / URL kustom logo web aplikasi (kosong = bawaan logo_fyj.png)')

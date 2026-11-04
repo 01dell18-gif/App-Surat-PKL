@@ -661,8 +661,15 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
             elif item.filename in ('word/media/image1.jpg', 'word/media/image2.jpeg'):
                 if show_kop and custom_kop_bytes:
                     zout.writestr(item, custom_kop_bytes)
+                elif show_kop:
+                    kop_fyj_file = os.path.join(images_dir, 'kop_fyj.png')
+                    if os.path.exists(kop_fyj_file):
+                        with open(kop_fyj_file, 'rb') as kf:
+                            zout.writestr(item, kf.read())
+                    else:
+                        zout.writestr(item, zin.read(item.filename))
                 else:
-                    zout.writestr(item, zin.read(item.filename))
+                    zout.writestr(item, b'')
             elif item.filename == 'word/media/image3.png':
                 if ttd_final_bytes:
                     zout.writestr(item, ttd_final_bytes)
@@ -750,6 +757,11 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
                 all_files['word/media/image1.png'] = base64.b64decode(kop_url.split(',', 1)[1])
             elif os.path.exists(os.path.join(base_dir, kop_url)):
                 with open(os.path.join(base_dir, kop_url), 'rb') as kf:
+                    all_files['word/media/image1.png'] = kf.read()
+        elif show_kop and 'word/media/image1.png' in all_files:
+            default_kop_file = os.path.join(base_dir, 'assets', 'images', 'kop_fyj.png')
+            if os.path.exists(default_kop_file):
+                with open(default_kop_file, 'rb') as kf:
                     all_files['word/media/image1.png'] = kf.read()
     except Exception as img_err:
         print(f"[WARN] Gagal menyisipkan kustom kop: {img_err}")

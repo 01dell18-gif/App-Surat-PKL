@@ -259,7 +259,7 @@ function getKopSrc() {
   if (AppState.appSettings && AppState.appSettings.kopUrl) {
     return AppState.appSettings.kopUrl;
   }
-  return (typeof ASSETS !== 'undefined' && ASSETS.kop) ? ASSETS.kop : 'assets/images/kop.png';
+  return (typeof ASSETS !== 'undefined' && ASSETS.kop) ? ASSETS.kop : 'assets/images/kop_fyj.png';
 }
 
 // Helper: Get Active TTD Elektronik (Custom or Default Base64/File)
@@ -878,7 +878,7 @@ function renderPreview() {
   const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                        (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
 
-  // 1. Kop Surat (GARIS GANDA DIHILANGKAN KARENA KOP.PNG SUDAH MEMILIKI GARIS BAWAH RESMI)
+  // 1. Kop Surat (GARIS GANDA DIHILANGKAN KARENA KOP_FYJ.PNG SUDAH MEMILIKI GARIS BAWAH RESMI)
   const kopContainer = document.getElementById('docKopContainer');
   if (kopContainer) {
     if (dOpt.showKop) {
@@ -1428,7 +1428,7 @@ function updateSettingsMediaPreviews() {
   // Badges
   const kopBadge = document.getElementById('badgeSettingsKop');
   if (kopBadge) {
-    kopBadge.textContent = AppState.appSettings.kopUrl ? 'Kustom Aktif' : 'Standar Bawaan (kop.png)';
+    kopBadge.textContent = AppState.appSettings.kopUrl ? 'Kustom Aktif' : 'Standar Bawaan (kop_fyj.png)';
     kopBadge.className = AppState.appSettings.kopUrl ? 'px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800' : 'px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600';
   }
 
