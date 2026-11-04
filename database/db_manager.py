@@ -413,3 +413,219 @@ def delete_template(tpl_id):
         return cur.rowcount > 0
     finally:
         conn.close()
+
+def split_sql_statements(sql_text):
+    """Memecah skrip SQL menjadi daftar perintah dengan aman terhadap string ber-kutip dan komentar"""
+    statements = []
+    current = []
+    in_quote = False
+    quote_char = ''
+    i = 0
+    n = len(sql_text)
+    while i < n:
+        c = sql_text[i]
+        if not in_quote:
+            if c in ("'", '"', '`'):
+                in_quote = True
+                quote_char = c
+                current.append(c)
+            elif c == '-' and i + 1 < n and sql_text[i+1] == '-':
+                eol = sql_text.find('\n', i)
+                if eol == -1:
+                    break
+                i = eol
+            elif c == ';':
+                stmt = ''.join(current).strip()
+                if stmt:
+                    statements.append(stmt)
+                current = []
+            else:
+                current.append(c)
+        else:
+            current.append(c)
+            if c == quote_char:
+                if quote_char == "'" and i + 1 < n and sql_text[i+1] == "'":
+                    current.append("'")
+                    i += 1
+                elif c != '\\':
+                    in_quote = False
+        i += 1
+    if current:
+        stmt = ''.join(current).strip()
+        if stmt:
+            statements.append(stmt)
+    return statements
+
+def restore_database_from_file(file_bytes, filename=''):
+    """
+    Memulihkan database SQLite dari berkas binary (.db / .sqlite) 
+    atau berkas skrip dump SQL (.sql).
+    Membuat cadangan otomatis ke database/surat_pkl.db.bak sebelum memulihkan.
+    """
+    import shutil
+    ensure_db()
+    is_sqlite_binary = file_bytes.startswith(b'SQLite format 3\x00')
+    backup_path = DB_PATH + '.bak'
+
+    if is_sqlite_binary:
+        temp_path = os.path.join(os.path.dirname(DB_PATH), 'temp_import.db')
+        try:
+            with open(temp_path, 'wb') as tf:
+                tf.write(file_bytes)
+            
+            # Cek integritas berkas SQLite
+            test_conn = sqlite3.connect(temp_path)
+            test_cur = test_conn.cursor()
+            test_cur.execute("PRAGMA integrity_check;")
+            row = test_cur.fetchone()
+            if not row or row[0].lower() != 'ok':
+                raise ValueError("Integritas berkas SQLite tidak valid.")
+            
+            # Cek ketersediaan tabel siswa_pkl
+            test_cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='siswa_pkl';")
+            if not test_cur.fetchone():
+                raise ValueError("Tabel 'siswa_pkl' tidak ditemukan dalam berkas database yang diunggah.")
+            test_conn.close()
+
+            # Buat cadangan berkas aktif
+            if os.path.exists(DB_PATH):
+                shutil.copyfile(DB_PATH, backup_path)
+
+            # Timpa dengan database baru
+            shutil.copyfile(temp_path, DB_PATH)
+        finally:
+            if os.path.exists(temp_path):
+                try:
+                    os.remove(temp_path)
+                except Exception:
+                    pass
+        
+        # Sinkronkan kembali skrip dump SQL
+        export_sql_dump()
+        records = get_all_records()
+        settings = get_all_settings()
+        templates = get_all_templates()
+        return {
+            'success': True,
+            'type': 'sqlite',
+            'filename': filename,
+            'message': f"Database SQLite berhasil dipulihkan dari '{filename}'.",
+            'count': len(records),
+            'records': records,
+            'settings': settings,
+            'templates': templates
+        }
+
+    else:
+        # Berkas skrip SQL
+        sql_text = None
+        for enc in ('utf-8', 'utf-8-sig', 'latin-1', 'cp1252'):
+            try:
+                sql_text = file_bytes.decode(enc)
+                break
+            except Exception:
+                continue
+
+        if not sql_text:
+            raise ValueError("Gagal membaca berkas SQL (encoding tidak didukung).")
+
+        statements = split_sql_statements(sql_text)
+        insert_stmts = []
+        for s in statements:
+            s_stripped = s.strip()
+            if s_stripped.upper().startswith('INSERT INTO'):
+                insert_stmts.append(s_stripped.replace('`', ''))
+
+        if not insert_stmts:
+            raise ValueError("Tidak ditemukan perintah 'INSERT INTO' yang valid di berkas SQL.")
+
+        # Buat cadangan berkas aktif
+        if os.path.exists(DB_PATH):
+            shutil.copyfile(DB_PATH, backup_path)
+
+        conn = sqlite3.connect(DB_PATH)
+        try:
+            cur = conn.cursor()
+            # Bersihkan dan inisialisasi ulang skema tabel SQLite
+            cur.execute("DROP TABLE IF EXISTS siswa_pkl;")
+            cur.execute("""
+            CREATE TABLE siswa_pkl (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                no_urut INTEGER NOT NULL,
+                guru VARCHAR(255) NOT NULL,
+                nip VARCHAR(50) DEFAULT '',
+                siswa VARCHAR(255) NOT NULL,
+                kelas VARCHAR(50) NOT NULL,
+                tempat VARCHAR(255) NOT NULL,
+                alamat TEXT DEFAULT '',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """)
+
+            cur.execute("DROP TABLE IF EXISTS pengaturan;")
+            cur.execute("""
+            CREATE TABLE pengaturan (
+                kunci VARCHAR(100) PRIMARY KEY,
+                nilai TEXT NOT NULL,
+                kategori VARCHAR(50) DEFAULT 'umum',
+                keterangan TEXT DEFAULT ''
+            );
+            """)
+
+            cur.execute("DROP TABLE IF EXISTS template_surat;")
+            cur.execute("""
+            CREATE TABLE template_surat (
+                id VARCHAR(100) PRIMARY KEY,
+                nama VARCHAR(255) NOT NULL,
+                html_content TEXT NOT NULL,
+                is_default INTEGER DEFAULT 0,
+                status VARCHAR(20) DEFAULT 'active',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """)
+
+            # Eksekusi seluruh INSERT yang diekstrak
+            for stmt in insert_stmts:
+                try:
+                    cur.execute(stmt)
+                except Exception as stmt_err:
+                    print(f"[WARN] Lewati query bermasalah: {stmt_err}")
+
+            # Recreate Views
+            cur.execute("DROP VIEW IF EXISTS v_rekap_guru;")
+            cur.execute("""
+            CREATE VIEW v_rekap_guru AS
+            SELECT guru, nip, COUNT(*) AS total_siswa, GROUP_CONCAT(DISTINCT tempat) AS tempat_pkl_list
+            FROM siswa_pkl
+            GROUP BY guru, nip;
+            """)
+
+            cur.execute("DROP VIEW IF EXISTS v_rekap_tempat;")
+            cur.execute("""
+            CREATE VIEW v_rekap_tempat AS
+            SELECT tempat, alamat, COUNT(*) AS total_siswa, GROUP_CONCAT(DISTINCT kelas) AS kelas_list
+            FROM siswa_pkl
+            GROUP BY tempat, alamat;
+            """)
+
+            conn.commit()
+        finally:
+            conn.close()
+
+        export_sql_dump()
+        records = get_all_records()
+        settings = get_all_settings()
+        templates = get_all_templates()
+        return {
+            'success': True,
+            'type': 'sql',
+            'filename': filename,
+            'message': f"Database berhasil dipulihkan dari skrip SQL '{filename}' ({len(records)} data siswa dimuat).",
+            'count': len(records),
+            'records': records,
+            'settings': settings,
+            'templates': templates
+        }
+

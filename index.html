@@ -1153,9 +1153,10 @@
         </div>
 
         <!-- TAB 3: DATABASE SQLITE & SQL DUMP -->
-        <div id="settingsTabDatabase" class="space-y-5 hidden">
+        <div id="settingsTabDatabase" class="space-y-4 hidden">
           
-          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+          <!-- 1. Status Penyimpanan Database -->
+          <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3">
             <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2.5 flex items-center gap-2">
               <i data-lucide="database" class="w-4 h-4 text-sky-600"></i>
               <span>Status Penyimpanan Database SQLite & File SQL</span>
@@ -1165,9 +1166,9 @@
               Seluruh data siswa, penugasan guru pembimbing, tempat PKL, pengaturan kop, tanda tangan, dan template surat tersimpan secara persisten pada berkas database SQLite mandiri di folder <code class="px-2 py-0.5 rounded bg-slate-100 text-indigo-700 font-mono text-[11px]">database/surat_pkl.db</code> dan dicadangkan secara otomatis ke skrip dump <code class="px-2 py-0.5 rounded bg-slate-100 text-purple-700 font-mono text-[11px]">database/surat_pkl.sql</code>.
             </p>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
                   <i data-lucide="users" class="w-5 h-5"></i>
                 </div>
                 <div>
@@ -1176,8 +1177,8 @@
                 </div>
               </div>
 
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center">
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
                   <i data-lucide="graduation-cap" class="w-5 h-5"></i>
                 </div>
                 <div>
@@ -1186,8 +1187,8 @@
                 </div>
               </div>
 
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
                   <i data-lucide="building-2" class="w-5 h-5"></i>
                 </div>
                 <div>
@@ -1196,23 +1197,65 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Download Database Action Buttons -->
-            <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center gap-3">
-              <button onclick="downloadSqliteDatabase()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs">
+          <!-- 2. Pencadangan Database (Backup / Download) -->
+          <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2.5 flex items-center gap-2">
+              <i data-lucide="download-cloud" class="w-4 h-4 text-indigo-600"></i>
+              <span>Pencadangan Database (Backup / Download)</span>
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Unduh salinan berkas database aktif atau skrip dump SQL untuk disimpan sebagai cadangan lokal di komputer Anda:
+            </p>
+            <div class="flex flex-wrap items-center gap-2.5 pt-1">
+              <button type="button" onclick="downloadSqliteDatabase()" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer">
                 <i data-lucide="database" class="w-4 h-4"></i>
                 <span>Unduh Berkas Database (.DB)</span>
               </button>
 
-              <button onclick="downloadSqlDatabase()" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs">
+              <button type="button" onclick="downloadSqlDatabase()" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer">
                 <i data-lucide="file-code-2" class="w-4 h-4"></i>
                 <span>Unduh Skrip SQL Dump (.SQL)</span>
               </button>
 
-              <button onclick="syncRecordsToDatabase(true)" class="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 rounded-lg text-xs font-semibold transition flex items-center gap-2">
+              <button type="button" onclick="syncRecordsToDatabase(true)" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 rounded-lg text-xs font-semibold transition flex items-center gap-2 cursor-pointer">
                 <i data-lucide="upload-cloud" class="w-4 h-4 text-indigo-600"></i>
-                <span>Sinkronkan Sekarang ke Database</span>
+                <span>Sinkronkan Sekarang ke DB</span>
               </button>
+            </div>
+          </div>
+
+          <!-- 3. Pemulihan & Import Database (Restore Database) -->
+          <div class="bg-gradient-to-r from-emerald-50/50 to-teal-50/30 border border-emerald-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3">
+            <div class="flex items-center justify-between border-b border-emerald-100 pb-2.5">
+              <h4 class="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-2">
+                <i data-lucide="hard-drive-upload" class="w-4 h-4 text-emerald-600"></i>
+                <span>Pemulihan & Import Database (Restore Database)</span>
+              </h4>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Format .DB / .SQL</span>
+            </div>
+
+            <p class="text-xs text-slate-700 leading-relaxed">
+              Unggah berkas database SQLite (<code class="px-1.5 py-0.5 rounded bg-emerald-100/60 text-emerald-900 font-mono text-[11px]">.db</code> / <code class="px-1.5 py-0.5 rounded bg-emerald-100/60 text-emerald-900 font-mono text-[11px]">.sqlite</code>) atau skrip dump SQL (<code class="px-1.5 py-0.5 rounded bg-emerald-100/60 text-emerald-900 font-mono text-[11px]">.sql</code>) untuk memulihkan seluruh data aplikasi dan pengaturan lembaga secara menyeluruh.
+            </p>
+
+            <!-- Hidden File Input for DB Import -->
+            <input type="file" id="dbImportFileInput" accept=".db,.sqlite,.sqlite3,.sql" class="hidden" onchange="handleDatabaseImport(event)">
+
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <button type="button" onclick="document.getElementById('dbImportFileInput').click()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+                <span>Pilih Berkas & Pulihkan Database (.db / .sql)</span>
+              </button>
+            </div>
+
+            <!-- Notice & Safety Info -->
+            <div class="bg-white/80 border border-emerald-200 rounded-lg p-3 flex items-start gap-2.5 text-[11px] text-slate-600 leading-relaxed">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+              <div>
+                <span class="font-bold text-slate-800">Proteksi Cadangan Otomatis:</span> Sebelum proses pemulihan dijalankan, sistem akan secara otomatis membuat berkas cadangan database saat ini ke <code class="px-1.5 py-0.5 rounded bg-slate-100 text-indigo-700 font-mono">database/surat_pkl.db.bak</code>. Data di tampilan web akan langsung diperbarui seketika.
+              </div>
             </div>
           </div>
 
@@ -1331,33 +1374,7 @@
             <span>Simpan ke DB</span>
           </button>
 
-          <!-- 3. Dropdown Unduh Database (SQLite .DB & SQL Dump) -->
-          <div class="relative inline-block text-left" id="dropdownUnduhDbWrapper">
-            <button onclick="toggleDropdown('dropdownUnduhDbMenu')" class="px-2.5 sm:px-3 py-1.5 bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-700 font-semibold rounded-lg flex items-center gap-1.5 transition text-xs whitespace-nowrap" title="Unduh berkas database SQLite (.db) atau skrip SQL dump (.sql)">
-              <i data-lucide="database" class="w-3.5 h-3.5 text-sky-600"></i>
-              <span>Unduh DB</span>
-              <i data-lucide="chevron-down" class="w-3 h-3 opacity-70"></i>
-            </button>
-            <div id="dropdownUnduhDbMenu" class="dropdown-menu-list hidden absolute right-0 mt-1.5 w-60 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 text-slate-700 animate-in fade-in slide-in-from-top-1 duration-150">
-              <button onclick="downloadSqliteDatabase(); closeAllDropdowns();" class="w-full text-left px-3.5 py-2 text-xs hover:bg-sky-50 hover:text-sky-700 flex items-center gap-2.5 transition">
-                <i data-lucide="database" class="w-4 h-4 text-sky-600"></i>
-                <div>
-                  <div class="font-semibold text-slate-800">Unduh SQLite (.DB)</div>
-                  <div class="text-[10px] text-slate-400">Berkas database binary aktif</div>
-                </div>
-              </button>
-              <div class="border-t border-slate-100 my-1"></div>
-              <button onclick="downloadSqlDatabase(); closeAllDropdowns();" class="w-full text-left px-3.5 py-2 text-xs hover:bg-purple-50 hover:text-purple-700 flex items-center gap-2.5 transition">
-                <i data-lucide="file-code-2" class="w-4 h-4 text-purple-600"></i>
-                <div>
-                  <div class="font-semibold text-slate-800">Unduh Skrip SQL (.SQL)</div>
-                  <div class="text-[10px] text-slate-400">Dump kompatibel MySQL/SQLite/Postgres</div>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <!-- 4. Dropdown Data Excel (Import & Export) -->
+          <!-- 3. Dropdown Data Excel (Import & Export) -->
           <div class="relative inline-block text-left" id="dropdownExcelWrapper">
             <button onclick="toggleDropdown('dropdownExcelMenu')" class="px-2.5 sm:px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-semibold rounded-lg flex items-center gap-1.5 transition text-xs whitespace-nowrap" title="Import data dari Excel atau Export data ke Excel">
               <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i>

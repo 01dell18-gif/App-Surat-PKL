@@ -552,7 +552,6 @@ function setupDropdownDismiss() {
   window.addEventListener('click', (e) => {
     if (!e.target.closest('#dropdownCetakWrapper') && 
         !e.target.closest('#dropdownUnduhWrapper') && 
-        !e.target.closest('#dropdownUnduhDbWrapper') && 
         !e.target.closest('#dropdownExcelWrapper')) {
       closeAllDropdowns();
     }
@@ -1246,6 +1245,18 @@ function openSettingsModal(tab = 'media') {
   if (urlLogo) urlLogo.value = (s.logoWebUrl && !s.logoWebUrl.startsWith('data:image/')) ? s.logoWebUrl : '';
 
   updateSettingsMediaPreviews();
+
+  // Update DB tab stats
+  const totalSiswaEl = document.getElementById('dbSettingTotalRows');
+  if (totalSiswaEl) totalSiswaEl.textContent = AppState.records.length;
+  const totalGurusEl = document.getElementById('dbSettingTotalGurus');
+  if (totalGurusEl) totalGurusEl.textContent = AppState.gurus.length;
+  const totalTempatEl = document.getElementById('dbSettingTotalTempat');
+  if (totalTempatEl) {
+    const tempatSet = new Set(AppState.records.map(r => (r.tempat || '').trim()).filter(Boolean));
+    totalTempatEl.textContent = tempatSet.size;
+  }
+
   switchSettingsTab(tab);
   modal.style.display = 'flex';
   modal.classList.remove('hidden');
@@ -2434,6 +2445,94 @@ function downloadSqlDatabase() {
   a.click();
   document.body.removeChild(a);
   showToast('Mengunduh berkas skrip database SQL (surat_pkl.sql)...');
+}
+
+async function handleDatabaseImport(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const fileName = file.name;
+  const fileExt = fileName.split('.').pop().toLowerCase();
+  if (!['db', 'sqlite', 'sqlite3', 'sql'].includes(fileExt)) {
+    showToast('Format berkas tidak didukung. Harap pilih berkas .db, .sqlite, atau .sql', 'error');
+    event.target.value = '';
+    return;
+  }
+
+  const confirmMsg = `Apakah Anda yakin ingin memulihkan database dari berkas "${fileName}"?\n\nSistem akan mencadangkan database aktif saat ini ke surat_pkl.db.bak secara otomatis sebelum pemulihan dijalankan.`;
+  if (!confirm(confirmMsg)) {
+    event.target.value = '';
+    return;
+  }
+
+  showToast(`Memproses pemulihan database dari ${fileName}...`);
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const dataUrl = e.target.result;
+    const isHttp = window.location.protocol.startsWith('http');
+
+    if (isHttp) {
+      try {
+        const res = await fetch('/api/db/import', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filename: fileName,
+            data: dataUrl
+          })
+        });
+
+        const resData = await res.json();
+        if (res.ok && resData.success) {
+          if (resData.records && Array.isArray(resData.records)) {
+            AppState.records = resData.records;
+            processData();
+          }
+          if (resData.settings) {
+            AppState.appSettings = { ...AppState.appSettings, ...resData.settings };
+            applyAppSettingsToUI();
+          }
+          if (resData.templates && Array.isArray(resData.templates)) {
+            AppState.templates = resData.templates;
+            renderTemplateSelect();
+          }
+
+          renderTable();
+          renderPreview();
+          updateDatabaseStatusBadge();
+
+          // Refresh stats in settings tab
+          const totalSiswaEl = document.getElementById('dbSettingTotalRows');
+          if (totalSiswaEl) totalSiswaEl.textContent = AppState.records.length;
+          const totalGurusEl = document.getElementById('dbSettingTotalGurus');
+          if (totalGurusEl) totalGurusEl.textContent = AppState.gurus.length;
+          const totalTempatEl = document.getElementById('dbSettingTotalTempat');
+          if (totalTempatEl) {
+            const tempatSet = new Set(AppState.records.map(r => (r.tempat || '').trim()).filter(Boolean));
+            totalTempatEl.textContent = tempatSet.size;
+          }
+
+          showToast(`Berhasil memulihkan database! ${resData.count || AppState.records.length} data siswa aktif dimuat.`);
+        } else {
+          showToast(`Gagal memulihkan database: ${resData.error || 'Terjadi kesalahan pada server.'}`, 'error');
+        }
+      } catch (err) {
+        showToast(`Gagal menghubungi server database: ${err.message}`, 'error');
+      }
+    } else {
+      showToast('Pemulihan database penuh membutuhkan server backend aktif. Silakan buka aplikasi melalui start.bat.', 'warning');
+    }
+
+    event.target.value = '';
+  };
+
+  reader.onerror = () => {
+    showToast('Gagal membaca berkas yang dipilih.', 'error');
+    event.target.value = '';
+  };
+
+  reader.readAsDataURL(file);
 }
 
 async function syncRecordsToDatabase(showFeedback = true) {

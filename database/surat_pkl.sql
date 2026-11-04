@@ -1,7 +1,7 @@
 -- ========================================================
 -- Database Schema & Data: Surat Pengantar PKL
 -- Instansi : SMKN 1 FYJ Channel
--- Diperbarui : 2026-11-03 16:41:13
+-- Diperbarui : 2026-11-04 10:35:43
 -- Kompatibel : MySQL, MariaDB, PostgreSQL, SQLite
 -- ========================================================
 
@@ -348,33 +348,33 @@ CREATE TABLE `template_surat` (
 
 -- Data Template Surat Resmi
 LOCK TABLES `template_surat` WRITE;
-INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_standar_resmi', 'Template Standar Resmi SMKN 1 FYJ Channel', '<p style="margin-bottom: 8px;">Dengan hormat,</p>
-<p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
-  Dalam rangka pelaksanaan kegiatan Praktek Kerja Lapangan (PKL) bagi siswa/siswi {namaSekolah} Tahun Ajaran {tahunAjaran}, bersama ini kami menugaskan guru pembimbing untuk menyerahkan sekaligus mengantarkan siswa/siswi kami melaksanakan PKL di perusahaan/instansi yang Bapak/Ibu pimpin.
-</p>
-<p style="margin-bottom: 4px;">Adapun identitas Guru Pembimbing yang ditugaskan adalah sebagai berikut:</p>
-<table style="width: 100%; margin-left: 20px; margin-bottom: 10px;">
-  <tr>
-    <td style="width: 130px; vertical-align: top;">Nama</td>
-    <td style="width: 20px; vertical-align: top;">:</td>
-    <td style="font-weight: bold; vertical-align: top;">{guruNama}</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top;">NIP</td>
-    <td style="vertical-align: top;">:</td>
-    <td style="vertical-align: top;">{guruNip}</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top;">Tempat PKL</td>
-    <td style="vertical-align: top;">:</td>
-    <td style="font-weight: bold; vertical-align: top;">{tempatPkl}</td>
-  </tr>
-</table>
-<p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
-  Siswa yang diserahkan berjumlah sebagaimana terlampir, dan kegiatan PKL akan dilaksanakan terhitung mulai tanggal {periodePkl}.
-</p>
-<p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
-  Demikian surat pengantar ini kami sampaikan, atas bantuan dan kerja sama yang baik kami ucapkan terima kasih.
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_standar_resmi', 'Template Standar Resmi SMKN 1 FYJ Channel', '<p style="margin-bottom: 8px;">Dengan hormat,</p>
+<p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
+  Dalam rangka pelaksanaan kegiatan Praktek Kerja Lapangan (PKL) bagi siswa/siswi {namaSekolah} Tahun Ajaran {tahunAjaran}, bersama ini kami menugaskan guru pembimbing untuk menyerahkan sekaligus mengantarkan siswa/siswi kami melaksanakan PKL di perusahaan/instansi yang Bapak/Ibu pimpin.
+</p>
+<p style="margin-bottom: 4px;">Adapun identitas Guru Pembimbing yang ditugaskan adalah sebagai berikut:</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 10px;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 20px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{guruNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIP</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{guruNip}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Tempat PKL</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{tempatPkl}</td>
+  </tr>
+</table>
+<p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
+  Siswa yang diserahkan berjumlah sebagaimana terlampir, dan kegiatan PKL akan dilaksanakan terhitung mulai tanggal {periodePkl}.
+</p>
+<p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
+  Demikian surat pengantar ini kami sampaikan, atas bantuan dan kerja sama yang baik kami ucapkan terima kasih.
 </p>', 1, 'active');
 UNLOCK TABLES;
 

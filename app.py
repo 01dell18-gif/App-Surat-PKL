@@ -165,6 +165,28 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
             return
 
+        if path == '/api/db/import':
+            try:
+                import base64
+                req_data = json.loads(body.decode('utf-8'))
+                filename = req_data.get('filename', '')
+                file_b64 = req_data.get('data', '')
+                if ',' in file_b64:
+                    file_b64 = file_b64.split(',', 1)[1]
+                file_bytes = base64.b64decode(file_b64)
+
+                result = db_manager.restore_database_from_file(file_bytes, filename)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.end_headers()
+                self.wfile.write(json.dumps(result, ensure_ascii=False).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
+            return
+
         if path == '/api/siswa':
             try:
                 student_data = json.loads(body.decode('utf-8'))
