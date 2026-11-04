@@ -83,7 +83,7 @@ const DEFAULT_TEMPLATES = [
   },
   {
     id: 'tpl_surat_keterangan_pkl',
-    name: 'Surat Keterangan PKL (Sesuai Contoh Word)',
+    name: 'Surat Keterangan PKL (Contoh Surat Keterangan PKL.docx)',
     isDefault: false,
     status: 'active',
     createdAt: '2026-11-04',
@@ -412,16 +412,29 @@ function saveRecordsToStorage() {
 function loadStoredTemplates() {
   try {
     const savedTemplates = localStorage.getItem('pkl_saved_templates_list');
+    let needsSave = false;
     if (savedTemplates) {
       AppState.templates = JSON.parse(savedTemplates);
       // Sinkronkan template bawaan baru jika belum ada di cache browser pengguna
       DEFAULT_TEMPLATES.forEach(defTpl => {
-        if (!AppState.templates.some(t => t.id === defTpl.id)) {
+        const found = AppState.templates.find(t => t.id === defTpl.id);
+        if (!found) {
           AppState.templates.push(JSON.parse(JSON.stringify(defTpl)));
+          needsSave = true;
+        } else {
+          // Perbarui nama dan isi html template bawaan ke versi terbaru
+          found.name = defTpl.name;
+          found.htmlContent = defTpl.htmlContent;
+          needsSave = true;
         }
       });
     } else {
       AppState.templates = JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+      needsSave = true;
+    }
+
+    if (needsSave) {
+      saveTemplatesToStorage();
     }
 
     const savedActiveId = localStorage.getItem('pkl_active_template_id');
@@ -436,6 +449,7 @@ function loadStoredTemplates() {
     AppState.templates = JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
     AppState.activeTemplateId = AppState.templates[0].id;
     AppState.editingTemplateId = AppState.activeTemplateId;
+    saveTemplatesToStorage();
   }
 }
 
@@ -555,6 +569,29 @@ function populateDropdowns() {
 }
 
 // Populate Sidebar Template Selector
+
+function populateEditorTemplateSelect() {
+  const sel = document.getElementById('editorTemplateSelect');
+  if (!sel) return;
+  sel.innerHTML = '';
+  AppState.templates.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t.id;
+    const isAct = t.id === AppState.activeTemplateId;
+    opt.textContent = (isAct ? '★ ' : '  ') + t.name;
+    if (t.id === (AppState.editingTemplateId || AppState.activeTemplateId)) {
+      opt.selected = true;
+    }
+    sel.appendChild(opt);
+  });
+}
+
+function onEditorTemplateSelectChange() {
+  const sel = document.getElementById('editorTemplateSelect');
+  if (!sel) return;
+  loadTemplateIntoEditor(sel.value);
+}
+
 function populateSidebarTemplateSelect() {
   const select = document.getElementById('sidebarTemplateSelect');
   if (!select) return;
@@ -996,9 +1033,10 @@ function renderPreview() {
 }
 
 // ================= MODAL TEMPLATE MANAGEMENT & WYSIWYG =================
-function openTemplateModal(tab = 'editor') {
+function openTemplateModal(tab = 'list') {
   const modal = document.getElementById('templateManagerModal');
   if (!modal) return;
+  populateEditorTemplateSelect();
   loadTemplateIntoEditor(AppState.editingTemplateId || AppState.activeTemplateId);
   renderTemplateTable();
   switchTemplateTab(tab);
@@ -1041,6 +1079,9 @@ function loadTemplateIntoEditor(templateId) {
 
   const nameInput = document.getElementById('inputTemplateName');
   if (nameInput) nameInput.value = tpl.name;
+
+  const editorSel = document.getElementById('editorTemplateSelect');
+  if (editorSel) editorSel.value = tpl.id;
 
   const editor = document.getElementById('wysiwygEditor');
   const textarea = document.getElementById('htmlEditorTextarea');
@@ -1153,6 +1194,7 @@ function saveCurrentTemplateChanges() {
 
   saveTemplatesToStorage();
   populateSidebarTemplateSelect();
+  populateEditorTemplateSelect();
   renderTemplateTable();
   if (tpl.id === AppState.activeTemplateId) {
     renderPreview();
@@ -1199,6 +1241,7 @@ function saveAsNewTemplate() {
 
   saveTemplatesToStorage();
   populateSidebarTemplateSelect();
+  populateEditorTemplateSelect();
   renderTemplateTable();
   renderPreview();
   switchTemplateTab('list');
@@ -1221,6 +1264,7 @@ function setActiveTemplate(templateId) {
   AppState.activeTemplateId = templateId;
   saveTemplatesToStorage();
   populateSidebarTemplateSelect();
+  populateEditorTemplateSelect();
   renderTemplateTable();
   renderPreview();
   showToast(`Template aktif diubah: "${tpl.name}"`);
@@ -1246,6 +1290,7 @@ function deleteTemplate(templateId) {
 
   saveTemplatesToStorage();
   populateSidebarTemplateSelect();
+  populateEditorTemplateSelect();
   renderTemplateTable();
   renderPreview();
   showToast(`Template "${tpl.name}" berhasil dihapus.`);
@@ -2536,7 +2581,7 @@ async function checkAndSyncDatabaseBackend() {
 
     // Sinkronkan daftar template dari backend SQLite
     try {
-      const tplRes = await fetch('/api/templates', { cache: 'no-store' });
+      const tplRes = await fetch('/api/templates?t=' + Date.now(), { cache: 'no-store' });
       if (tplRes.ok) {
         const tpls = await tplRes.json();
         if (Array.isArray(tpls) && tpls.length > 0) {

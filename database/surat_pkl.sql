@@ -1,7 +1,7 @@
 -- ========================================================
 -- Database Schema & Data: Surat Pengantar PKL
 -- Instansi : SMKN 1 FYJ Channel
--- Diperbarui : 2026-11-04 11:15:47
+-- Diperbarui : 2026-11-04 11:36:52
 -- Kompatibel : MySQL, MariaDB, PostgreSQL, SQLite
 -- ========================================================
 
@@ -376,7 +376,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
   Demikian surat pengantar ini kami sampaikan, atas bantuan dan kerja sama yang baik kami ucapkan terima kasih.
 </p>', 1, 'active');
-INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_surat_keterangan_pkl', 'Surat Keterangan PKL (Sesuai Contoh Word)', '<p style="margin-bottom: 8px;">Yang bertanda tangan dibawah ini :</p>
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_surat_keterangan_pkl', 'Surat Keterangan PKL (Contoh Surat Keterangan PKL.docx)', '<p style="margin-bottom: 8px;">Yang bertanda tangan dibawah ini :</p>
 <table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
   <tr>
     <td style="width: 130px; vertical-align: top;">Nama</td>

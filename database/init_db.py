@@ -252,7 +252,7 @@ def init_database():
     VALUES (?, ?, ?, ?, ?, ?)
     """, (
         'tpl_surat_keterangan_pkl',
-        'Surat Keterangan PKL (Sesuai Contoh Word)',
+        'Surat Keterangan PKL (Contoh Surat Keterangan PKL.docx)',
         TEMPLATE_KETERANGAN_HTML.strip(),
         0,
         'active',
