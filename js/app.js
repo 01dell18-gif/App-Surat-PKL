@@ -193,14 +193,9 @@ const DEFAULT_TEMPLATES = [
     <td style="font-weight: bold; vertical-align: top;">{siswaNama}</td>
   </tr>
   <tr>
-    <td style="vertical-align: top;">NIS</td>
+    <td style="vertical-align: top;">NIS/NISN</td>
     <td style="vertical-align: top;">:</td>
-    <td style="vertical-align: top;">{siswaNis}</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top;">NISN</td>
-    <td style="vertical-align: top;">:</td>
-    <td style="vertical-align: top;">{siswaNisn}</td>
+    <td style="vertical-align: top;">{siswaNisNisn}</td>
   </tr>
   <tr>
     <td style="vertical-align: top;">Jurusan</td>
@@ -516,7 +511,11 @@ function loadStoredTemplates() {
       });
       const ketTpl = AppState.templates.find(t => t.id === 'tpl_surat_keterangan_pkl');
       const defKet = DEFAULT_TEMPLATES.find(t => t.id === 'tpl_surat_keterangan_pkl');
-      if (ketTpl && defKet && (ketTpl.htmlContent.includes('{siswaKelas} / {siswaJurusan}') || ketTpl.htmlContent.includes('Jurusan</td>\n    <td style="vertical-align: top;">:</td>\n    <td style="vertical-align: top;">{siswaKelas}</td>'))) {
+      if (ketTpl && defKet && (
+        ketTpl.htmlContent.includes('{siswaKelas} / {siswaJurusan}') || 
+        ketTpl.htmlContent.includes('{siswaNisn}') ||
+        !ketTpl.htmlContent.includes('{siswaNisNisn}')
+      )) {
         ketTpl.htmlContent = defKet.htmlContent;
         needsSave = true;
       }
@@ -1174,10 +1173,18 @@ function updateUIFromState() {
       const sNama = document.getElementById('infoDetailSiswaNama');
       const sNis = document.getElementById('infoDetailSiswaNis');
       const sNisn = document.getElementById('infoDetailSiswaNisn');
+      const sNisNisn = document.getElementById('infoDetailSiswaNisNisn');
       const sJurusan = document.getElementById('infoDetailSiswaJurusan');
       if (sNama) sNama.textContent = s.siswa || s.nama || '-';
       if (sNis) sNis.textContent = s.nis || '-';
       if (sNisn) sNisn.textContent = s.nisn || '-';
+      const hasN = s.nis && s.nis !== '-';
+      const hasNn = s.nisn && s.nisn !== '-';
+      let combined = '-';
+      if (hasN && hasNn) combined = `${s.nis} / ${s.nisn}`;
+      else if (hasN) combined = s.nis;
+      else if (hasNn) combined = s.nisn;
+      if (sNisNisn) sNisNisn.textContent = combined;
       if (sJurusan) sJurusan.textContent = s.jurusan || getJurusanFromKelas(s.kelas) || s.kelas || '-';
     } else {
       detailRow.classList.add('hidden');
@@ -1223,6 +1230,17 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
   const siswaJurusan = firstStudent ? (firstStudent.jurusan || getJurusanFromKelas(firstStudent.kelas) || '-') : '-';
   const tempatPkl = letter.tempatPkl || (firstStudent ? firstStudent.tempat : 'Marvella');
 
+  const hasNis = siswaNis && siswaNis !== '-';
+  const hasNisn = siswaNisn && siswaNisn !== '-';
+  let siswaNisNisn = '-';
+  if (hasNis && hasNisn) {
+    siswaNisNisn = `${siswaNis} / ${siswaNisn}`;
+  } else if (hasNis) {
+    siswaNisNisn = siswaNis;
+  } else if (hasNisn) {
+    siswaNisNisn = siswaNisn;
+  }
+
   return templateHtml
     .replace(/{tahunAjaran}/g, s.tahunAjaran)
     .replace(/{namaSekolah}/g, s.namaSekolah)
@@ -1243,6 +1261,7 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{siswaNama}/g, siswaNama)
     .replace(/{siswaNis}/g, siswaNis)
     .replace(/{siswaNisn}/g, siswaNisn)
+    .replace(/{siswaNisNisn}/g, siswaNisNisn)
     .replace(/{siswaKelas}/g, siswaKelas)
     .replace(/{siswaJurusan}/g, siswaJurusan)
     .replace(/{lamaPkl}/g, '6 bulan')
@@ -2322,13 +2341,19 @@ async function downloadDocxClient() {
           </w:p>
         `);
 
-        let nisDisplay = sNis && sNis !== '-' ? sNis : '';
-        if (sNisn && sNisn !== '-') {
-          nisDisplay = nisDisplay ? `${nisDisplay} / NISN: ${sNisn}` : `NISN: ${sNisn}`;
+        const hasNis = sNis && sNis !== '-';
+        const hasNisn = sNisn && sNisn !== '-';
+        let nisDisplay = '-';
+        if (hasNis && hasNisn) {
+          nisDisplay = `${sNis} / ${sNisn}`;
+        } else if (hasNis) {
+          nisDisplay = sNis;
+        } else if (hasNisn) {
+          nisDisplay = sNisn;
         }
-        if (!nisDisplay) nisDisplay = '-';
 
-        docXml = docXml.replace(/(<w:t[^>]*>NIS<\/w:t>[\s\S]*?<w:t[^>]*>: <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(nisDisplay)}</w:t>$2`);
+        docXml = docXml.replace(/<w:t>NIS<\/w:t>/g, '<w:t>NIS/NISN</w:t>');
+        docXml = docXml.replace(/(<w:t[^>]*>NIS\/NISN<\/w:t>[\s\S]*?<w:t[^>]*>: <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(nisDisplay)}</w:t>$2`);
         docXml = docXml.replace(/(<w:t[^>]*>Jurusan<\/w:t>[\s\S]*?<w:t[^>]*>:<\/w:t>[\s\S]*?<w:t[^>]*> <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(sJurusan)}</w:t>$2`);
 
         if (sTempat) docXml = docXml.replace(/Marvella/g, escapeXml(sTempat));
@@ -2650,14 +2675,20 @@ async function downloadBatchZipClient() {
             </w:p>
           `);
 
-          let nisDisplay = sNis && sNis !== '-' ? sNis : '';
-          if (sNisn && sNisn !== '-') {
-            nisDisplay = nisDisplay ? `${nisDisplay} / NISN: ${sNisn}` : `NISN: ${sNisn}`;
+          const hasNis = sNis && sNis !== '-';
+          const hasNisn = sNisn && sNisn !== '-';
+          let nisDisplay = '-';
+          if (hasNis && hasNisn) {
+            nisDisplay = `${sNis} / ${sNisn}`;
+          } else if (hasNis) {
+            nisDisplay = sNis;
+          } else if (hasNisn) {
+            nisDisplay = sNisn;
           }
-          if (!nisDisplay) nisDisplay = '-';
 
-          docXml = docXml.replace(/(<w:t[^>]*>NIS<\/w:t>[\s\S]*?<w:t[^>]*>: <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(nisDisplay)}</w:t>$2`);
-          docXml = docXml.replace(/(<w:t[^>]*>Jurusan<\/w:t>[\s\S]*?<w:t[^>]*>:<\/w:t>[\s\S]*?<w:t[^>]*> <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(sJurusan)}</w:t>$2`);
+          docXml = docXml.replace(/<w:t>NIS<\/w:t>/g, '<w:t>NIS/NISN<\/w:t>');
+          docXml = docXml.replace(/(<w:t[^>]*>NIS\/NISN<\/w:t>[\s\S]*?<w:t[^>]*>: <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(nisDisplay)}<\/w:t>$2`);
+          docXml.replace(/(<w:t[^>]*>Jurusan<\/w:t>[\s\S]*?<w:t[^>]*>:<\/w:t>[\s\S]*?<w:t[^>]*> <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(sJurusan)}</w:t>$2`);
 
           if (sTempat) docXml = docXml.replace(/Marvella/g, escapeXml(sTempat));
           docXml = docXml.replace(/07 Oktober 2026/g, escapeXml(ds.tglSurat));

@@ -829,7 +829,10 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
             t = ET.SubElement(r, f'{{{NS["w"]}}}t')
             t.text = f' {siswa_nama}'
 
-        if text.startswith('NIS:'):
+        if text.startswith('NIS/NISN:') or text.startswith('NIS:'):
+            for t_node in p.findall('.//w:t', NS):
+                if t_node.text == 'NIS':
+                    t_node.text = 'NIS/NISN'
             r = ET.SubElement(p, f'{{{NS["w"]}}}r')
             rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')
             rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
@@ -840,11 +843,11 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
             nis_val = siswa_nis if (siswa_nis and siswa_nis != '-') else ''
             nisn_val = siswa_nisn if (siswa_nisn and siswa_nisn != '-') else ''
             if nis_val and nisn_val:
-                t.text = f' {nis_val} / NISN: {nisn_val}'
+                t.text = f' {nis_val} / {nisn_val}'
             elif nis_val:
                 t.text = f' {nis_val}'
             elif nisn_val:
-                t.text = f' NISN: {nisn_val}'
+                t.text = f' {nisn_val}'
             else:
                 t.text = ' -'
 

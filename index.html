@@ -399,8 +399,9 @@
             <div class="text-[10px] uppercase font-bold text-indigo-600 tracking-wider">Detail Siswa Terpilih</div>
             <div class="font-bold text-slate-900 text-xs" id="infoDetailSiswaNama">-</div>
             <div class="grid grid-cols-2 gap-1 text-slate-600">
-              <div>NIS: <span id="infoDetailSiswaNis" class="font-semibold text-slate-900">-</span></div>
-              <div>NISN: <span id="infoDetailSiswaNisn" class="font-semibold text-slate-900">-</span></div>
+              <div class="col-span-2">NIS/NISN: <span id="infoDetailSiswaNisNisn" class="font-semibold text-slate-900">-</span></div>
+              <div class="hidden">NIS: <span id="infoDetailSiswaNis">-</span></div>
+              <div class="hidden">NISN: <span id="infoDetailSiswaNisn">-</span></div>
             </div>
             <div class="text-slate-600">Jurusan: <span id="infoDetailSiswaJurusan" class="font-semibold text-slate-900">-</span></div>
           </div>
@@ -1570,16 +1571,16 @@
 
   <!-- ================= SCRIPTS ================= -->
   <!-- 1. Offline Base64 Assets (kop, ttd elektronik, ttd basah, logo web) -->
-  <script src="js/assets.js?v=2.8.0"></script>
+  <script src="js/assets.js?v=2.9.0"></script>
   
   <!-- 2. Clean Embedded Base64 Docx Template -->
-  <script src="js/template_base64.js?v=2.8.0"></script>
+  <script src="js/template_base64.js?v=2.9.0"></script>
 
   <!-- 3. Full PKL Initial Records (258 siswa) -->
-  <script src="js/data_pkl.js?v=2.8.0"></script>
+  <script src="js/data_pkl.js?v=2.9.0"></script>
 
   <!-- 4. Application Logic -->
-  <script src="js/app.js?v=2.8.0"></script>
+  <script src="js/app.js?v=2.9.0"></script>
 
 </body>
 </html>
