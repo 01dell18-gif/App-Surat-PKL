@@ -103,14 +103,24 @@ TEMPLATE_KETERANGAN_HTML = """<p style="margin-bottom: 8px;">Yang bertanda tanga
     <td style="font-weight: bold; vertical-align: top;">{siswaNama}</td>
   </tr>
   <tr>
+    <td style="vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{siswaNama}</td>
+  </tr>
+  <tr>
     <td style="vertical-align: top;">NIS</td>
     <td style="vertical-align: top;">:</td>
     <td style="vertical-align: top;">{siswaNis}</td>
   </tr>
   <tr>
+    <td style="vertical-align: top;">NISN</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{siswaNisn}</td>
+  </tr>
+  <tr>
     <td style="vertical-align: top;">Jurusan</td>
     <td style="vertical-align: top;">:</td>
-    <td style="vertical-align: top;">{siswaKelas}</td>
+    <td style="vertical-align: top;">{siswaJurusan}</td>
   </tr>
 </table>
 

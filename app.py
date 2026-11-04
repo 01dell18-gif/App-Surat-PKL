@@ -531,9 +531,6 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                     safe_name = "".join(c for c in guru_nama if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
                     filename = f"Surat_Pengantar_PKL_{safe_name}.docx"
 
-                safe_name = "".join(c for c in guru_nama if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
-                filename = f"Surat_Pengantar_PKL_{safe_name}.docx"
-
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
                 self.send_header('Content-Disposition', f'attachment; filename="{filename}"')
@@ -550,6 +547,7 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
         if path == '/api/batch-docx-zip':
             try:
                 req_data = json.loads(body.decode('utf-8')) if body else {}
+                doc_type = req_data.get('doc_type', '')
                 no_surat = req_data.get('no_surat', 'B.10.000/9546/SMKN1KLK/DIKPORA')
                 tgl_surat = req_data.get('tgl_surat', '06 Oktober 2026')
                 tgl_pelepasan = req_data.get('tgl_pelepasan', '13 November 2026')
@@ -562,18 +560,6 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 paper_size = req_data.get('paper_size', 'f4')
                 
                 records = req_data.get('records', []) or load_data()
-                
-                # Group by guru
-                from collections import defaultdict
-                guru_map = defaultdict(lambda: {'nip': '', 'siswa': []})
-                for r in records:
-                    g = r.get('guru', '')
-                    guru_map[g]['nip'] = r.get('nip', '')
-                    guru_map[g]['siswa'].append(r)
-
-                zip_buffer = io.BytesIO()
-                template_path = get_template_path()
-                
                 settings = db_manager.get_all_settings()
                 nama_sekolah = req_data.get('nama_sekolah', settings.get('namaSekolah', 'SMKN 1 FYJ Channel'))
                 tahun_ajaran = req_data.get('tahun_ajaran', settings.get('tahunAjaran', '2026/2027'))
@@ -582,45 +568,88 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 kepsek_pangkat = req_data.get('kepsek_pangkat', settings.get('kepsekPangkat', 'Pembina (IV/a)'))
                 kepsek_nip = req_data.get('kepsek_nip', settings.get('kepsekNip', '19770309 200903 2 010'))
 
-                with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as master_zip:
-                    for idx, (g_name, info) in enumerate(guru_map.items(), 1):
-                        tempat_set = set(s.get('tempat', '').strip() for s in info['siswa'] if s.get('tempat', '').strip())
-                        is_single_place = len(tempat_set) == 1
-                        target_tempat = list(tempat_set)[0] if is_single_place else ''
-                        target_alamat = info['siswa'][0].get('alamat', '') if (is_single_place and info['siswa']) else ''
+                zip_buffer = io.BytesIO()
 
-                        doc_bytes = generate_surat_docx(
-                            template_path=template_path,
-                            out_path=None,
-                            guru_nama=g_name,
-                            guru_nip=info['nip'],
-                            tempat_pkl=target_tempat,
-                            students=info['siswa'],
-                            no_surat=no_surat,
-                            tgl_surat=tgl_surat,
-                            tgl_pelepasan=tgl_pelepasan,
-                            periode_pkl=periode_pkl,
-                            tgl_penarikan=tgl_penarikan,
-                            paragraf_pembuka=paragraf_pembuka,
-                            paragraf_penutup=paragraf_penutup,
-                            nama_sekolah=nama_sekolah,
-                            tahun_ajaran=tahun_ajaran,
-                            kepsek_nama=kepsek_nama,
-                            kepsek_pangkat=kepsek_pangkat,
-                            kepsek_nip=kepsek_nip,
-                            alamat_pkl=target_alamat,
-                            show_kop=show_kop,
-                            show_ttd=show_ttd,
-                            show_alamat=show_alamat,
-                            paper_size=paper_size
-                        )
-                        safe_g = "".join(c for c in g_name if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
-                        master_zip.writestr(f"Surat_Pengantar_{idx:02d}_{safe_g}.docx", doc_bytes)
+                if doc_type == 'keterangan':
+                    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as master_zip:
+                        for idx, s in enumerate(records, 1):
+                            s_nama = s.get('siswa') or s.get('nama') or f'Siswa_{idx}'
+                            s_nis = s.get('nis', '-')
+                            s_nisn = s.get('nisn', '-')
+                            s_kelas = s.get('kelas', '')
+                            s_jurusan = s.get('jurusan', '')
+                            s_tempat = s.get('tempat', 'Marvella')
+
+                            doc_bytes = generate_keterangan_docx(
+                                template_path=None,
+                                out_path=None,
+                                siswa_nama=s_nama,
+                                siswa_nis=s_nis,
+                                siswa_nisn=s_nisn,
+                                siswa_kelas=s_kelas,
+                                siswa_jurusan=s_jurusan,
+                                tempat_pkl=s_tempat,
+                                no_surat=no_surat,
+                                tgl_surat=tgl_surat,
+                                nama_sekolah=nama_sekolah,
+                                kepsek_nama=kepsek_nama,
+                                kepsek_pangkat=kepsek_pangkat,
+                                kepsek_nip=kepsek_nip,
+                                show_kop=show_kop,
+                                show_ttd=show_ttd,
+                                paper_size=paper_size
+                            )
+                            safe_s = re.sub(r'[^a-zA-Z0-9]', '_', s_nama)
+                            master_zip.writestr(f"Surat_Keterangan_{idx:03d}_{safe_s}.docx", doc_bytes)
+                else:
+                    from collections import defaultdict
+                    guru_map = defaultdict(lambda: {'nip': '', 'siswa': []})
+                    for r in records:
+                        g = r.get('guru', '')
+                        guru_map[g]['nip'] = r.get('nip', '')
+                        guru_map[g]['siswa'].append(r)
+
+                    template_path = get_template_path()
+                    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as master_zip:
+                        for idx, (g_name, info) in enumerate(guru_map.items(), 1):
+                            tempat_set = set(s.get('tempat', '').strip() for s in info['siswa'] if s.get('tempat', '').strip())
+                            is_single_place = len(tempat_set) == 1
+                            target_tempat = list(tempat_set)[0] if is_single_place else ''
+                            target_alamat = info['siswa'][0].get('alamat', '') if (is_single_place and info['siswa']) else ''
+
+                            doc_bytes = generate_surat_docx(
+                                template_path=template_path,
+                                out_path=None,
+                                guru_nama=g_name,
+                                guru_nip=info['nip'],
+                                tempat_pkl=target_tempat,
+                                students=info['siswa'],
+                                no_surat=no_surat,
+                                tgl_surat=tgl_surat,
+                                tgl_pelepasan=tgl_pelepasan,
+                                periode_pkl=periode_pkl,
+                                tgl_penarikan=tgl_penarikan,
+                                paragraf_pembuka=paragraf_pembuka,
+                                paragraf_penutup=paragraf_penutup,
+                                nama_sekolah=nama_sekolah,
+                                tahun_ajaran=tahun_ajaran,
+                                kepsek_nama=kepsek_nama,
+                                kepsek_pangkat=kepsek_pangkat,
+                                kepsek_nip=kepsek_nip,
+                                alamat_pkl=target_alamat,
+                                show_kop=show_kop,
+                                show_ttd=show_ttd,
+                                show_alamat=show_alamat,
+                                paper_size=paper_size
+                            )
+                            safe_g = "".join(c for c in g_name if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
+                            master_zip.writestr(f"Surat_Pengantar_{idx:02d}_{safe_g}.docx", doc_bytes)
 
                 zip_bytes = zip_buffer.getvalue()
+                zip_filename = "Surat_Keterangan_PKL_Arsip.zip" if doc_type == 'keterangan' else "Surat_Pengantar_PKL_Semua_Guru.zip"
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/zip')
-                self.send_header('Content-Disposition', 'attachment; filename="Surat_Pengantar_PKL_Semua_Guru.zip"')
+                self.send_header('Content-Disposition', f'attachment; filename="{zip_filename}"')
                 self.send_header('Content-Length', str(len(zip_bytes)))
                 self.end_headers()
                 self.wfile.write(zip_bytes)

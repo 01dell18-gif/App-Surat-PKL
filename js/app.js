@@ -1,3 +1,45 @@
+// Helper: Save or Download Blob cleanly across browsers
+function saveAsOrDownload(blob, fileName) {
+  if (typeof saveAs !== 'undefined') {
+    saveAs(blob, fileName);
+  } else {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+}
+
+// Helper: Get active students list for batch operations based on current mode and filter
+function getActiveBatchStudents() {
+  if (AppState.selectedMode === 'per-guru') {
+    const curGuru = AppState.gurus[AppState.selectedGuruIdx];
+    if (!curGuru) return AppState.records;
+    let list = curGuru.siswa;
+    if (AppState.selectedTempatFilter !== 'all') {
+      list = list.filter(s => s.tempat === AppState.selectedTempatFilter);
+    }
+    if (AppState.selectedSiswaFilterPerGuru && AppState.selectedSiswaFilterPerGuru !== 'all') {
+      list = list.filter(s => s.siswa === AppState.selectedSiswaFilterPerGuru);
+    }
+    return list.length > 0 ? list : curGuru.siswa;
+  } else if (AppState.selectedMode === 'per-du-di') {
+    const curPlace = AppState.places[AppState.selectedDuDiIdx];
+    if (!curPlace) return AppState.records;
+    let list = curPlace.siswa;
+    if (AppState.selectedSiswaFilterPerDuDi && AppState.selectedSiswaFilterPerDuDi !== 'all') {
+      list = list.filter(s => s.siswa === AppState.selectedSiswaFilterPerDuDi);
+    }
+    return list.length > 0 ? list : curPlace.siswa;
+  } else {
+    return AppState.records;
+  }
+}
+
 // Helper: Deduce major (Jurusan) from class name (Kelas)
 function getJurusanFromKelas(kelas) {
   if (!kelas) return '';
@@ -161,9 +203,9 @@ const DEFAULT_TEMPLATES = [
     <td style="vertical-align: top;">{siswaNisn}</td>
   </tr>
   <tr>
-    <td style="vertical-align: top;">Kelas / Jurusan</td>
+    <td style="vertical-align: top;">Jurusan</td>
     <td style="vertical-align: top;">:</td>
-    <td style="vertical-align: top;">{siswaKelas} / {siswaJurusan}</td>
+    <td style="vertical-align: top;">{siswaJurusan}</td>
   </tr>
 </table>
 
@@ -421,16 +463,30 @@ function syncSidebarInputs() {
 function loadStoredRecords() {
   try {
     const saved = localStorage.getItem('pkl_records_data');
+    let loaded = null;
     if (saved) {
-      AppState.records = JSON.parse(saved);
-    } else if (typeof DEFAULT_PKL_DATA !== 'undefined' && Array.isArray(DEFAULT_PKL_DATA)) {
-      AppState.records = [...DEFAULT_PKL_DATA];
-    } else {
-      AppState.records = [];
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Pastikan data yang disimpan memiliki field nis dan jurusan
+          const sample = parsed[0];
+          if (sample && typeof sample.jurusan !== 'undefined') {
+            loaded = parsed;
+          }
+        }
+      } catch (err) {}
     }
+    if (!loaded) {
+      if (typeof INITIAL_PKL_RECORDS !== 'undefined' && Array.isArray(INITIAL_PKL_RECORDS) && INITIAL_PKL_RECORDS.length > 0) {
+        loaded = [...INITIAL_PKL_RECORDS];
+      } else if (typeof DEFAULT_PKL_DATA !== 'undefined' && Array.isArray(DEFAULT_PKL_DATA) && DEFAULT_PKL_DATA.length > 0) {
+        loaded = [...DEFAULT_PKL_DATA];
+      }
+    }
+    AppState.records = loaded || [];
   } catch (e) {
     console.error('Error loading saved records:', e);
-    AppState.records = typeof DEFAULT_PKL_DATA !== 'undefined' ? [...DEFAULT_PKL_DATA] : [];
+    AppState.records = (typeof INITIAL_PKL_RECORDS !== 'undefined') ? [...INITIAL_PKL_RECORDS] : ((typeof DEFAULT_PKL_DATA !== 'undefined') ? [...DEFAULT_PKL_DATA] : []);
   }
 }
 
@@ -451,6 +507,13 @@ function loadStoredTemplates() {
     if (savedTemplates) {
       AppState.templates = JSON.parse(savedTemplates);
       // Sinkronkan template bawaan baru jika belum ada di cache browser pengguna
+      // Sinkronkan selalu template keterangan bawaan jika masih versi lama
+      const ketTpl = AppState.templates.find(t => t.id === 'tpl_surat_keterangan_pkl');
+      const defKet = DEFAULT_TEMPLATES.find(t => t.id === 'tpl_surat_keterangan_pkl');
+      if (ketTpl && defKet && (ketTpl.htmlContent.includes('{siswaKelas} / {siswaJurusan}') || ketTpl.htmlContent.includes('Jurusan</td>\n    <td style="vertical-align: top;">:</td>\n    <td style="vertical-align: top;">{siswaKelas}</td>'))) {
+        ketTpl.htmlContent = defKet.htmlContent;
+        needsSave = true;
+      }
       DEFAULT_TEMPLATES.forEach(defTpl => {
         const found = AppState.templates.find(t => t.id === defTpl.id);
         if (!found) {
@@ -1114,6 +1177,32 @@ function updateUIFromState() {
       detailRow.classList.add('hidden');
     }
   }
+
+  // Update Dynamic Text on Navbar Dropdowns (Cetak & Unduh)
+  const activeTpl = getActiveTemplate();
+  const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
+                       (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
+
+  const bPrintTitle = document.getElementById('navbarBatchPrintTitle');
+  const bPrintDesc = document.getElementById('navbarBatchPrintDesc');
+  const bZipTitle = document.getElementById('navbarBatchZipTitle');
+  const bZipDesc = document.getElementById('navbarBatchZipDesc');
+
+  if (isKeterangan) {
+    if (bPrintTitle) bPrintTitle.textContent = 'Cetak Massal Surat Keterangan';
+    if (bPrintDesc) bPrintDesc.textContent = 'Pilih & cetak surat keterangan siswa';
+    const cPrintDesc = document.getElementById('navbarCurrentPrintDesc');
+    if (cPrintDesc) cPrintDesc.textContent = 'Cetak 1 surat keterangan siswa aktif';
+    if (bZipTitle) bZipTitle.textContent = 'Unduh Semua Siswa (.ZIP)';
+    if (bZipDesc) bZipDesc.textContent = 'Arsip .docx surat keterangan siswa';
+  } else {
+    if (bPrintTitle) bPrintTitle.textContent = 'Cetak Massal (Semua Guru)';
+    if (bPrintDesc) bPrintDesc.textContent = 'Pilih & cetak banyak surat sekaligus';
+    const cPrintDesc = document.getElementById('navbarCurrentPrintDesc');
+    if (cPrintDesc) cPrintDesc.textContent = 'Cetak 1 surat pengantar yang aktif';
+    if (bZipTitle) bZipTitle.textContent = 'Unduh Semua Guru (.ZIP)';
+    if (bZipDesc) bZipDesc.textContent = 'Arsip 54 berkas .docx lengkap';
+  }
 }
 
 // Helper: Substitute dynamic variables into template HTML
@@ -1515,6 +1604,7 @@ function setActiveTemplate(templateId) {
   populateEditorTemplateSelect();
   renderTemplateTable();
   renderPreview();
+  renderSelectedFilterInfo();
   showToast(`Template aktif diubah: "${tpl.name}"`);
 }
 
@@ -2122,6 +2212,11 @@ async function downloadDocxClient() {
         tempat_pkl: (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl : '',
         alamat_pkl: (letter.isSpecificTempat && dOpt.showAlamat && letter.alamatPkl) ? letter.alamatPkl : '',
         students: letter.students || [],
+        siswa_nama: letter.siswa || '',
+        siswa_nis: letter.nis || '-',
+        siswa_nisn: letter.nisn || '-',
+        siswa_kelas: letter.kelas || '',
+        siswa_jurusan: letter.jurusan || '',
         no_surat: ds.noSurat || 'B.10.000/9546/SMKN1KLK/DIKPORA',
         tgl_surat: ds.tglSurat || '06 Oktober 2026',
         tgl_pelepasan: ds.tglPelepasan || '13 November 2026',
@@ -2149,7 +2244,7 @@ async function downloadDocxClient() {
         let fileName;
         if (isKeterangan) {
           const firstStudent = (letter.students && letter.students.length > 0) ? letter.students[0] : null;
-          const sName = firstStudent ? (firstStudent.siswa || firstStudent.nama || 'Siswa') : 'Siswa';
+          const sName = firstStudent ? (firstStudent.siswa || firstStudent.nama || 'Siswa') : (letter.siswa || 'Siswa');
           const safeSiswa = sName.replace(/[^a-zA-Z0-9]/g, '_');
           fileName = `Surat_Keterangan_PKL_${safeSiswa}.docx`;
         } else {
@@ -2157,365 +2252,161 @@ async function downloadDocxClient() {
           const safeTempat = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) : 'Semua_Lokasi';
           fileName = `Surat_Pengantar_PKL_${safeName}_${safeTempat}.docx`;
         }
-
-        if (typeof saveAs !== 'undefined') {
-          saveAs(blob, fileName);
-        } else {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }
+        saveAsOrDownload(blob, fileName);
         downloadedViaBackend = true;
       }
     } catch (backendErr) {
-      // Backend tidak aktif (misal buka index.html mandiri secara offline), gunakan engine JSZip client-side
+      // Backend tidak aktif (misal buka index.html mandiri di GitHub Pages), gunakan engine JSZip client-side
     }
 
     if (!downloadedViaBackend) {
       if (typeof JSZip === 'undefined') {
-        alert('Pustaka JSZip belum dimuat. Pastikan berkas assets/vendor/jszip.min.js tersedia.');
-        return;
-      }
-      if (typeof DOCX_TEMPLATE_B64 === 'undefined') {
-        alert('Template DOCX belum tersedia. Pastikan js/template_base64.js dimuat.');
+        alert('Pustaka JSZip belum dimuat.');
         return;
       }
 
-      const zip = await JSZip.loadAsync(base64ToUint8Array(DOCX_TEMPLATE_B64));
-      let docXml = await zip.file('word/document.xml').async('text');
-
-      // 0. Update Paper Size (F4 vs A4)
-      if (dOpt.paperSize === 'a4') {
-        docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="11906" w:h="16838"/>');
-      } else {
-        docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="12242" w:h="18722"/>');
-      }
-
-      // 0.1 Update Kop Surat: Hapus jika tidak dicentang
-      if (!dOpt.showKop) {
-        docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?rId8[\s\S]*?<\/w:p>/, '');
-      }
-
-      // 1. Replace Nomor Surat
-      docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, ds.noSurat);
-
-      // 2. Replace Tempat PKL on Yth paragraph (Sesuai Pratinjau Dokumen Nyata)
-      const targetTempatDocx = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl : '';
-      if (!targetTempatDocx) {
-        // Jika Semua Lokasi PKL dipilih, hilangkan baris tujuan dudi agar Yth langsung diikuti di dan Tempat
-        docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, '');
-      } else {
-        let replaceXml = `
-          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-            <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr></w:pPr>
-            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(targetTempatDocx)}</w:t></w:r>
-          </w:p>
-        `;
-        if (dOpt.showAlamat && letter.alamatPkl) {
-          replaceXml += `
-            <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-              <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr></w:pPr>
-              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr><w:t>${escapeXml(letter.alamatPkl)}</w:t></w:r>
-            </w:p>
-          `;
-        }
-        docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, replaceXml);
-      }
-
-      // 3. Replace Nama Guru (format rapi tanpa mergefield construct)
-      docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Nama_Guru[\s\S]*?<\/w:p>/, `
-        <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-          <w:pPr><w:tabs><w:tab w:val="left" w:pos="2160"/></w:tabs><w:spacing w:after="0" w:line="360" w:lineRule="auto"/><w:ind w:left="720"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr></w:pPr>
-          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">Nama </w:t></w:r>
-          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:tab/><w:t xml:space="preserve">: </w:t></w:r>
-          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(letter.guruNama)}</w:t></w:r>
-        </w:p>
-      `);
-
-      // 4. Replace NIP
-      docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+NIP[\s\S]*?<\/w:p>/, `
-        <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-          <w:pPr><w:tabs><w:tab w:val="left" w:pos="2160"/></w:tabs><w:spacing w:after="0" w:line="360" w:lineRule="auto"/><w:ind w:left="720"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr></w:pPr>
-          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">NIP </w:t></w:r>
-          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:tab/><w:t xml:space="preserve">: </w:t></w:r>
-          <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(letter.guruNip || '-')}</w:t></w:r>
-        </w:p>
-      `);
-
-      // 5. Replace Tanggal Surat (Klungkung, ...)
-      docXml = docXml.replace(
-        /(<w:t[^>]*>Klungkung<\/w:t>[\s\S]*?<w:t[^>]*>),(\s*)<\/w:t>/,
-        `<w:t>Klungkung, ${escapeXml(ds.tglSurat)}</w:t>`
-      );
-
-      // 6. Replace Pelepasan, Monitoring, Penarikan, Tahun Ajaran & Lembaga
-      docXml = docXml.replace(/13 November 2026 sampai dengan 30 April 2027/g, escapeXml(ds.periodePkl));
-      docXml = docXml.replace(/13 November 2026/g, ds.tglPelepasan);
-      docXml = docXml.replace(/30 April 2027/g, ds.tglPenarikan);
-      if (ds.tahunAjaran) docXml = docXml.replace(/2026\/2027/g, escapeXml(ds.tahunAjaran));
-      if (ds.namaSekolah) docXml = docXml.replace(/SMK Negeri 1 Klungkung/g, escapeXml(ds.namaSekolah));
-      if (ds.kepsekNama) docXml = docXml.replace(/Sri Rejeki, S\.Pd\., M\.Pd\./g, escapeXml(ds.kepsekNama));
-      if (ds.kepsekNip) docXml = docXml.replace(/19770309 200903 2 010/g, escapeXml(ds.kepsekNip));
-
-      // Inject Custom Kop into Word DOCX if uploaded
-      if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
-        try {
-          const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
-          if (zip.file('word/media/image1.jpg')) zip.file('word/media/image1.jpg', kopBytes);
-          if (zip.file('word/media/image2.jpeg')) zip.file('word/media/image2.jpeg', kopBytes);
-        } catch (err) {
-          console.warn('Word export kop replacement warning:', err);
-        }
-      }
-      // Inject Custom TTD or TTD Basah into Word DOCX
-      if (!dOpt.showTtd) {
-        // User disabled electronic signature -> embed TTD Basah
-        const activeBasah = getTtdBasahSrc();
-        if (activeBasah && activeBasah.startsWith('data:image/')) {
-          try {
-            const ttdBasahBytes = base64DataUrlToUint8Array(activeBasah);
-            if (zip.file('word/media/image3.png')) zip.file('word/media/image3.png', ttdBasahBytes);
-          } catch (err) {
-            console.warn('Word export ttd basah replacement warning:', err);
-          }
-        }
-        // Tambahkan Nama, Pangkat, NIP bergaris bawah di bawah gambar TTD Basah
-        const ttdTextXml = `
-          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-            <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:u w:val="single"/><w:sz w:val="24"/></w:rPr></w:pPr>
-            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:u w:val="single"/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(ds.kepsekNama)}</w:t></w:r>
-          </w:p>
-          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-            <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr>
-            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${escapeXml(ds.kepsekPangkat)}</w:t></w:r>
-          </w:p>
-          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-            <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr>
-            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>NIP. ${escapeXml(ds.kepsekNip)}</w:t></w:r>
-          </w:p>
-        `;
-        docXml = docXml.replace(/(<w:p\b[^>]*>[\s\S]*?rId10[\s\S]*?<\/w:p>)([\s\S]*?<w:p\b[^>]*>[\s\S]*?Lampiran 2)/, `$1\n${ttdTextXml}\n$2`);
-      } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
-        try {
-          const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
-          if (zip.file('word/media/image3.png')) zip.file('word/media/image3.png', ttdBytes);
-        } catch (err) {
-          console.warn('Word export ttd replacement warning:', err);
-        }
-      }
-
-      // 7. Replace Lampiran Table Rows
-      const tblStartIdx = docXml.indexOf('<w:tbl');
-      const tblEndIdx = docXml.indexOf('</w:tbl>', tblStartIdx) + 8;
-      if (tblStartIdx !== -1 && tblEndIdx !== -1) {
-        const tblXml = docXml.substring(tblStartIdx, tblEndIdx);
-        const rowMatches = tblXml.match(/<w:tr[\s\S]*?<\/w:tr>/g);
-        if (rowMatches && rowMatches.length >= 2) {
-          const headerRow = rowMatches[0];
-          let newTableRows = headerRow;
-
-          letter.students.forEach((s, idx) => {
-            const noVal = idx + 1;
-            const namaVal = escapeXml(s.siswa || s.nama || '');
-            const kelasVal = escapeXml(s.kelas || '');
-            const tempatVal = escapeXml(s.tempat || '');
-
-            const studentRowXml = `
-              <w:tr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-                <w:tc>
-                  <w:tcPr><w:tcW w:w="699" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
-                  <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${noVal}</w:t></w:r></w:p>
-                </w:tc>
-                <w:tc>
-                  <w:tcPr><w:tcW w:w="4050" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
-                  <w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${namaVal}</w:t></w:r></w:p>
-                </w:tc>
-                <w:tc>
-                  <w:tcPr><w:tcW w:w="1620" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
-                  <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${kelasVal}</w:t></w:r></w:p>
-                </w:tc>
-                <w:tc>
-                  <w:tcPr><w:tcW w:w="3827" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
-                  <w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${tempatVal}</w:t></w:r></w:p>
-                </w:tc>
-              </w:tr>
-            `;
-            newTableRows += studentRowXml;
-          });
-
-          const tblPrMatch = tblXml.match(/<w:tblPr[\s\S]*?<\/w:tblPr>/);
-          const tblGridMatch = tblXml.match(/<w:tblGrid[\s\S]*?<\/w:tblGrid>/);
-          const tblPr = tblPrMatch ? tblPrMatch[0] : '';
-          const tblGrid = tblGridMatch ? tblGridMatch[0] : '';
-
-          const newTblXml = `<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${tblPr}${tblGrid}${newTableRows}</w:tbl>`;
-          docXml = docXml.substring(0, tblStartIdx) + newTblXml + docXml.substring(tblEndIdx);
-        }
-      }
-
-      zip.file('word/document.xml', docXml);
-
-      const blob = await zip.generateAsync({
-        type: 'blob',
-        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-      });
-
-      let fileName;
       if (isKeterangan) {
-        const firstStudent = (letter.students && letter.students.length > 0) ? letter.students[0] : null;
-        const sName = firstStudent ? (firstStudent.siswa || firstStudent.nama || 'Siswa') : 'Siswa';
-        const safeSiswa = sName.replace(/[^a-zA-Z0-9]/g, '_');
-        fileName = `Surat_Keterangan_PKL_${safeSiswa}.docx`;
-      } else {
-        const safeName = (letter.guruNama || 'Surat').replace(/[^a-zA-Z0-9]/g, '_');
-        const safeTempat = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) : 'Semua_Lokasi';
-        fileName = `Surat_Pengantar_PKL_${safeName}_${safeTempat}.docx`;
-      }
-
-      if (typeof saveAs !== 'undefined') {
-        saveAs(blob, fileName);
-      } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }
-    }
-  } catch (err) {
-    console.error('Error generating DOCX:', err);
-    alert('Terjadi kesalahan saat membuat file .DOCX: ' + err.message);
-  } finally {
-    if (btn) btn.innerHTML = originalText;
-    if (window.lucide) lucide.createIcons();
-  }
-}
-
-// Download All Letters in a single ZIP file
-async function downloadBatchZipClient() {
-  const btn = document.getElementById('btnDownloadBatchZip');
-  const originalText = btn ? btn.innerHTML : '';
-  if (btn) btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Membuat ZIP...</span>`;
-
-  try {
-    const ds = AppState.docSettings;
-    const dOpt = AppState.displayOptions;
-
-    // 1. Coba unduh via backend Python API jika aktif
-    let downloadedViaBackend = false;
-    try {
-      const res = await fetch('/api/batch-docx-zip', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          no_surat: ds.noSurat || 'B.10.000/9546/SMKN1KLK/DIKPORA',
-          tgl_surat: ds.tglSurat || '06 Oktober 2026',
-          tgl_pelepasan: ds.tglPelepasan || '13 November 2026',
-          periode_pkl: ds.periodePkl || '13 November 2026 sampai dengan 30 April 2027',
-          tgl_penarikan: ds.tglPenarikan || '30 April 2027',
-          nama_sekolah: ds.namaSekolah || AppState.appSettings.namaSekolah || 'SMKN 1 FYJ Channel',
-          tahun_ajaran: ds.tahunAjaran || AppState.appSettings.tahunAjaran || '2026/2027',
-          kepsek_nama: ds.kepsekNama || AppState.appSettings.kepsekNama || 'Sri Rejeki, S.Pd., M.Pd.',
-          kepsek_pangkat: ds.kepsekPangkat || AppState.appSettings.kepsekPangkat || 'Pembina (IV/a)',
-          kepsek_nip: ds.kepsekNip || AppState.appSettings.kepsekNip || '19770309 200903 2 010',
-          show_kop: dOpt.showKop,
-          show_ttd: dOpt.showTtd,
-          show_alamat: dOpt.showAlamat,
-          paper_size: dOpt.paperSize
-        })
-      });
-
-      if (res.ok) {
-        const blob = await res.blob();
-        const fileName = 'Surat_Pengantar_PKL_Semua_Guru.zip';
-        if (typeof saveAs !== 'undefined') {
-          saveAs(blob, fileName);
-        } else {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
+        // Generate Surat Keterangan PKL via Client JSZip
+        if (typeof DOCX_KETERANGAN_TEMPLATE_B64 === 'undefined') {
+          alert('Template DOCX Surat Keterangan belum tersedia di template_base64.js');
+          return;
         }
-        downloadedViaBackend = true;
-      }
-    } catch (backendErr) {}
 
-    if (!downloadedViaBackend) {
-      if (typeof JSZip === 'undefined') {
-        alert('Library JSZip belum dimuat.');
-        return;
-      }
-      if (typeof DOCX_TEMPLATE_B64 === 'undefined') {
-        alert('Template DOCX belum tersedia.');
-        return;
-      }
+        const templateBytes = base64ToUint8Array(DOCX_KETERANGAN_TEMPLATE_B64);
+        const zip = await JSZip.loadAsync(templateBytes);
+        let docXml = await zip.file('word/document.xml').async('text');
 
-      const masterZip = new JSZip();
-      const templateBytes = base64ToUint8Array(DOCX_TEMPLATE_B64);
-
-      for (let idx = 0; idx < AppState.gurus.length; idx++) {
-        const g = AppState.gurus[idx];
-        const singleZip = await JSZip.loadAsync(templateBytes);
-        let docXml = await singleZip.file('word/document.xml').async('text');
-
-        // Update Paper Size (F4 vs A4)
+        // Paper Size
         if (dOpt.paperSize === 'a4') {
           docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="11906" w:h="16838"/>');
         } else {
           docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="12242" w:h="18722"/>');
         }
 
-        // Update Kop Surat: Hapus jika tidak dicentang
+        // Kop visibility
         if (!dOpt.showKop) {
           docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?rId8[\s\S]*?<\/w:p>/, '');
         }
 
-        // Jika semua siswa guru ini di 1 lokasi yang sama, tampilkan lokasi tersebut. Jika multi-lokasi, kosongkan di Yth.
-        const isSinglePlace = (g.tempatList && g.tempatList.length === 1);
-        const targetTempat = isSinglePlace ? g.tempatList[0] : '';
-        const targetAlamat = (isSinglePlace && g.siswa && g.siswa.length > 0) ? (g.siswa[0].alamat || '') : '';
+        // Nomor Surat
+        docXml = docXml.replace(/B\.10\.429\.1\/8464\/SMKN1KLK\/DIKPORA/g, escapeXml(ds.noSurat));
+        docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, escapeXml(ds.noSurat));
+
+        // Kepsek info
+        if (ds.kepsekNama) docXml = docXml.replace(/Sri Rejeki,S\.Pd\.M\.Pd\./g, escapeXml(ds.kepsekNama)).replace(/Sri Rejeki, S\.Pd\., M\.Pd\./g, escapeXml(ds.kepsekNama));
+        if (ds.kepsekNip) docXml = docXml.replace(/19770309 200903 2 010/g, escapeXml(ds.kepsekNip));
+        if (ds.kepsekPangkat) docXml = docXml.replace(/Pembina, IV\.a/g, escapeXml(ds.kepsekPangkat)).replace(/Pembina \(IV\/a\)/g, escapeXml(ds.kepsekPangkat));
+        if (ds.namaSekolah) docXml = docXml.replace(/SMK Negeri 1 Klungkung/g, escapeXml(ds.namaSekolah));
+
+        // Siswa Info
+        const firstStudent = (letter.students && letter.students.length > 0) ? letter.students[0] : null;
+        const sNama = firstStudent ? (firstStudent.siswa || firstStudent.nama || '-') : (letter.siswa || '-');
+        const sNis = firstStudent ? (firstStudent.nis || '-') : (letter.nis || '-');
+        const sNisn = firstStudent ? (firstStudent.nisn || '-') : (letter.nisn || '-');
+        const sKelas = firstStudent ? (firstStudent.kelas || '-') : (letter.kelas || '-');
+        const sJurusan = firstStudent ? (firstStudent.jurusan || getJurusanFromKelas(firstStudent.kelas) || firstStudent.kelas || '-') : (letter.jurusan || '-');
+        const sTempat = letter.tempatPkl || (firstStudent ? firstStudent.tempat : 'Marvella');
+
+        docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+NAMA_SISWA_YANG_DIBIMBING_[\s\S]*?<\/w:p>/, `
+          <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+            <w:pPr><w:tabs><w:tab w:val="left" w:pos="2410"/><w:tab w:val="left" w:pos="2552"/></w:tabs><w:ind w:left="567"/><w:jc w:val="both"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:eastAsia="Bookman Old Style" w:hAnsi="Bookman Old Style" w:cs="Bookman Old Style"/></w:rPr></w:pPr>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:eastAsia="Bookman Old Style" w:hAnsi="Bookman Old Style" w:cs="Bookman Old Style"/></w:rPr><w:t>Nama</w:t></w:r>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:eastAsia="Bookman Old Style" w:hAnsi="Bookman Old Style" w:cs="Bookman Old Style"/></w:rPr><w:tab/><w:t>: </w:t></w:r>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:eastAsia="Bookman Old Style" w:hAnsi="Bookman Old Style" w:cs="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(sNama)}</w:t></w:r>
+          </w:p>
+        `);
+
+        let nisDisplay = sNis && sNis !== '-' ? sNis : '';
+        if (sNisn && sNisn !== '-') {
+          nisDisplay = nisDisplay ? `${nisDisplay} / NISN: ${sNisn}` : `NISN: ${sNisn}`;
+        }
+        if (!nisDisplay) nisDisplay = '-';
+
+        docXml = docXml.replace(/(<w:t[^>]*>NIS<\/w:t>[\s\S]*?<w:t[^>]*>: <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(nisDisplay)}</w:t>$2`);
+        docXml = docXml.replace(/(<w:t[^>]*>Jurusan<\/w:t>[\s\S]*?<w:t[^>]*>:<\/w:t>[\s\S]*?<w:t[^>]*> <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(sJurusan)}</w:t>$2`);
+
+        if (sTempat) docXml = docXml.replace(/Marvella/g, escapeXml(sTempat));
+        docXml = docXml.replace(/07 Oktober 2026/g, escapeXml(ds.tglSurat));
+
+        // Custom Kop
+        if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
+          try {
+            const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
+            if (zip.file('word/media/image1.png')) zip.file('word/media/image1.png', kopBytes);
+          } catch (err) {}
+        }
+
+        // TTD
+        if (!dOpt.showTtd) {
+          const activeBasah = getTtdBasahSrc();
+          if (activeBasah && activeBasah.startsWith('data:image/')) {
+            try {
+              const ttdBasahBytes = base64DataUrlToUint8Array(activeBasah);
+              if (zip.file('word/media/image2.png')) zip.file('word/media/image2.png', ttdBasahBytes);
+            } catch (err) {}
+          }
+        } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
+          try {
+            const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
+            if (zip.file('word/media/image2.png')) zip.file('word/media/image2.png', ttdBytes);
+          } catch (err) {}
+        }
+
+        zip.file('word/document.xml', docXml);
+        const blob = await zip.generateAsync({
+          type: 'blob',
+          mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        });
+        const safeSiswa = sNama.replace(/[^a-zA-Z0-9]/g, '_');
+        saveAsOrDownload(blob, `Surat_Keterangan_PKL_${safeSiswa}.docx`);
+      } else {
+        // Generate Surat Pengantar PKL via Client JSZip (Existing)
+        if (typeof DOCX_TEMPLATE_B64 === 'undefined') {
+          alert('Template DOCX belum tersedia. Pastikan js/template_base64.js dimuat.');
+          return;
+        }
+
+        const zip = await JSZip.loadAsync(base64ToUint8Array(DOCX_TEMPLATE_B64));
+        let docXml = await zip.file('word/document.xml').async('text');
+
+        if (dOpt.paperSize === 'a4') {
+          docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="11906" w:h="16838"/>');
+        } else {
+          docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="12242" w:h="18722"/>');
+        }
+
+        if (!dOpt.showKop) {
+          docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?rId8[\s\S]*?<\/w:p>/, '');
+        }
 
         docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, ds.noSurat);
 
-        if (!targetTempat) {
+        if (!letter.isSpecificTempat || !letter.tempatPkl) {
           docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, '');
         } else {
           let replaceXml = `
             <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
               <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr></w:pPr>
-              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(targetTempat)}</w:t></w:r>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(letter.tempatPkl)}</w:t></w:r>
             </w:p>
           `;
-          if (dOpt.showAlamat && targetAlamat) {
+          if (dOpt.showAlamat && letter.alamatPkl) {
             replaceXml += `
               <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
                 <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr></w:pPr>
-                <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr><w:t>${escapeXml(targetAlamat)}</w:t></w:r>
+                <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr><w:t>${escapeXml(letter.alamatPkl)}</w:t></w:r>
               </w:p>
             `;
           }
           docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, replaceXml);
         }
 
-        // Replace Nama Guru & NIP
         docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Nama_Guru[\s\S]*?<\/w:p>/, `
           <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
             <w:pPr><w:tabs><w:tab w:val="left" w:pos="2160"/></w:tabs><w:spacing w:after="0" w:line="360" w:lineRule="auto"/><w:ind w:left="720"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr></w:pPr>
             <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">Nama </w:t></w:r>
             <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:tab/><w:t xml:space="preserve">: </w:t></w:r>
-            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(g.guru)}</w:t></w:r>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(letter.guruNama)}</w:t></w:r>
           </w:p>
         `);
 
@@ -2524,7 +2415,7 @@ async function downloadBatchZipClient() {
             <w:pPr><w:tabs><w:tab w:val="left" w:pos="2160"/></w:tabs><w:spacing w:after="0" w:line="360" w:lineRule="auto"/><w:ind w:left="720"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr></w:pPr>
             <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">NIP </w:t></w:r>
             <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:tab/><w:t xml:space="preserve">: </w:t></w:r>
-            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(g.nip || '-')}</w:t></w:r>
+            <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(letter.guruNip || '-')}</w:t></w:r>
           </w:p>
         `);
 
@@ -2540,21 +2431,20 @@ async function downloadBatchZipClient() {
         if (ds.kepsekNama) docXml = docXml.replace(/Sri Rejeki, S\.Pd\., M\.Pd\./g, escapeXml(ds.kepsekNama));
         if (ds.kepsekNip) docXml = docXml.replace(/19770309 200903 2 010/g, escapeXml(ds.kepsekNip));
 
-        // Inject custom kop/ttd into batch docx if uploaded
         if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
           try {
             const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
-            if (singleZip.file('word/media/image1.jpg')) singleZip.file('word/media/image1.jpg', kopBytes);
-            if (singleZip.file('word/media/image2.jpeg')) singleZip.file('word/media/image2.jpeg', kopBytes);
+            if (zip.file('word/media/image1.jpg')) zip.file('word/media/image1.jpg', kopBytes);
+            if (zip.file('word/media/image2.jpeg')) zip.file('word/media/image2.jpeg', kopBytes);
           } catch (err) {}
         }
-        // Inject Custom TTD or TTD Basah into batch DOCX
+
         if (!dOpt.showTtd) {
           const activeBasah = getTtdBasahSrc();
           if (activeBasah && activeBasah.startsWith('data:image/')) {
             try {
               const ttdBasahBytes = base64DataUrlToUint8Array(activeBasah);
-              if (singleZip.file('word/media/image3.png')) singleZip.file('word/media/image3.png', ttdBasahBytes);
+              if (zip.file('word/media/image3.png')) zip.file('word/media/image3.png', ttdBasahBytes);
             } catch (err) {}
           }
           const ttdTextXml = `
@@ -2575,7 +2465,7 @@ async function downloadBatchZipClient() {
         } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
           try {
             const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
-            if (singleZip.file('word/media/image3.png')) singleZip.file('word/media/image3.png', ttdBytes);
+            if (zip.file('word/media/image3.png')) zip.file('word/media/image3.png', ttdBytes);
           } catch (err) {}
         }
 
@@ -2589,49 +2479,393 @@ async function downloadBatchZipClient() {
             const headerRow = rowMatches[0];
             let newTableRows = headerRow;
 
-            g.siswa.forEach((s, sIdx) => {
-              newTableRows += `
+            letter.students.forEach((s, idx) => {
+              const noVal = idx + 1;
+              const namaVal = escapeXml(s.siswa || s.nama || '');
+              const kelasVal = escapeXml(s.kelas || '');
+              const tempatVal = escapeXml(s.tempat || '');
+
+              const studentRowXml = `
                 <w:tr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-                  <w:tc><w:tcPr><w:tcW w:w="699" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr><w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${sIdx + 1}</w:t></w:r></w:p></w:tc>
-                  <w:tc><w:tcPr><w:tcW w:w="4050" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr><w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${escapeXml(s.siswa || s.nama || '')}</w:t></w:r></w:p></w:tc>
-                  <w:tc><w:tcPr><w:tcW w:w="1620" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr><w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${escapeXml(s.kelas || '')}</w:t></w:r></w:p></w:tc>
-                  <w:tc><w:tcPr><w:tcW w:w="3827" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr><w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${escapeXml(s.tempat || '')}</w:t></w:r></w:p></w:tc>
+                  <w:tc>
+                    <w:tcPr><w:tcW w:w="699" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                    <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${noVal}</w:t></w:r></w:p>
+                  </w:tc>
+                  <w:tc>
+                    <w:tcPr><w:tcW w:w="4050" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                    <w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${namaVal}</w:t></w:r></w:p>
+                  </w:tc>
+                  <w:tc>
+                    <w:tcPr><w:tcW w:w="1620" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                    <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${kelasVal}</w:t></w:r></w:p>
+                  </w:tc>
+                  <w:tc>
+                    <w:tcPr><w:tcW w:w="3827" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                    <w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${tempatVal}</w:t></w:r></w:p>
+                  </w:tc>
                 </w:tr>
               `;
+              newTableRows += studentRowXml;
             });
 
             const tblPrMatch = tblXml.match(/<w:tblPr[\s\S]*?<\/w:tblPr>/);
             const tblGridMatch = tblXml.match(/<w:tblGrid[\s\S]*?<\/w:tblGrid>/);
-            const newTblXml = `<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${tblPrMatch ? tblPrMatch[0] : ''}${tblGridMatch ? tblGridMatch[0] : ''}${newTableRows}</w:tbl>`;
+            const tblPr = tblPrMatch ? tblPrMatch[0] : '';
+            const tblGrid = tblGridMatch ? tblGridMatch[0] : '';
+
+            const newTblXml = `<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${tblPr}${tblGrid}${newTableRows}</w:tbl>`;
             docXml = docXml.substring(0, tblStartIdx) + newTblXml + docXml.substring(tblEndIdx);
           }
         }
 
-        singleZip.file('word/document.xml', docXml);
-        const docxBlob = await singleZip.generateAsync({ type: 'uint8array' });
-        const safeG = g.guru.replace(/[^a-zA-Z0-9]/g, '_');
-        masterZip.file(`Surat_Pengantar_${(idx + 1).toString().padStart(2, '0')}_${safeG}.docx`, docxBlob);
+        zip.file('word/document.xml', docXml);
+        const blob = await zip.generateAsync({
+          type: 'blob',
+          mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        });
+
+        const safeName = (letter.guruNama || 'Surat').replace(/[^a-zA-Z0-9]/g, '_');
+        const safeTempat = (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20) : 'Semua_Lokasi';
+        saveAsOrDownload(blob, `Surat_Pengantar_PKL_${safeName}_${safeTempat}.docx`);
+      }
+    }
+  } catch (err) {
+    console.error('Error generating DOCX:', err);
+    alert('Terjadi kesalahan saat membuat file .DOCX: ' + err.message);
+  } finally {
+    if (btn) btn.innerHTML = originalText;
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
+// Download All Letters in a single ZIP file (Adapts to Keterangan vs Pengantar)
+async function downloadBatchZipClient() {
+  const btn = document.getElementById('btnDownloadBatchZip');
+  const originalText = btn ? btn.innerHTML : '';
+  if (btn) btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>Membuat ZIP...</span>`;
+
+  try {
+    const ds = AppState.docSettings;
+    const dOpt = AppState.displayOptions;
+    const activeTpl = getActiveTemplate();
+    const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
+                         (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
+
+    // 1. Coba unduh via backend Python API jika aktif
+    let downloadedViaBackend = false;
+    try {
+      const payload = {
+        doc_type: isKeterangan ? 'keterangan' : 'pengantar',
+        records: isKeterangan ? getActiveBatchStudents() : [],
+        no_surat: ds.noSurat || 'B.10.000/9546/SMKN1KLK/DIKPORA',
+        tgl_surat: ds.tglSurat || '06 Oktober 2026',
+        tgl_pelepasan: ds.tglPelepasan || '13 November 2026',
+        periode_pkl: ds.periodePkl || '13 November 2026 sampai dengan 30 April 2027',
+        tgl_penarikan: ds.tglPenarikan || '30 April 2027',
+        nama_sekolah: ds.namaSekolah || AppState.appSettings.namaSekolah || 'SMKN 1 FYJ Channel',
+        tahun_ajaran: ds.tahunAjaran || AppState.appSettings.tahunAjaran || '2026/2027',
+        kepsek_nama: ds.kepsekNama || AppState.appSettings.kepsekNama || 'Sri Rejeki, S.Pd., M.Pd.',
+        kepsek_pangkat: ds.kepsekPangkat || AppState.appSettings.kepsekPangkat || 'Pembina (IV/a)',
+        kepsek_nip: ds.kepsekNip || AppState.appSettings.kepsekNip || '19770309 200903 2 010',
+        show_kop: dOpt.showKop,
+        show_ttd: dOpt.showTtd,
+        show_alamat: dOpt.showAlamat,
+        paper_size: dOpt.paperSize
+      };
+
+      const res = await fetch('/api/batch-docx-zip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        const blob = await res.blob();
+        const fileName = isKeterangan ? 'Surat_Keterangan_PKL_Arsip.zip' : 'Surat_Pengantar_PKL_Semua_Guru.zip';
+        saveAsOrDownload(blob, fileName);
+        downloadedViaBackend = true;
+      }
+    } catch (backendErr) {}
+
+    if (!downloadedViaBackend) {
+      if (typeof JSZip === 'undefined') {
+        alert('Library JSZip belum dimuat.');
+        return;
       }
 
-      const zipBlob = await masterZip.generateAsync({ type: 'blob' });
-      const fileName = 'Surat_Pengantar_PKL_Semua_Guru.zip';
+      const masterZip = new JSZip();
 
-      if (typeof saveAs !== 'undefined') {
-        saveAs(zipBlob, fileName);
+      if (isKeterangan) {
+        // Client-side ZIP Generator untuk Surat Keterangan PKL
+        if (typeof DOCX_KETERANGAN_TEMPLATE_B64 === 'undefined') {
+          alert('Template DOCX Surat Keterangan belum tersedia.');
+          return;
+        }
+
+        const templateBytes = base64ToUint8Array(DOCX_KETERANGAN_TEMPLATE_B64);
+        const students = getActiveBatchStudents();
+
+        for (let idx = 0; idx < students.length; idx++) {
+          const s = students[idx];
+          if (!s) continue;
+          const singleZip = await JSZip.loadAsync(templateBytes);
+          let docXml = await singleZip.file('word/document.xml').async('text');
+
+          // Paper size
+          if (dOpt.paperSize === 'a4') {
+            docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="11906" w:h="16838"/>');
+          } else {
+            docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="12242" w:h="18722"/>');
+          }
+
+          if (!dOpt.showKop) {
+            docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?rId8[\s\S]*?<\/w:p>/, '');
+          }
+
+          docXml = docXml.replace(/B\.10\.429\.1\/8464\/SMKN1KLK\/DIKPORA/g, escapeXml(ds.noSurat));
+          docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, escapeXml(ds.noSurat));
+          if (ds.kepsekNama) docXml = docXml.replace(/Sri Rejeki,S\.Pd\.M\.Pd\./g, escapeXml(ds.kepsekNama)).replace(/Sri Rejeki, S\.Pd\., M\.Pd\./g, escapeXml(ds.kepsekNama));
+          if (ds.kepsekNip) docXml = docXml.replace(/19770309 200903 2 010/g, escapeXml(ds.kepsekNip));
+          if (ds.kepsekPangkat) docXml = docXml.replace(/Pembina, IV\.a/g, escapeXml(ds.kepsekPangkat)).replace(/Pembina \(IV\/a\)/g, escapeXml(ds.kepsekPangkat));
+          if (ds.namaSekolah) docXml = docXml.replace(/SMK Negeri 1 Klungkung/g, escapeXml(ds.namaSekolah));
+
+          const sNama = s.siswa || s.nama || '-';
+          const sNis = s.nis || '-';
+          const sNisn = s.nisn || '-';
+          const sJurusan = s.jurusan || getJurusanFromKelas(s.kelas) || s.kelas || '-';
+          const sTempat = s.tempat || 'Marvella';
+
+          docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+NAMA_SISWA_YANG_DIBIMBING_[\s\S]*?<\/w:p>/, `
+            <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+              <w:pPr><w:tabs><w:tab w:val="left" w:pos="2410"/><w:tab w:val="left" w:pos="2552"/></w:tabs><w:ind w:left="567"/><w:jc w:val="both"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:eastAsia="Bookman Old Style" w:hAnsi="Bookman Old Style" w:cs="Bookman Old Style"/></w:rPr></w:pPr>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:eastAsia="Bookman Old Style" w:hAnsi="Bookman Old Style" w:cs="Bookman Old Style"/></w:rPr><w:t>Nama</w:t></w:r>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:eastAsia="Bookman Old Style" w:hAnsi="Bookman Old Style" w:cs="Bookman Old Style"/></w:rPr><w:tab/><w:t>: </w:t></w:r>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:eastAsia="Bookman Old Style" w:hAnsi="Bookman Old Style" w:cs="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(sNama)}</w:t></w:r>
+            </w:p>
+          `);
+
+          let nisDisplay = sNis && sNis !== '-' ? sNis : '';
+          if (sNisn && sNisn !== '-') {
+            nisDisplay = nisDisplay ? `${nisDisplay} / NISN: ${sNisn}` : `NISN: ${sNisn}`;
+          }
+          if (!nisDisplay) nisDisplay = '-';
+
+          docXml = docXml.replace(/(<w:t[^>]*>NIS<\/w:t>[\s\S]*?<w:t[^>]*>: <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(nisDisplay)}</w:t>$2`);
+          docXml = docXml.replace(/(<w:t[^>]*>Jurusan<\/w:t>[\s\S]*?<w:t[^>]*>:<\/w:t>[\s\S]*?<w:t[^>]*> <\/w:t>)(<\/w:r>)/, `$1<w:t xml:space="preserve">${escapeXml(sJurusan)}</w:t>$2`);
+
+          if (sTempat) docXml = docXml.replace(/Marvella/g, escapeXml(sTempat));
+          docXml = docXml.replace(/07 Oktober 2026/g, escapeXml(ds.tglSurat));
+
+          if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
+            try {
+              const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
+              if (singleZip.file('word/media/image1.png')) singleZip.file('word/media/image1.png', kopBytes);
+            } catch (err) {}
+          }
+
+          if (!dOpt.showTtd) {
+            const activeBasah = getTtdBasahSrc();
+            if (activeBasah && activeBasah.startsWith('data:image/')) {
+              try {
+                const ttdBasahBytes = base64DataUrlToUint8Array(activeBasah);
+                if (singleZip.file('word/media/image2.png')) singleZip.file('word/media/image2.png', ttdBasahBytes);
+              } catch (err) {}
+            }
+          } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
+            try {
+              const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
+              if (singleZip.file('word/media/image2.png')) singleZip.file('word/media/image2.png', ttdBytes);
+            } catch (err) {}
+          }
+
+          singleZip.file('word/document.xml', docXml);
+          const singleBlob = await singleZip.generateAsync({ type: 'uint8array' });
+          const safeS = sNama.replace(/[^a-zA-Z0-9]/g, '_');
+          masterZip.file(`Surat_Keterangan_${String(idx + 1).padStart(3, '0')}_${safeS}.docx`, singleBlob);
+        }
+
+        const masterBlob = await masterZip.generateAsync({ type: 'blob' });
+        saveAsOrDownload(masterBlob, 'Surat_Keterangan_PKL_Arsip.zip');
       } else {
-        const url = URL.createObjectURL(zipBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        // Surat Pengantar ZIP (existing)
+        if (typeof DOCX_TEMPLATE_B64 === 'undefined') {
+          alert('Template DOCX belum tersedia.');
+          return;
+        }
+
+        const templateBytes = base64ToUint8Array(DOCX_TEMPLATE_B64);
+
+        for (let idx = 0; idx < AppState.gurus.length; idx++) {
+          const g = AppState.gurus[idx];
+          const singleZip = await JSZip.loadAsync(templateBytes);
+          let docXml = await singleZip.file('word/document.xml').async('text');
+
+          if (dOpt.paperSize === 'a4') {
+            docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="11906" w:h="16838"/>');
+          } else {
+            docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="12242" w:h="18722"/>');
+          }
+
+          if (!dOpt.showKop) {
+            docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?rId8[\s\S]*?<\/w:p>/, '');
+          }
+
+          const isSinglePlace = (g.tempatList && g.tempatList.length === 1);
+          const targetTempat = isSinglePlace ? g.tempatList[0] : '';
+          const targetAlamat = (isSinglePlace && g.siswa && g.siswa.length > 0) ? (g.siswa[0].alamat || '') : '';
+
+          docXml = docXml.replace(/B\.10\.000\/9546\/SMKN1KLK\/DIKPORA/g, ds.noSurat);
+
+          if (!targetTempat) {
+            docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, '');
+          } else {
+            let replaceXml = `
+              <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr></w:pPr>
+                <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(targetTempat)}</w:t></w:r>
+              </w:p>
+            `;
+            if (dOpt.showAlamat && targetAlamat) {
+              replaceXml += `
+                <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                  <w:pPr><w:spacing w:after="0"/><w:ind w:left="709"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr></w:pPr>
+                  <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="21"/></w:rPr><w:t>${escapeXml(targetAlamat)}</w:t></w:r>
+                </w:p>
+              `;
+            }
+            docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Tempat_PKL[\s\S]*?<\/w:p>/, replaceXml);
+          }
+
+          docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+Nama_Guru[\s\S]*?<\/w:p>/, `
+            <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+              <w:pPr><w:tabs><w:tab w:val="left" w:pos="2160"/></w:tabs><w:spacing w:after="0" w:line="360" w:lineRule="auto"/><w:ind w:left="720"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr></w:pPr>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">Nama </w:t></w:r>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:tab/><w:t xml:space="preserve">: </w:t></w:r>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(g.guru)}</w:t></w:r>
+            </w:p>
+          `);
+
+          docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?MERGEFIELD\s+NIP[\s\S]*?<\/w:p>/, `
+            <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+              <w:pPr><w:tabs><w:tab w:val="left" w:pos="2160"/></w:tabs><w:spacing w:after="0" w:line="360" w:lineRule="auto"/><w:ind w:left="720"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr></w:pPr>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">NIP </w:t></w:r>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:tab/><w:t xml:space="preserve">: </w:t></w:r>
+              <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(g.nip || '-')}</w:t></w:r>
+            </w:p>
+          `);
+
+          docXml = docXml.replace(
+            /(<w:t[^>]*>Klungkung<\/w:t>[\s\S]*?<w:t[^>]*>),(\s*)<\/w:t>/,
+            `<w:t>Klungkung, ${escapeXml(ds.tglSurat)}</w:t>`
+          );
+          docXml = docXml.replace(/13 November 2026 sampai dengan 30 April 2027/g, escapeXml(ds.periodePkl));
+          docXml = docXml.replace(/13 November 2026/g, ds.tglPelepasan);
+          docXml = docXml.replace(/30 April 2027/g, ds.tglPenarikan);
+          if (ds.tahunAjaran) docXml = docXml.replace(/2026\/2027/g, escapeXml(ds.tahunAjaran));
+          if (ds.namaSekolah) docXml = docXml.replace(/SMK Negeri 1 Klungkung/g, escapeXml(ds.namaSekolah));
+          if (ds.kepsekNama) docXml = docXml.replace(/Sri Rejeki, S\.Pd\., M\.Pd\./g, escapeXml(ds.kepsekNama));
+          if (ds.kepsekNip) docXml = docXml.replace(/19770309 200903 2 010/g, escapeXml(ds.kepsekNip));
+
+          if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
+            try {
+              const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
+              if (singleZip.file('word/media/image1.jpg')) singleZip.file('word/media/image1.jpg', kopBytes);
+              if (singleZip.file('word/media/image2.jpeg')) singleZip.file('word/media/image2.jpeg', kopBytes);
+            } catch (err) {}
+          }
+
+          if (!dOpt.showTtd) {
+            const activeBasah = getTtdBasahSrc();
+            if (activeBasah && activeBasah.startsWith('data:image/')) {
+              try {
+                const ttdBasahBytes = base64DataUrlToUint8Array(activeBasah);
+                if (singleZip.file('word/media/image3.png')) singleZip.file('word/media/image3.png', ttdBasahBytes);
+              } catch (err) {}
+            }
+            const ttdTextXml = `
+              <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:u w:val="single"/><w:sz w:val="24"/></w:rPr></w:pPr>
+                <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:b/><w:u w:val="single"/><w:sz w:val="24"/></w:rPr><w:t>${escapeXml(ds.kepsekNama)}</w:t></w:r>
+              </w:p>
+              <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr>
+                <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${escapeXml(ds.kepsekPangkat)}</w:t></w:r>
+              </w:p>
+              <w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                <w:pPr><w:spacing w:after="0"/><w:ind w:left="5103"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr>
+                <w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>NIP. ${escapeXml(ds.kepsekNip)}</w:t></w:r>
+              </w:p>
+            `;
+            docXml = docXml.replace(/(<w:p\b[^>]*>[\s\S]*?rId10[\s\S]*?<\/w:p>)([\s\S]*?<w:p\b[^>]*>[\s\S]*?Lampiran 2)/, `$1\n${ttdTextXml}\n$2`);
+          } else if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
+            try {
+              const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
+              if (singleZip.file('word/media/image3.png')) singleZip.file('word/media/image3.png', ttdBytes);
+            } catch (err) {}
+          }
+
+          // Lampiran rows
+          const tblStartIdx = docXml.indexOf('<w:tbl');
+          const tblEndIdx = docXml.indexOf('</w:tbl>', tblStartIdx) + 8;
+          if (tblStartIdx !== -1 && tblEndIdx !== -1) {
+            const tblXml = docXml.substring(tblStartIdx, tblEndIdx);
+            const rowMatches = tblXml.match(/<w:tr[\s\S]*?<\/w:tr>/g);
+            if (rowMatches && rowMatches.length >= 2) {
+              const headerRow = rowMatches[0];
+              let newTableRows = headerRow;
+
+              g.siswa.forEach((s, sIdx) => {
+                const noVal = sIdx + 1;
+                const namaVal = escapeXml(s.siswa || s.nama || '');
+                const kelasVal = escapeXml(s.kelas || '');
+                const tempatVal = escapeXml(s.tempat || '');
+
+                const studentRowXml = `
+                  <w:tr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                    <w:tc>
+                      <w:tcPr><w:tcW w:w="699" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                      <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${noVal}</w:t></w:r></w:p>
+                    </w:tc>
+                    <w:tc>
+                      <w:tcPr><w:tcW w:w="4050" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                      <w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${namaVal}</w:t></w:r></w:p>
+                    </w:tc>
+                    <w:tc>
+                      <w:tcPr><w:tcW w:w="1620" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                      <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${kelasVal}</w:t></w:r></w:p>
+                    </w:tc>
+                    <w:tc>
+                      <w:tcPr><w:tcW w:w="3827" w:type="dxa"/><w:tcMar><w:top w:w="100" w:type="dxa"/><w:left w:w="150" w:type="dxa"/><w:bottom w:w="100" w:type="dxa"/><w:right w:w="150" w:type="dxa"/></w:tcMar></w:tcPr>
+                      <w:p><w:pPr><w:jc w:val="left"/><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Bookman Old Style" w:hAnsi="Bookman Old Style"/><w:sz w:val="22"/></w:rPr><w:t>${tempatVal}</w:t></w:r></w:p>
+                    </w:tc>
+                  </w:tr>
+                `;
+                newTableRows += studentRowXml;
+              });
+
+              const tblPrMatch = tblXml.match(/<w:tblPr[\s\S]*?<\/w:tblPr>/);
+              const tblGridMatch = tblXml.match(/<w:tblGrid[\s\S]*?<\/w:tblGrid>/);
+              const tblPr = tblPrMatch ? tblPrMatch[0] : '';
+              const tblGrid = tblGridMatch ? tblGridMatch[0] : '';
+
+              const newTblXml = `<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">${tblPr}${tblGrid}${newTableRows}</w:tbl>`;
+              docXml = docXml.substring(0, tblStartIdx) + newTblXml + docXml.substring(tblEndIdx);
+            }
+          }
+
+          singleZip.file('word/document.xml', docXml);
+          const singleBlob = await singleZip.generateAsync({ type: 'uint8array' });
+          const safeGuru = g.guru.replace(/[^a-zA-Z0-9]/g, '_');
+          masterZip.file(`Surat_Pengantar_${String(idx + 1).padStart(2, '0')}_${safeGuru}.docx`, singleBlob);
+        }
+
+        const masterBlob = await masterZip.generateAsync({ type: 'blob' });
+        saveAsOrDownload(masterBlob, 'Surat_Pengantar_PKL_Semua_Guru.zip');
       }
     }
   } catch (err) {
     console.error('Error generating batch ZIP:', err);
-    alert('Terjadi kesalahan saat membuat arsip ZIP: ' + err.message);
+    alert('Terjadi kesalahan saat membuat file ZIP: ' + err.message);
   } finally {
     if (btn) btn.innerHTML = originalText;
     if (window.lucide) lucide.createIcons();
@@ -2650,17 +2884,46 @@ function openBatchPrintModal() {
   const container = document.getElementById('batchPrintGuruList');
   if (!modal || !container) return;
 
+  const activeTpl = getActiveTemplate();
+  const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
+                       (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
+
+  const modalTitle = document.getElementById('batchPrintModalTitle');
+  const modalSub = document.getElementById('batchPrintModalSubtitle');
+
   container.innerHTML = '';
-  AppState.gurus.forEach((g, idx) => {
-    const label = document.createElement('label');
-    label.className = "flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg cursor-pointer text-xs text-slate-700";
-    label.innerHTML = `
-      <input type="checkbox" value="${idx}" class="batch-guru-check w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500" checked>
-      <span class="font-medium">${idx + 1}. ${g.guru}</span>
-      <span class="text-slate-400 ml-auto">(${g.siswa.length} Siswa)</span>
-    `;
-    container.appendChild(label);
-  });
+
+  if (isKeterangan) {
+    if (modalTitle) modalTitle.textContent = 'Cetak Massal Surat Keterangan PKL';
+    if (modalSub) modalSub.textContent = 'Pilih siswa untuk dicetak Surat Keterangan PKL (1 halaman per siswa).';
+
+    // Ambil daftar siswa aktif sesuai filter pemilihan surat yang sedang dipilih
+    const students = getActiveBatchStudents();
+    students.forEach((s, idx) => {
+      const label = document.createElement('label');
+      label.className = "flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg cursor-pointer text-xs text-slate-700";
+      label.innerHTML = `
+        <input type="checkbox" value="${idx}" class="batch-print-item-check w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500" checked>
+        <span class="font-medium">${idx + 1}. ${escapeXml(s.siswa || s.nama || '-')}</span>
+        <span class="text-slate-400 text-[11px] ml-auto">(${escapeXml(s.kelas || '-')} • ${escapeXml(s.tempat || '-')})</span>
+      `;
+      container.appendChild(label);
+    });
+  } else {
+    if (modalTitle) modalTitle.textContent = 'Cetak Massal Surat Pengantar PKL';
+    if (modalSub) modalSub.textContent = 'Pilih guru pembimbing untuk dicetak Surat Pengantar PKL & Lampiran 2.';
+
+    AppState.gurus.forEach((g, idx) => {
+      const label = document.createElement('label');
+      label.className = "flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg cursor-pointer text-xs text-slate-700";
+      label.innerHTML = `
+        <input type="checkbox" value="${idx}" class="batch-print-item-check w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500" checked>
+        <span class="font-medium">${idx + 1}. ${escapeXml(g.guru)}</span>
+        <span class="text-slate-400 ml-auto">(${g.siswa.length} Siswa)</span>
+      `;
+      container.appendChild(label);
+    });
+  }
 
   modal.style.display = 'flex';
   modal.classList.remove('hidden');
@@ -2677,15 +2940,15 @@ function closeBatchPrintModal() {
 
 // Toggle select all in Batch Print Modal
 function toggleSelectAllBatch(checked) {
-  const checks = document.querySelectorAll('.batch-guru-check');
+  const checks = document.querySelectorAll('.batch-print-item-check');
   checks.forEach(c => c.checked = checked);
 }
 
-// Execute Batch Print
+// Execute Batch Print (Adaptive to Surat Keterangan vs Surat Pengantar)
 function executeBatchPrint() {
-  const checks = document.querySelectorAll('.batch-guru-check:checked');
+  const checks = document.querySelectorAll('.batch-print-item-check:checked');
   if (checks.length === 0) {
-    alert('Pilih minimal satu guru pembimbing untuk dicetak.');
+    alert('Pilih minimal satu data untuk dicetak.');
     return;
   }
 
@@ -2698,106 +2961,178 @@ function executeBatchPrint() {
   const dOpt = AppState.displayOptions;
   const activeTpl = getActiveTemplate();
   const kopSrc = getKopSrc();
+  const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
+                       (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
 
-  selectedIndices.forEach((gIdx) => {
-    const g = AppState.gurus[gIdx];
-    const isSinglePlace = g.tempatList && g.tempatList.length === 1;
-    const targetTempat = isSinglePlace ? g.tempatList[0] : '';
-    const targetAlamat = (isSinglePlace && g.siswa && g.siswa.length > 0) ? (g.siswa[0].alamat || '') : '';
-    const letterMock = { 
-      guruNama: g.guru, 
-      guruNip: g.nip, 
-      tempatPkl: targetTempat, 
-      alamatPkl: targetAlamat, 
-      isSpecificTempat: isSinglePlace 
-    };
+  if (isKeterangan) {
+    // CETAK MASSAL SURAT KETERANGAN PKL (1 Halaman per siswa, Tanpa Lampiran 2)
+    const students = getActiveBatchStudents();
 
-    const pageWrapper = document.createElement('div');
-    pageWrapper.className = `doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
-    pageWrapper.style.pageBreakAfter = 'always';
+    selectedIndices.forEach((sIdx) => {
+      const s = students[sIdx];
+      if (!s) return;
 
-    let tableRows = '';
-    g.siswa.forEach((s, sIdx) => {
-      tableRows += `
-        <tr>
-          <td style="padding: 6px; text-align: center; border: 1px solid #000;">${sIdx + 1}</td>
-          <td style="padding: 6px; border: 1px solid #000;">${s.siswa || s.nama}</td>
-          <td style="padding: 6px; text-align: center; border: 1px solid #000;">${s.kelas}</td>
-          <td style="padding: 6px; border: 1px solid #000;">${s.tempat}</td>
-        </tr>
+      const sNama = s.siswa || s.nama || '-';
+      const sNis = s.nis || '-';
+      const sNisn = s.nisn || '-';
+      const sKelas = s.kelas || '-';
+      const sJurusan = s.jurusan || getJurusanFromKelas(s.kelas) || s.kelas || '-';
+      const sTempat = s.tempat || 'Marvella';
+
+      const letterMock = {
+        guruNama: s.guru || '-',
+        guruNip: s.nip || '-',
+        tempatPkl: sTempat,
+        alamatPkl: s.alamat || '',
+        isSpecificTempat: true,
+        students: [s],
+        totalSiswa: 1,
+        siswa: sNama,
+        nis: sNis,
+        nisn: sNisn,
+        kelas: sKelas,
+        jurusan: sJurusan
+      };
+
+      const resolvedBody = resolveTemplateVariables(activeTpl.htmlContent, letterMock, ds);
+
+      const pageWrapper = document.createElement('div');
+      pageWrapper.className = `doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
+      pageWrapper.style.pageBreakAfter = 'always';
+      pageWrapper.style.minHeight = '1000px';
+
+      pageWrapper.innerHTML = `
+        ${dOpt.showKop ? `
+          <div style="text-align: center; margin-bottom: 8px;">
+            <img src="${kopSrc}" alt="Kop Surat" style="width: 100%; max-height: 145px; object-fit: contain; display: block; margin: 0 auto;">
+          </div>
+        ` : ''}
+
+        <div style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
+          <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT KETERANGAN</div>
+          <div style="font-size: 11pt; margin-top: 2px;">Nomor: ${escapeXml(ds.noSurat)}</div>
+        </div>
+
+        <div style="text-align: justify; line-height: 1.4; font-size: 11pt;">
+          ${resolvedBody}
+        </div>
+
+        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 16px; page-break-inside: avoid;">
+          <div style="width: 250px; text-align: left;">
+            <div>Ditetapkan di Klungkung</div>
+            <div>Pada Tanggal ${escapeXml(ds.tglSurat)}</div>
+            <div style="margin-top: 2px;">Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
+            ${getTtdHtml(ds, dOpt)}
+          </div>
+        </div>
       `;
+
+      batchContainer.appendChild(pageWrapper);
     });
+  } else {
+    // CETAK MASSAL SURAT PENGANTAR PKL (+ Lampiran 2 Siswa)
+    selectedIndices.forEach((gIdx) => {
+      const g = AppState.gurus[gIdx];
+      if (!g) return;
+      const isSinglePlace = g.tempatList && g.tempatList.length === 1;
+      const targetTempat = isSinglePlace ? g.tempatList[0] : '';
+      const targetAlamat = (isSinglePlace && g.siswa && g.siswa.length > 0) ? (g.siswa[0].alamat || '') : '';
+      const letterMock = { 
+        guruNama: g.guru, 
+        guruNip: g.nip, 
+        tempatPkl: targetTempat, 
+        alamatPkl: targetAlamat, 
+        isSpecificTempat: isSinglePlace,
+        students: g.siswa
+      };
 
-    const resolvedBody = resolveTemplateVariables(activeTpl.htmlContent, letterMock, ds);
+      const pageWrapper = document.createElement('div');
+      pageWrapper.className = `doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
+      pageWrapper.style.pageBreakAfter = 'always';
 
-    pageWrapper.innerHTML = `
-      ${dOpt.showKop ? `
-        <div style="text-align: center; margin-bottom: 8px;">
-          <img src="${kopSrc}" alt="Kop Surat" style="width: 100%; max-height: 145px; object-fit: contain; display: block; margin: 0 auto;">
-        </div>
-      ` : ''}
-
-      <div style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
-        <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
-        <div style="font-size: 11pt; margin-top: 2px;">Nomor: ${escapeXml(ds.noSurat)}</div>
-      </div>
-
-      <div style="margin-bottom: 14px;">
-        <table style="width: 100%;">
+      let tableRows = '';
+      g.siswa.forEach((s, sIdx) => {
+        tableRows += `
           <tr>
-            <td style="width: 10%; vertical-align: top;">Kepada:</td>
-            <td></td>
+            <td style="padding: 6px; text-align: center; border: 1px solid #000;">${sIdx + 1}</td>
+            <td style="padding: 6px; border: 1px solid #000;">${escapeXml(s.siswa || s.nama)}</td>
+            <td style="padding: 6px; text-align: center; border: 1px solid #000;">${escapeXml(s.kelas)}</td>
+            <td style="padding: 6px; border: 1px solid #000;">${escapeXml(s.tempat)}</td>
           </tr>
-          <tr>
-            <td style="vertical-align: top;">Yth.</td>
-            <td>
-              <div style="font-weight: bold;">Pimpinan DU/DI</div>
-              ${targetTempat ? `<div style="font-weight: bold;">${escapeXml(targetTempat)}</div>` : ''}
-              ${(targetTempat && dOpt.showAlamat && targetAlamat) ? `<div style="font-size: 9.5pt; color: #333;">${escapeXml(targetAlamat)}</div>` : ''}
-              <div>di -</div>
-              <div style="text-indent: 20px;">Tempat</div>
-            </td>
-          </tr>
-        </table>
-      </div>
+        `;
+      });
 
-      <div style="text-align: justify; line-height: 1.35; font-size: 11pt;">
-        ${resolvedBody}
-      </div>
+      const resolvedBody = resolveTemplateVariables(activeTpl.htmlContent, letterMock, ds);
 
-      <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px; page-break-inside: avoid;">
-        <div style="width: 250px; text-align: left;">
-          <div>Klungkung, ${escapeXml(ds.tglSurat)}</div>
-          <div>Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
-          ${getTtdHtml(ds, dOpt)}
-        </div>
-      </div>
+      pageWrapper.innerHTML = `
+        ${dOpt.showKop ? `
+          <div style="text-align: center; margin-bottom: 8px;">
+            <img src="${kopSrc}" alt="Kop Surat" style="width: 100%; max-height: 145px; object-fit: contain; display: block; margin: 0 auto;">
+          </div>
+        ` : ''}
 
-      <!-- Lampiran -->
-      <div style="page-break-before: always; margin-top: 30px;">
-        <div style="font-weight: bold; margin-bottom: 10px;">
-          Lampiran 2 : <br>
-          Daftar Nama Siswa Peserta PKL
+        <div style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
+          <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
+          <div style="font-size: 11pt; margin-top: 2px;">Nomor: ${escapeXml(ds.noSurat)}</div>
         </div>
 
-        <table style="width: 100%; border-collapse: collapse; font-size: 10.5pt;" border="1">
-          <thead>
-            <tr style="background-color: #f1f5f9; text-align: center; font-weight: bold;">
-              <td style="padding: 6px; width: 35px; border: 1px solid #000;">No</td>
-              <td style="padding: 6px; border: 1px solid #000;">Nama Siswa</td>
-              <td style="padding: 6px; width: 85px; border: 1px solid #000;">Kelas</td>
-              <td style="padding: 6px; border: 1px solid #000;">Tempat PKL</td>
+        <div style="margin-bottom: 14px;">
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 10%; vertical-align: top;">Kepada:</td>
+              <td></td>
             </tr>
-          </thead>
-          <tbody>
-            ${tableRows}
-          </tbody>
-        </table>
-      </div>
-    `;
+            <tr>
+              <td style="vertical-align: top;">Yth.</td>
+              <td>
+                <div style="font-weight: bold;">Pimpinan DU/DI</div>
+                ${targetTempat ? `<div style="font-weight: bold;">${escapeXml(targetTempat)}</div>` : ''}
+                ${(targetTempat && dOpt.showAlamat && targetAlamat) ? `<div style="font-size: 9.5pt; color: #333;">${escapeXml(targetAlamat)}</div>` : ''}
+                <div>di -</div>
+                <div style="text-indent: 20px;">Tempat</div>
+              </td>
+            </tr>
+          </table>
+        </div>
 
-    batchContainer.appendChild(pageWrapper);
-  });
+        <div style="text-align: justify; line-height: 1.35; font-size: 11pt;">
+          ${resolvedBody}
+        </div>
+
+        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px; page-break-inside: avoid;">
+          <div style="width: 250px; text-align: left;">
+            <div>Klungkung, ${escapeXml(ds.tglSurat)}</div>
+            <div>Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
+            ${getTtdHtml(ds, dOpt)}
+          </div>
+        </div>
+
+        <!-- Lampiran 2 -->
+        <div style="page-break-before: always; margin-top: 30px;">
+          <div style="font-weight: bold; margin-bottom: 10px;">
+            Lampiran 2 : <br>
+            Daftar Nama Siswa Peserta PKL
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; font-size: 10.5pt;" border="1">
+            <thead>
+              <tr style="background-color: #f1f5f9; text-align: center; font-weight: bold;">
+                <td style="padding: 6px; width: 35px; border: 1px solid #000;">No</td>
+                <td style="padding: 6px; border: 1px solid #000;">Nama Siswa</td>
+                <td style="padding: 6px; width: 85px; border: 1px solid #000;">Kelas</td>
+                <td style="padding: 6px; border: 1px solid #000;">Tempat PKL</td>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      batchContainer.appendChild(pageWrapper);
+    });
+  }
 
   closeBatchPrintModal();
   updatePaperSizeClass();
@@ -2810,6 +3145,7 @@ function executeBatchPrint() {
 
 // Database Backend Check and Sync
 async function checkAndSyncDatabaseBackend() {
+  let backendOk = false;
   try {
     const res = await fetch('/api/data', { cache: 'no-store' });
     if (res.ok) {
@@ -2817,17 +3153,50 @@ async function checkAndSyncDatabaseBackend() {
       if (Array.isArray(data) && data.length > 0) {
         AppState.records = data;
         AppState.isDatabaseConnected = true;
+        backendOk = true;
         saveRecordsToStorage();
         rebuildIndices();
         populateDropdowns();
         renderPreview();
         renderDatabaseTable();
         updateDatabaseStatusBadge();
-        console.log(`[DB] Berhasil memuat ${data.length} data siswa dari database SQLite (database/surat_pkl.db).`);
+        console.log(`[DB] Berhasil memuat ${data.length} data siswa dari database SQLite backend.`);
       }
     }
+  } catch (err) {
+    // Mode statis GitHub Pages / offline
+  }
 
-    // Sinkronkan daftar template dari backend SQLite
+  if (!backendOk) {
+    AppState.isDatabaseConnected = false;
+    // Jika records masih kosong (misal baru pertama kali buka GitHub Pages), muat dari file js
+    if (!AppState.records || AppState.records.length === 0) {
+      if (typeof INITIAL_PKL_RECORDS !== 'undefined' && INITIAL_PKL_RECORDS.length > 0) {
+        AppState.records = [...INITIAL_PKL_RECORDS];
+      } else if (typeof DEFAULT_PKL_DATA !== 'undefined' && DEFAULT_PKL_DATA.length > 0) {
+        AppState.records = [...DEFAULT_PKL_DATA];
+      } else {
+        try {
+          const jsonRes = await fetch('js/data_pkl.json');
+          if (jsonRes.ok) {
+            const jsonData = await jsonRes.json();
+            if (Array.isArray(jsonData) && jsonData.length > 0) {
+              AppState.records = jsonData;
+            }
+          }
+        } catch (e) {}
+      }
+      saveRecordsToStorage();
+      rebuildIndices();
+      populateDropdowns();
+      renderPreview();
+      renderDatabaseTable();
+    }
+    updateDatabaseStatusBadge();
+  }
+
+  // Sinkronkan daftar template dari backend SQLite jika backend aktif
+  if (AppState.isDatabaseConnected) {
     try {
       const tplRes = await fetch('/api/templates?t=' + Date.now(), { cache: 'no-store' });
       if (tplRes.ok) {
@@ -2846,26 +3215,19 @@ async function checkAndSyncDatabaseBackend() {
           renderTemplateTable();
         }
       }
-    } catch (tplErr) {
-      console.warn('[DB] Gagal sinkron template dari backend:', tplErr);
-    }
-  } catch (err) {
-    AppState.isDatabaseConnected = false;
-    updateDatabaseStatusBadge();
-    console.log('[DB] Mode Standar Offline: Menggunakan basis data lokal & file JS.');
+    } catch (tplErr) {}
   }
 }
 
 function updateDatabaseStatusBadge() {
   const badge = document.getElementById('dbConnectionStatus');
   if (!badge) return;
-  const isOnline = window.location.protocol.startsWith('http');
-  if (isOnline || AppState.isDatabaseConnected) {
+  if (AppState.isDatabaseConnected) {
     badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mt-0.5';
-    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Database SQLite: <code>database/surat_pkl.db</code> (${AppState.records.length} data siswa aktif)</span>`;
+    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Database SQLite Server Aktif: <code>database/surat_pkl.db</code> (${AppState.records.length} data siswa aktif)</span>`;
   } else {
-    badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200 mt-0.5';
-    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span><span>Mode Standar Offline (Berkas DB: <code>database/surat_pkl.db</code>, ${AppState.records.length} siswa)</span>`;
+    badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mt-0.5';
+    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Database Web Aktif: (${AppState.records.length} data siswa aktif)</span>`;
   }
 }
 

@@ -243,15 +243,15 @@
               <i data-lucide="file-text" class="w-4 h-4 text-indigo-600"></i>
               <div>
                 <div class="font-semibold text-slate-800">Cetak / PDF Surat Ini</div>
-                <div class="text-[10px] text-slate-400">Cetak 1 surat pengantar yang aktif</div>
+                <div id="navbarCurrentPrintDesc" class="text-[10px] text-slate-400">Cetak 1 surat aktif</div>
               </div>
             </button>
             <div class="border-t border-slate-100 my-1"></div>
             <button onclick="openBatchPrintModal(); closeAllDropdowns();" class="w-full text-left px-4 py-2.5 text-xs hover:bg-indigo-50 hover:text-indigo-700 flex items-center gap-3 transition">
               <i data-lucide="copy" class="w-4 h-4 text-amber-500"></i>
               <div>
-                <div class="font-semibold text-slate-800">Cetak Massal (Semua Guru)</div>
-                <div class="text-[10px] text-slate-400">Pilih & cetak banyak surat sekaligus</div>
+                <div id="navbarBatchPrintTitle" class="font-semibold text-slate-800">Cetak Massal (Semua Guru)</div>
+                <div id="navbarBatchPrintDesc" class="text-[10px] text-slate-400">Pilih & cetak banyak surat sekaligus</div>
               </div>
             </button>
           </div>
@@ -276,8 +276,8 @@
             <button id="btnDownloadBatchZip" onclick="downloadBatchZipClient(); closeAllDropdowns();" class="w-full text-left px-4 py-2.5 text-xs hover:bg-cyan-50 hover:text-cyan-700 flex items-center gap-3 transition">
               <i data-lucide="archive" class="w-4 h-4 text-cyan-600"></i>
               <div>
-                <div class="font-semibold text-slate-800">Unduh Semua Guru (.ZIP)</div>
-                <div class="text-[10px] text-slate-400">Arsip 54 berkas .docx lengkap</div>
+                <div id="navbarBatchZipTitle" class="font-semibold text-slate-800">Unduh Semua Guru (.ZIP)</div>
+                <div id="navbarBatchZipDesc" class="text-[10px] text-slate-400">Arsip berkas .docx lengkap</div>
               </div>
             </button>
           </div>
@@ -1336,8 +1336,8 @@
             <i data-lucide="printer" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-sm sm:text-base font-bold text-slate-800">Cetak Massal Surat Pengantar PKL</h3>
-            <p class="text-[11px] text-slate-500">Pilih guru pembimbing yang ingin dicetak bersamaan</p>
+            <h3 id="batchPrintModalTitle" class="text-sm sm:text-base font-bold text-slate-800">Cetak Massal Surat Pengantar PKL</h3>
+            <p id="batchPrintModalSubtitle" class="text-[11px] text-slate-500">Pilih guru pembimbing yang ingin dicetak bersamaan</p>
           </div>
         </div>
         <button onclick="closeBatchPrintModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition shrink-0">
@@ -1380,10 +1380,7 @@
           </div>
           <div>
             <h3 class="text-sm sm:text-base font-bold text-slate-800">Database Siswa & Penugasan PKL</h3>
-            <div id="dbConnectionStatus" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mt-0.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Database SQLite: <code>database/surat_pkl.db</code> (258 data siswa)</span>
-            </div>
+            <div id="dbConnectionStatus" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mt-0.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Database Web Aktif: (258 data siswa aktif)</span></div>
           </div>
         </div>
         <button onclick="closeDatabaseModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition">
@@ -1573,16 +1570,16 @@
 
   <!-- ================= SCRIPTS ================= -->
   <!-- 1. Offline Base64 Assets (kop, ttd elektronik, ttd basah, logo web) -->
-  <script src="js/assets.js?v=2.5.0"></script>
+  <script src="js/assets.js?v=2.7.0"></script>
   
   <!-- 2. Clean Embedded Base64 Docx Template -->
-  <script src="js/template_base64.js?v=2.5.0"></script>
+  <script src="js/template_base64.js?v=2.7.0"></script>
 
   <!-- 3. Full PKL Initial Records (258 siswa) -->
-  <script src="js/data_pkl.js?v=2.5.0"></script>
+  <script src="js/data_pkl.js?v=2.7.0"></script>
 
   <!-- 4. Application Logic -->
-  <script src="js/app.js?v=2.5.0"></script>
+  <script src="js/app.js?v=2.7.0"></script>
 
 </body>
 </html>

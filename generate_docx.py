@@ -1,3 +1,25 @@
+def get_jurusan_from_kelas(kelas):
+    if not kelas:
+        return ''
+    k = str(kelas).upper().strip()
+    if 'BD' in k:
+        return 'Bisnis Digital'
+    if 'DKV' in k:
+        return 'Desain Komunikasi Visual'
+    if 'AK' in k:
+        return 'Akuntansi dan Keuangan Lembaga'
+    if 'LPKKK' in k or 'LPK' in k:
+        return 'Layanan Perbankan Syariah'
+    if 'LPB' in k:
+        return 'Layanan Perbankan'
+    if 'MP' in k:
+        return 'Manajemen Perkantoran'
+    if 'TKJ' in k:
+        return 'Teknik Komputer dan Jaringan'
+    if 'TSM' in k:
+        return 'Teknik Sepeda Motor'
+    return ''
+
 #!/usr/bin/env python3
 """
 Generator Surat Pengantar Pembimbing PKL
@@ -701,6 +723,7 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
     base_dir = os.path.dirname(os.path.abspath(__file__))
     candidates = [
         template_path,
+        os.path.join(base_dir, 'assets', 'templates', 'template_keterangan_clean.docx'),
         os.path.join(base_dir, 'assets', 'templates', 'template_keterangan.docx'),
         os.path.join(base_dir, 'Contoh Surat Keterangan PKL.docx'),
         'assets/templates/template_keterangan.docx',
@@ -826,7 +849,7 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
             else:
                 t.text = ' -'
 
-        jur_val = siswa_jurusan or siswa_kelas
+        jur_val = siswa_jurusan if (siswa_jurusan and siswa_jurusan != "-") else (get_jurusan_from_kelas(siswa_kelas) or siswa_kelas)
         if text.startswith('Jurusan:') and jur_val:
             r = ET.SubElement(p, f'{{{NS["w"]}}}r')
             rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')

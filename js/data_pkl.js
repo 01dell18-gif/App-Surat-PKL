@@ -3097,3 +3097,10 @@ const INITIAL_PKL_RECORDS = [
     "jurusan": "Layanan Perbankan Syariah"
   }
 ];
+
+// Global alias for full compatibility across GitHub Pages and local environments
+const DEFAULT_PKL_DATA = INITIAL_PKL_RECORDS;
+if (typeof window !== 'undefined') {
+  window.INITIAL_PKL_RECORDS = INITIAL_PKL_RECORDS;
+  window.DEFAULT_PKL_DATA = INITIAL_PKL_RECORDS;
+}
