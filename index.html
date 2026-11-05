@@ -580,7 +580,7 @@
           </div>
 
           <!-- JUDUL SURAT -->
-          <div style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
+          <div id="docJudulContainer" style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
             <div id="docJudulSurat" style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
             <div style="font-size: 11pt; margin-top: 2px;">Nomor: <span id="docNoSurat">B.10.000/9546/SMKN1KLK/DIKPORA</span></div>
           </div>
@@ -778,6 +778,11 @@
           <button onclick="insertEditorVariable('{guruNama}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{guruNama}</button>
           <button onclick="insertEditorVariable('{guruNip}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{guruNip}</button>
           <button onclick="insertEditorVariable('{tempatPkl}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{tempatPkl}</button>
+          <button onclick="insertEditorVariable('{siswaNama}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{siswaNama}</button>
+          <button onclick="insertEditorVariable('{siswaNisNisn}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{siswaNisNisn}</button>
+          <button onclick="insertEditorVariable('{tingkatKelas}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{tingkatKelas}</button>
+          <button onclick="insertEditorVariable('{jurusanPkl}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{jurusanPkl}</button>
+          <button onclick="insertEditorVariable('{tabelSiswaPermohonan}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{tabelSiswaPermohonan}</button>
         </div>
 
         <!-- Editable WYSIWYG Content Area -->
@@ -1571,16 +1576,16 @@
 
   <!-- ================= SCRIPTS ================= -->
   <!-- 1. Offline Base64 Assets (kop, ttd elektronik, ttd basah, logo web) -->
-  <script src="js/assets.js?v=2.9.1"></script>
+  <script src="js/assets.js?v=3.0.0"></script>
   
   <!-- 2. Clean Embedded Base64 Docx Template -->
-  <script src="js/template_base64.js?v=2.9.1"></script>
+  <script src="js/template_base64.js?v=3.0.0"></script>
 
   <!-- 3. Full PKL Initial Records (258 siswa) -->
-  <script src="js/data_pkl.js?v=2.9.1"></script>
+  <script src="js/data_pkl.js?v=3.0.0"></script>
 
   <!-- 4. Application Logic -->
-  <script src="js/app.js?v=2.9.1"></script>
+  <script src="js/app.js?v=3.0.0"></script>
 
 </body>
 </html>

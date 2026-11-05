@@ -1,3 +1,51 @@
+
+// Helper untuk manipulasi sel tabel Word XML (OpenXML) secara standar DOM
+function setXmlCellText(tcNode, text, align = 'left') {
+  const NS_W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+  let p = tcNode.getElementsByTagNameNS ? (tcNode.getElementsByTagNameNS(NS_W, 'p')[0] || tcNode.getElementsByTagName('w:p')[0]) : tcNode.getElementsByTagName('w:p')[0];
+  if (!p) {
+    p = tcNode.ownerDocument.createElementNS(NS_W, 'w:p');
+    tcNode.appendChild(p);
+  }
+  const runs = Array.from(tcNode.getElementsByTagNameNS ? (p.getElementsByTagNameNS(NS_W, 'r') || p.getElementsByTagName('w:r')) : p.getElementsByTagName('w:r'));
+  runs.forEach(r => p.removeChild(r));
+  const numPrs = Array.from(tcNode.getElementsByTagNameNS ? (p.getElementsByTagNameNS(NS_W, 'numPr') || p.getElementsByTagName('w:numPr')) : p.getElementsByTagName('w:numPr'));
+  numPrs.forEach(np => np.parentNode && np.parentNode.removeChild(np));
+
+  let pPr = tcNode.getElementsByTagNameNS ? (p.getElementsByTagNameNS(NS_W, 'pPr')[0] || p.getElementsByTagName('w:pPr')[0]) : p.getElementsByTagName('w:pPr')[0];
+  if (!pPr) {
+    pPr = p.ownerDocument.createElementNS(NS_W, 'w:pPr');
+    p.insertBefore(pPr, p.firstChild);
+  }
+  let jc = tcNode.getElementsByTagNameNS ? (pPr.getElementsByTagNameNS(NS_W, 'jc')[0] || pPr.getElementsByTagName('w:jc')[0]) : pPr.getElementsByTagName('w:jc')[0];
+  if (!jc) {
+    jc = p.ownerDocument.createElementNS(NS_W, 'w:jc');
+    pPr.appendChild(jc);
+  }
+  jc.setAttributeNS(NS_W, 'w:val', align);
+  jc.setAttribute('w:val', align);
+
+  const r = p.ownerDocument.createElementNS(NS_W, 'w:r');
+  const rPr = p.ownerDocument.createElementNS(NS_W, 'w:rPr');
+  const rf = p.ownerDocument.createElementNS(NS_W, 'w:rFonts');
+  rf.setAttributeNS(NS_W, 'w:ascii', 'Arial Narrow');
+  rf.setAttributeNS(NS_W, 'w:hAnsi', 'Arial Narrow');
+  rf.setAttributeNS(NS_W, 'w:cs', 'Arial Narrow');
+  rPr.appendChild(rf);
+  const sz = p.ownerDocument.createElementNS(NS_W, 'w:sz');
+  sz.setAttributeNS(NS_W, 'w:val', '24');
+  rPr.appendChild(sz);
+  const szCs = p.ownerDocument.createElementNS(NS_W, 'w:szCs');
+  szCs.setAttributeNS(NS_W, 'w:val', '24');
+  rPr.appendChild(szCs);
+  r.appendChild(rPr);
+
+  const t = p.ownerDocument.createElementNS(NS_W, 'w:t');
+  t.textContent = String(text);
+  r.appendChild(t);
+  p.appendChild(r);
+}
+
 // Helper: Save or Download Blob cleanly across browsers
 function saveAsOrDownload(blob, fileName) {
   if (typeof saveAs !== 'undefined') {
@@ -210,6 +258,49 @@ const DEFAULT_TEMPLATES = [
 
 <p style="text-indent: 30px; margin-bottom: 14px; text-align: justify; line-height: 1.5;">
   Demikian Surat Keterangan ini dibuat dengan benar untuk digunakan sebagaimana mestinya.
+</p>`
+  },
+  {
+    id: 'tpl_surat_permohonan_pkl_murid',
+    name: 'Surat Permohonan PKL Murid',
+    isDefault: false,
+    status: 'active',
+    createdAt: '2026-11-05',
+    htmlContent: `<table style="width: 100%; margin-bottom: 12px; font-size: 11pt; border-collapse: collapse; font-family: 'Arial Narrow', Arial, sans-serif;">
+  <tr>
+    <td style="width: 80px; vertical-align: top;">Nomor</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{noSurat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Lampiran</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">-</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Perihal</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top; font-weight: bold;">Permohonan Penerimaan Murid<br>Praktek Kerja Lapangan (PKL)</td>
+  </tr>
+</table>
+
+<div style="margin-bottom: 12px; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
+  <div>Kepada</div>
+  <div>Yth. Bapak/Ibu Pimpinan <strong>{tempatPkl}</strong></div>
+  <div>di</div>
+  <div>Tempat</div>
+</div>
+
+<p style="margin-bottom: 8px; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">Dengan hormat,</p>
+<p style="text-indent: 30px; margin-bottom: 10px; text-align: justify; line-height: 1.4; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
+  Sesuai dengan kurikulum {namaSekolah} terkait dengan Praktek Kerja Lapangan (PKL) murid kelas {tingkatKelas}, maka kami mohon bantuan Bapak/Ibu untuk dapat kiranya menerima murid kami konsentrasi keahlian {jurusanPkl} untuk melaksanakan Praktek Kerja Lapangan (PKL) pada perusahaan yang Bapak/Ibu pimpin. Adapun kegiatan PKL tersebut akan dilaksanakan pada tanggal {periodePkl}.
+</p>
+<p style="margin-bottom: 8px; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">Adapun nama murid kami, sebagai berikut:</p>
+
+{tabelSiswaPermohonan}
+
+<p style="text-indent: 30px; margin-top: 10px; margin-bottom: 12px; text-align: justify; line-height: 1.4; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
+  Demikian yang dapat kami sampaikan atas kerjasama Bapak/Ibu kami ucapkan terimakasih.
 </p>`
   }
 ];
@@ -1202,7 +1293,17 @@ function updateUIFromState() {
   const bZipTitle = document.getElementById('navbarBatchZipTitle');
   const bZipDesc = document.getElementById('navbarBatchZipDesc');
 
-  if (isKeterangan) {
+  const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                       (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
+
+  if (isPermohonan) {
+    if (bPrintTitle) bPrintTitle.textContent = 'Cetak Massal Surat Permohonan';
+    if (bPrintDesc) bPrintDesc.textContent = 'Pilih & cetak surat permohonan per DU/DI';
+    const cPrintDesc = document.getElementById('navbarCurrentPrintDesc');
+    if (cPrintDesc) cPrintDesc.textContent = 'Cetak 1 surat permohonan murid aktif';
+    if (bZipTitle) bZipTitle.textContent = 'Unduh Semua DU/DI (.ZIP)';
+    if (bZipDesc) bZipDesc.textContent = 'Arsip .docx surat permohonan DU/DI';
+  } else if (isKeterangan) {
     if (bPrintTitle) bPrintTitle.textContent = 'Cetak Massal Surat Keterangan';
     if (bPrintDesc) bPrintDesc.textContent = 'Pilih & cetak surat keterangan siswa';
     const cPrintDesc = document.getElementById('navbarCurrentPrintDesc');
@@ -1242,7 +1343,78 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     siswaNisNisn = siswaNisn;
   }
 
+  // Hitung tingkat kelas & konsentrasi keahlian
+  let tingkatKelas = 'XII';
+  if (letter.students && letter.students.length > 0) {
+    if (letter.students.some(st => (st.kelas || '').toUpperCase().includes('XI') && !(st.kelas || '').toUpperCase().includes('XII'))) {
+      tingkatKelas = 'XI';
+    }
+  } else if (letter.kelas) {
+    if (letter.kelas.toUpperCase().includes('XI') && !letter.kelas.toUpperCase().includes('XII')) {
+      tingkatKelas = 'XI';
+    }
+  }
+
+  let jurusanPkl = '';
+  if (letter.students && letter.students.length > 0) {
+    const jSet = new Set();
+    letter.students.forEach(st => {
+      const j = st.jurusan || getJurusanFromKelas(st.kelas);
+      if (j) jSet.add(j);
+    });
+    jurusanPkl = Array.from(jSet).join(' dan ');
+  } else if (letter.jurusan) {
+    jurusanPkl = letter.jurusan;
+  }
+  if (!jurusanPkl) jurusanPkl = 'Bisnis Digital (BD)';
+
+  // Buat HTML tabel siswa untuk Surat Permohonan PKL Murid
+  let tabelSiswaPermohonan = '';
+  if (letter.students && letter.students.length > 0) {
+    const rowsHtml = letter.students.map((st, idx) => `
+      <tr>
+        <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${idx + 1}</td>
+        <td style="border: 1px solid #000; padding: 4px 8px; text-align: left;">${escapeXml(st.siswa || st.nama || '-')}</td>
+        <td style="border: 1px solid #000; padding: 4px 8px; text-align: center;">${escapeXml(st.kelas || '-')}</td>
+      </tr>
+    `).join('');
+    tabelSiswaPermohonan = `
+      <table style="width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
+        <thead>
+          <tr style="background-color: #bfbfbf; text-align: center; font-weight: bold;">
+            <th style="border: 1px solid #000; padding: 4px 6px; width: 45px;">No</th>
+            <th style="border: 1px solid #000; padding: 4px 8px; text-align: left;">Nama Siswa</th>
+            <th style="border: 1px solid #000; padding: 4px 8px; width: 220px; text-align: center;">Kelas/ Konsentrasi Keahlian</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+    `;
+  } else {
+    tabelSiswaPermohonan = `
+      <table style="width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
+        <thead>
+          <tr style="background-color: #bfbfbf; text-align: center; font-weight: bold;">
+            <th style="border: 1px solid #000; padding: 4px 6px; width: 45px;">No</th>
+            <th style="border: 1px solid #000; padding: 4px 8px; text-align: left;">Nama Siswa</th>
+            <th style="border: 1px solid #000; padding: 4px 8px; width: 220px; text-align: center;">Kelas/ Konsentrasi Keahlian</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="3" style="border: 1px solid #000; padding: 8px; text-align: center; color: #888;">Belum ada siswa yang ditugaskan pada tempat ini.</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+  }
+
   return templateHtml
+    .replace(/{tingkatKelas}/g, tingkatKelas)
+    .replace(/{jurusanPkl}/g, jurusanPkl)
+    .replace(/{tabelSiswaPermohonan}/g, tabelSiswaPermohonan)
     .replace(/{tahunAjaran}/g, s.tahunAjaran)
     .replace(/{namaSekolah}/g, s.namaSekolah)
     .replace(/{sekolah}/g, s.namaSekolah)
@@ -1277,6 +1449,8 @@ function renderPreview() {
   const activeTpl = getActiveTemplate();
   const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                        (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
+  const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                       (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
 
   // 1. Kop Surat (GARIS GANDA DIHILANGKAN KARENA KOP_FYJ.PNG SUDAH MEMILIKI GARIS BAWAH RESMI)
   const kopContainer = document.getElementById('docKopContainer');
@@ -1296,6 +1470,11 @@ function renderPreview() {
   }
 
   // 2. Judul & Nomor Surat
+  const docJudulContainer = document.getElementById('docJudulContainer') || (document.getElementById('docJudulSurat') ? document.getElementById('docJudulSurat').parentElement : null);
+  if (docJudulContainer) {
+    docJudulContainer.style.display = isPermohonan ? 'none' : 'block';
+  }
+
   const docJudulSurat = document.getElementById('docJudulSurat');
   if (docJudulSurat) {
     docJudulSurat.textContent = isKeterangan ? 'SURAT KETERANGAN' : 'SURAT PENGANTAR';
@@ -1304,10 +1483,10 @@ function renderPreview() {
   const docNoSurat = document.getElementById('docNoSurat');
   if (docNoSurat) docNoSurat.textContent = ds.noSurat;
 
-  // 3. Tujuan Surat (Untuk Surat Keterangan tidak ditampilkan; Untuk Surat Pengantar jika dipilih Semua Lokasi PKL, nama & alamat DU/DI tidak ditampilkan)
+  // 3. Tujuan Surat (Untuk Surat Keterangan & Permohonan Murid tidak ditampilkan di sini karena sudah ada di dalam body template)
   const docTujuanSuratContainer = document.getElementById('docTujuanSuratContainer');
   if (docTujuanSuratContainer) {
-    docTujuanSuratContainer.style.display = isKeterangan ? 'none' : 'block';
+    docTujuanSuratContainer.style.display = (isKeterangan || isPermohonan) ? 'none' : 'block';
   }
 
   const docNamaTempat = document.getElementById('docNamaTempat');
@@ -1341,7 +1520,7 @@ function renderPreview() {
   // 5. Tanggal Surat & Tanda Tangan
   const docTitimangsaHeader = document.getElementById('docTitimangsaHeader');
   if (docTitimangsaHeader) {
-    if (isKeterangan) {
+    if (isPermohonan || isKeterangan) {
       docTitimangsaHeader.innerHTML = `<div>Ditetapkan di Klungkung</div><div>Pada Tanggal <span id="docTglSurat">${ds.tglSurat}</span></div>`;
     } else {
       docTitimangsaHeader.innerHTML = `<div>Klungkung, <span id="docTglSurat">${ds.tglSurat}</span></div>`;
@@ -1359,18 +1538,18 @@ function renderPreview() {
     docTtdArea.innerHTML = getTtdHtml(ds, dOpt);
   }
 
-  // 6. Lampiran 2 Tabel Siswa (Disembunyikan otomatis jika Surat Keterangan agar tepat 1 halaman sesuai Word)
+  // 6. Lampiran 2 Tabel Siswa (Disembunyikan otomatis jika Surat Keterangan atau Surat Permohonan Murid)
   const pageLampiran = document.getElementById('pageLampiran');
   const pageDividers = document.querySelectorAll('.page-break-divider');
   if (pageLampiran) {
-    pageLampiran.style.display = isKeterangan ? 'none' : 'block';
+    pageLampiran.style.display = (isKeterangan || isPermohonan) ? 'none' : 'block';
   }
   pageDividers.forEach(div => {
-    div.style.display = isKeterangan ? 'none' : 'block';
+    div.style.display = (isKeterangan || isPermohonan) ? 'none' : 'block';
   });
 
   const tbody = document.getElementById('docTbodySiswa');
-  if (tbody && !isKeterangan) {
+  if (tbody && !isKeterangan && !isPermohonan) {
     tbody.innerHTML = '';
     if (letter.students.length === 0) {
       const tr = document.createElement('tr');
@@ -2226,13 +2405,15 @@ async function downloadDocxClient() {
     const activeTpl = getActiveTemplate();
     const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                          (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
+    const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                         (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
 
     // 1. Coba unduh via backend Python API (jika server start.bat / app.py aktif)
     let downloadedViaBackend = false;
     try {
       const payload = {
         template_id: activeTpl.id || '',
-        doc_type: isKeterangan ? 'keterangan' : 'pengantar',
+        doc_type: isPermohonan ? 'permohonan' : (isKeterangan ? 'keterangan' : 'pengantar'),
         guru_nama: letter.guruNama || '',
         guru_nip: letter.guruNip || '',
         tempat_pkl: (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl : '',
@@ -2268,7 +2449,10 @@ async function downloadDocxClient() {
       if (res.ok) {
         const blob = await res.blob();
         let fileName;
-        if (isKeterangan) {
+        if (isPermohonan) {
+          const safeTempat = (letter.tempatPkl || 'Tempat').replace(/[^a-zA-Z0-9]/g, '_');
+          fileName = `Surat_Permohonan_PKL_${safeTempat}.docx`;
+        } else if (isKeterangan) {
           const firstStudent = (letter.students && letter.students.length > 0) ? letter.students[0] : null;
           const sName = firstStudent ? (firstStudent.siswa || firstStudent.nama || 'Siswa') : (letter.siswa || 'Siswa');
           const safeSiswa = sName.replace(/[^a-zA-Z0-9]/g, '_');
@@ -2291,7 +2475,121 @@ async function downloadDocxClient() {
         return;
       }
 
-      if (isKeterangan) {
+      if (isPermohonan) {
+        // Generate Surat Permohonan PKL Murid via Client JSZip
+        if (typeof DOCX_PERMOHONAN_MURID_TEMPLATE_B64 === 'undefined') {
+          alert('Template DOCX Surat Permohonan Murid belum tersedia di template_base64.js');
+          return;
+        }
+
+        const templateBytes = base64ToUint8Array(DOCX_PERMOHONAN_MURID_TEMPLATE_B64);
+        const zip = await JSZip.loadAsync(templateBytes);
+        let docXml = await zip.file('word/document.xml').async('text');
+
+        // Paper Size
+        if (dOpt.paperSize === 'a4') {
+          docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="11906" w:h="16838"/>');
+        } else {
+          docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="12242" w:h="18722"/>');
+        }
+
+        // Kop visibility
+        if (!dOpt.showKop) {
+          docXml = docXml.replace(/<w:headerReference\b[^>]*\/>/g, '');
+          docXml = docXml.replace(/<w:pgMar\b[^>]*\/>/, '<w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/>');
+        }
+
+        // TTD visibility
+        if (!dOpt.showTtd) {
+          docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?<w:drawing>[\s\S]*?<\/w:drawing>[\s\S]*?<\/w:p>/, '');
+        }
+
+        let tingkat = 'XII';
+        if (letter.students && letter.students.length > 0) {
+          if (letter.students.some(s => (s.kelas || '').toUpperCase().includes('XI') && !(s.kelas || '').toUpperCase().includes('XII'))) {
+            tingkat = 'XI';
+          }
+        }
+        let jurusanStr = '';
+        if (letter.students && letter.students.length > 0) {
+          const jSet = new Set();
+          letter.students.forEach(s => {
+            const j = s.jurusan || getJurusanFromKelas(s.kelas);
+            if (j) jSet.add(j);
+          });
+          jurusanStr = Array.from(jSet).join(' dan ');
+        }
+        if (!jurusanStr) jurusanStr = 'Bisnis Digital (BD)';
+
+        const tempatVal = letter.tempatPkl || 'Tempat';
+        docXml = docXml.replace(/{noSurat}/g, escapeXml(ds.noSurat));
+        docXml = docXml.replace(/{tempatPkl}/g, escapeXml(tempatVal));
+        docXml = docXml.replace(/{namaSekolah}/g, escapeXml(ds.namaSekolah || AppState.appSettings.namaSekolah));
+        docXml = docXml.replace(/{tingkatKelas}/g, escapeXml(tingkat));
+        docXml = docXml.replace(/{jurusanPkl}/g, escapeXml(jurusanStr));
+        docXml = docXml.replace(/{periodePkl}/g, escapeXml(ds.periodePkl));
+        docXml = docXml.replace(/{tglSurat}/g, escapeXml(ds.tglSurat));
+
+        // Process student table in XML
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(docXml, 'application/xml');
+        const tbl = xmlDoc.getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'tbl')[0] || xmlDoc.getElementsByTagName('w:tbl')[0];
+        if (tbl) {
+          const trs = Array.from(tbl.getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'tr') || tbl.getElementsByTagName('w:tr'));
+          if (trs.length > 1) {
+            const tplRow = trs[1].cloneNode(true);
+            for (let i = 1; i < trs.length; i++) {
+              tbl.removeChild(trs[i]);
+            }
+            const studentsList = letter.students || [];
+            if (studentsList.length === 0) {
+              const emptyRow = tplRow.cloneNode(true);
+              const cells = Array.from(emptyRow.getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'tc') || emptyRow.getElementsByTagName('w:tc'));
+              if (cells.length >= 3) {
+                setXmlCellText(cells[0], '-', 'center');
+                setXmlCellText(cells[1], 'Belum ada siswa yang ditugaskan', 'left');
+                setXmlCellText(cells[2], '-', 'center');
+              }
+              tbl.appendChild(emptyRow);
+            } else {
+              studentsList.forEach((s, idx) => {
+                const newRow = tplRow.cloneNode(true);
+                const cells = Array.from(newRow.getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'tc') || newRow.getElementsByTagName('w:tc'));
+                if (cells.length >= 3) {
+                  setXmlCellText(cells[0], String(idx + 1), 'center');
+                  setXmlCellText(cells[1], s.siswa || s.nama || '-', 'left');
+                  setXmlCellText(cells[2], s.kelas || '-', 'center');
+                }
+                tbl.appendChild(newRow);
+              });
+            }
+          }
+          const serializer = new XMLSerializer();
+          docXml = serializer.serializeToString(xmlDoc);
+        }
+
+        if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
+          try {
+            const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
+            if (zip.file('word/media/image2.jpg')) zip.file('word/media/image2.jpg', kopBytes);
+          } catch (err) {}
+        }
+
+        if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
+          try {
+            const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
+            if (zip.file('word/media/image1.png')) zip.file('word/media/image1.png', ttdBytes);
+          } catch (err) {}
+        }
+
+        zip.file('word/document.xml', docXml);
+        const blob = await zip.generateAsync({
+          type: 'blob',
+          mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        });
+        const safeTempat = tempatVal.replace(/[^a-zA-Z0-9]/g, '_');
+        saveAsOrDownload(blob, `Surat_Permohonan_PKL_${safeTempat}.docx`);
+      } else if (isKeterangan) {
         // Generate Surat Keterangan PKL via Client JSZip
         if (typeof DOCX_KETERANGAN_TEMPLATE_B64 === 'undefined') {
           alert('Template DOCX Surat Keterangan belum tersedia di template_base64.js');
@@ -2582,13 +2880,15 @@ async function downloadBatchZipClient() {
     const activeTpl = getActiveTemplate();
     const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                          (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
+    const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                         (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
 
     // 1. Coba unduh via backend Python API jika aktif
     let downloadedViaBackend = false;
     try {
       const payload = {
-        doc_type: isKeterangan ? 'keterangan' : 'pengantar',
-        records: isKeterangan ? getActiveBatchStudents() : [],
+        doc_type: isPermohonan ? 'permohonan' : (isKeterangan ? 'keterangan' : 'pengantar'),
+        records: isKeterangan ? getActiveBatchStudents() : (isPermohonan ? AppState.records : []),
         no_surat: ds.noSurat || 'B.10.000/9546/SMKN1KLK/DIKPORA',
         tgl_surat: ds.tglSurat || '06 Oktober 2026',
         tgl_pelepasan: ds.tglPelepasan || '13 November 2026',
@@ -2613,7 +2913,7 @@ async function downloadBatchZipClient() {
 
       if (res.ok) {
         const blob = await res.blob();
-        const fileName = isKeterangan ? 'Surat_Keterangan_PKL_Arsip.zip' : 'Surat_Pengantar_PKL_Semua_Guru.zip';
+        const fileName = isPermohonan ? 'Surat_Permohonan_PKL_Semua_DUDI.zip' : (isKeterangan ? 'Surat_Keterangan_PKL_Arsip.zip' : 'Surat_Pengantar_PKL_Semua_Guru.zip');
         saveAsOrDownload(blob, fileName);
         downloadedViaBackend = true;
       }
@@ -2627,7 +2927,118 @@ async function downloadBatchZipClient() {
 
       const masterZip = new JSZip();
 
-      if (isKeterangan) {
+      if (isPermohonan) {
+        // Client-side ZIP Generator untuk Surat Permohonan PKL Murid
+        if (typeof DOCX_PERMOHONAN_MURID_TEMPLATE_B64 === 'undefined') {
+          alert('Template DOCX Surat Permohonan belum tersedia di template_base64.js');
+          return;
+        }
+
+        const templateBytes = base64ToUint8Array(DOCX_PERMOHONAN_MURID_TEMPLATE_B64);
+        const duDis = AppState.duDis || [];
+
+        for (let idx = 0; idx < duDis.length; idx++) {
+          const d = duDis[idx];
+          const tempatVal = d.tempat || 'Tempat';
+          const studentsList = d.siswa || [];
+
+          const singleZip = await JSZip.loadAsync(templateBytes);
+          let docXml = await singleZip.file('word/document.xml').async('text');
+
+          if (dOpt.paperSize === 'a4') {
+            docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="11906" w:h="16838"/>');
+          } else {
+            docXml = docXml.replace(/<w:pgSz\b[^>]*\/>/, '<w:pgSz w:w="12242" w:h="18722"/>');
+          }
+
+          if (!dOpt.showKop) {
+            docXml = docXml.replace(/<w:headerReference\b[^>]*\/>/g, '');
+            docXml = docXml.replace(/<w:pgMar\b[^>]*\/>/, '<w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/>');
+          }
+
+          if (!dOpt.showTtd) {
+            docXml = docXml.replace(/<w:p\b[^>]*>[\s\S]*?<w:drawing>[\s\S]*?<\/w:drawing>[\s\S]*?<\/w:p>/, '');
+          }
+
+          let tingkat = 'XII';
+          if (studentsList.some(s => (s.kelas || '').toUpperCase().includes('XI') && !(s.kelas || '').toUpperCase().includes('XII'))) {
+            tingkat = 'XI';
+          }
+          let jurusanStr = '';
+          const jSet = new Set();
+          studentsList.forEach(s => {
+            const j = s.jurusan || getJurusanFromKelas(s.kelas);
+            if (j) jSet.add(j);
+          });
+          jurusanStr = Array.from(jSet).join(' dan ') || 'Bisnis Digital (BD)';
+
+          docXml = docXml.replace(/{noSurat}/g, escapeXml(ds.noSurat));
+          docXml = docXml.replace(/{tempatPkl}/g, escapeXml(tempatVal));
+          docXml = docXml.replace(/{namaSekolah}/g, escapeXml(ds.namaSekolah || AppState.appSettings.namaSekolah));
+          docXml = docXml.replace(/{tingkatKelas}/g, escapeXml(tingkat));
+          docXml = docXml.replace(/{jurusanPkl}/g, escapeXml(jurusanStr));
+          docXml = docXml.replace(/{periodePkl}/g, escapeXml(ds.periodePkl));
+          docXml = docXml.replace(/{tglSurat}/g, escapeXml(ds.tglSurat));
+
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(docXml, 'application/xml');
+          const tbl = xmlDoc.getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'tbl')[0] || xmlDoc.getElementsByTagName('w:tbl')[0];
+          if (tbl) {
+            const trs = Array.from(tbl.getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'tr') || tbl.getElementsByTagName('w:tr'));
+            if (trs.length > 1) {
+              const tplRow = trs[1].cloneNode(true);
+              for (let i = 1; i < trs.length; i++) {
+                tbl.removeChild(trs[i]);
+              }
+              if (studentsList.length === 0) {
+                const emptyRow = tplRow.cloneNode(true);
+                const cells = Array.from(emptyRow.getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'tc') || emptyRow.getElementsByTagName('w:tc'));
+                if (cells.length >= 3) {
+                  setXmlCellText(cells[0], '-', 'center');
+                  setXmlCellText(cells[1], 'Belum ada siswa yang ditugaskan', 'left');
+                  setXmlCellText(cells[2], '-', 'center');
+                }
+                tbl.appendChild(emptyRow);
+              } else {
+                studentsList.forEach((s, sIdx) => {
+                  const newRow = tplRow.cloneNode(true);
+                  const cells = Array.from(newRow.getElementsByTagNameNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'tc') || newRow.getElementsByTagName('w:tc'));
+                  if (cells.length >= 3) {
+                    setXmlCellText(cells[0], String(sIdx + 1), 'center');
+                    setXmlCellText(cells[1], s.siswa || s.nama || '-', 'left');
+                    setXmlCellText(cells[2], s.kelas || '-', 'center');
+                  }
+                  tbl.appendChild(newRow);
+                });
+              }
+            }
+            const serializer = new XMLSerializer();
+            docXml = serializer.serializeToString(xmlDoc);
+          }
+
+          if (AppState.appSettings.kopUrl && AppState.appSettings.kopUrl.startsWith('data:image/')) {
+            try {
+              const kopBytes = base64DataUrlToUint8Array(AppState.appSettings.kopUrl);
+              if (singleZip.file('word/media/image2.jpg')) singleZip.file('word/media/image2.jpg', kopBytes);
+            } catch (err) {}
+          }
+
+          if (AppState.appSettings.ttdUrl && AppState.appSettings.ttdUrl.startsWith('data:image/')) {
+            try {
+              const ttdBytes = base64DataUrlToUint8Array(AppState.appSettings.ttdUrl);
+              if (singleZip.file('word/media/image1.png')) singleZip.file('word/media/image1.png', ttdBytes);
+            } catch (err) {}
+          }
+
+          singleZip.file('word/document.xml', docXml);
+          const docBytes = await singleZip.generateAsync({ type: 'uint8array' });
+          const safeTempat = tempatVal.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
+          masterZip.file(`Surat_Permohonan_${String(idx + 1).padStart(2, '0')}_${safeTempat}.docx`, docBytes);
+        }
+
+        const zipBlob = await masterZip.generateAsync({ type: 'blob' });
+        saveAsOrDownload(zipBlob, 'Surat_Permohonan_PKL_Semua_DUDI.zip');
+      } else if (isKeterangan) {
         // Client-side ZIP Generator untuk Surat Keterangan PKL
         if (typeof DOCX_KETERANGAN_TEMPLATE_B64 === 'undefined') {
           alert('Template DOCX Surat Keterangan belum tersedia.');
@@ -2925,13 +3336,29 @@ function openBatchPrintModal() {
   const activeTpl = getActiveTemplate();
   const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                        (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
+  const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                       (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
 
   const modalTitle = document.getElementById('batchPrintModalTitle');
   const modalSub = document.getElementById('batchPrintModalSubtitle');
 
   container.innerHTML = '';
 
-  if (isKeterangan) {
+  if (isPermohonan) {
+    if (modalTitle) modalTitle.textContent = 'Cetak Massal Surat Permohonan PKL Murid';
+    if (modalSub) modalSub.textContent = 'Pilih DU/DI untuk dicetak Surat Permohonan Penerimaan Murid PKL (1 surat per DU/DI dengan daftar murid).';
+
+    AppState.duDis.forEach((d, idx) => {
+      const label = document.createElement('label');
+      label.className = "flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg cursor-pointer text-xs text-slate-700";
+      label.innerHTML = `
+        <input type="checkbox" value="${idx}" class="batch-print-item-check w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500" checked>
+        <span class="font-medium">${idx + 1}. ${escapeXml(d.tempat)}</span>
+        <span class="text-slate-400 ml-auto">(${d.siswa.length} Siswa)</span>
+      `;
+      container.appendChild(label);
+    });
+  } else if (isKeterangan) {
     if (modalTitle) modalTitle.textContent = 'Cetak Massal Surat Keterangan PKL';
     if (modalSub) modalSub.textContent = 'Pilih siswa untuk dicetak Surat Keterangan PKL (1 halaman per siswa).';
 
@@ -3001,8 +3428,73 @@ function executeBatchPrint() {
   const kopSrc = getKopSrc();
   const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                        (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
+  const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                       (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
 
-  if (isKeterangan) {
+  if (isPermohonan) {
+    // CETAK MASSAL SURAT PERMOHONAN PKL MURID (1 Halaman per DU/DI dengan tabel murid)
+    selectedIndices.forEach((dIdx) => {
+      const duDi = AppState.duDis[dIdx];
+      if (!duDi) return;
+
+      const letterMock = {
+        guruNama: duDi.guru || '-',
+        guruNip: duDi.nip || '-',
+        tempatPkl: duDi.tempat,
+        alamatPkl: duDi.alamat || '',
+        isSpecificTempat: true,
+        students: duDi.siswa || [],
+        totalSiswa: (duDi.siswa || []).length
+      };
+
+      const resolvedBody = resolveTemplateVariables(activeTpl.htmlContent, letterMock, ds);
+
+      const pageWrapper = document.createElement('div');
+      pageWrapper.className = `doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
+      pageWrapper.style.pageBreakAfter = 'always';
+      pageWrapper.style.minHeight = '1000px';
+
+      pageWrapper.innerHTML = `
+        ${dOpt.showKop ? `
+          <div style="text-align: center; margin-bottom: 8px;">
+            <img src="${kopSrc}" alt="Kop Surat" style="width: 100%; max-height: 145px; object-fit: contain; display: block; margin: 0 auto;">
+          </div>
+        ` : ''}
+
+        <div style="text-align: justify; line-height: 1.35; font-size: 11pt;">
+          ${resolvedBody}
+        </div>
+
+        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px; page-break-inside: avoid;">
+          <div style="width: 320px; text-align: left; font-size: 11pt;">
+            <div style="margin-bottom: 4px;">
+              <div>Ditetapkan di Klungkung</div>
+              <div>Pada Tanggal ${ds.tglSurat}</div>
+            </div>
+            <div style="font-weight: bold; margin-bottom: 4px;">
+              KEPALA ${AppState.appSettings.namaSekolah.toUpperCase()}
+            </div>
+            <div style="min-height: 90px; display: flex; align-items: center; justify-content: flex-start; margin: 4px 0;">
+              ${getTtdHtml(ds, dOpt)}
+            </div>
+            <div style="font-weight: bold; text-decoration: underline;">
+              ${ds.kepsekNama}
+            </div>
+            <div style="font-size: 10.5pt; color: #333;">
+              ${ds.kepsekPangkat}
+            </div>
+            <div style="font-size: 10.5pt; color: #333;">
+              NIP. ${ds.kepsekNip}
+            </div>
+          </div>
+        </div>
+      `;
+
+      batchContainer.appendChild(pageWrapper);
+    });
+
+    window.print();
+  } else if (isKeterangan) {
     // CETAK MASSAL SURAT KETERANGAN PKL (1 Halaman per siswa, Tanpa Lampiran 2)
     const students = getActiveBatchStudents();
 

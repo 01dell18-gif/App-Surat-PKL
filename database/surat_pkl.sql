@@ -1,7 +1,7 @@
 -- ========================================================
 -- Database Schema & Data: Surat Pengantar PKL
 -- Instansi : SMKN 1 FYJ Channel
--- Dibuat   : 2026-11-05 00:04:28
+-- Dibuat   : 2026-11-05 13:17:36
 -- Kompatibel: MySQL, MariaDB, PostgreSQL, SQLite
 -- ========================================================
 
@@ -379,6 +379,97 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
   Demikian surat pengantar ini kami sampaikan, atas bantuan dan kerja sama yang baik kami ucapkan terima kasih.
 </p>', 1, 'active');
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_surat_keterangan_pkl', 'Surat Keterangan PKL', '<p style="margin-bottom: 8px;">Yang bertanda tangan dibawah ini :</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{kepsekNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIP</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekNip}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Pangkat/Gol</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekPangkat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jabatan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">Kepala {namaSekolah}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Unit Kerja</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{namaSekolah}</td>
+  </tr>
+</table>
+
+<p style="margin-bottom: 8px;">Menerangkan kepada yang tersebut dibawah ini bahwa:</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{siswaNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIS/NISN</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{siswaNisNisn}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jurusan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{siswaJurusan}</td>
+  </tr>
+</table>
+
+<p style="text-indent: 30px; margin-bottom: 12px; text-align: justify; line-height: 1.5;">
+  Adalah benar telah melaksanakan PKL di <strong>{tempatPkl}</strong> selama 6 bulan dan yang bersangkutan telah melaksanakan tugasnya dengan baik dan penuh penuh tanggung jawab.
+</p>
+
+<p style="text-indent: 30px; margin-bottom: 14px; text-align: justify; line-height: 1.5;">
+  Demikian Surat Keterangan ini dibuat dengan benar untuk digunakan sebagaimana mestinya.
+</p>', 0, 'active');
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_surat_permohonan_pkl_murid', 'Surat Permohonan PKL Murid', '<table style="width: 100%; margin-bottom: 12px; font-size: 11pt; border-collapse: collapse; font-family: ''Arial Narrow'', Arial, sans-serif;">
+  <tr>
+    <td style="width: 80px; vertical-align: top;">Nomor</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{noSurat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Lampiran</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">-</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Perihal</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top; font-weight: bold;">Permohonan Penerimaan Murid<br>Praktek Kerja Lapangan (PKL)</td>
+  </tr>
+</table>
+
+<div style="margin-bottom: 12px; font-size: 11pt; font-family: ''Arial Narrow'', Arial, sans-serif;">
+  <div>Kepada</div>
+  <div>Yth. Bapak/Ibu Pimpinan <strong>{tempatPkl}</strong></div>
+  <div>di</div>
+  <div>Tempat</div>
+</div>
+
+<p style="margin-bottom: 8px; font-size: 11pt; font-family: ''Arial Narrow'', Arial, sans-serif;">Dengan hormat,</p>
+<p style="text-indent: 30px; margin-bottom: 10px; text-align: justify; line-height: 1.4; font-size: 11pt; font-family: ''Arial Narrow'', Arial, sans-serif;">
+  Sesuai dengan kurikulum {namaSekolah} terkait dengan Praktek Kerja Lapangan (PKL) murid kelas {tingkatKelas}, maka kami mohon bantuan Bapak/Ibu untuk dapat kiranya menerima murid kami konsentrasi keahlian {jurusanPkl} untuk melaksanakan Praktek Kerja Lapangan (PKL) pada perusahaan yang Bapak/Ibu pimpin. Adapun kegiatan PKL tersebut akan dilaksanakan pada tanggal {periodePkl}.
+</p>
+<p style="margin-bottom: 8px; font-size: 11pt; font-family: ''Arial Narrow'', Arial, sans-serif;">Adapun nama murid kami, sebagai berikut:</p>
+
+{tabelSiswaPermohonan}
+
+<p style="text-indent: 30px; margin-top: 10px; margin-bottom: 12px; text-align: justify; line-height: 1.4; font-size: 11pt; font-family: ''Arial Narrow'', Arial, sans-serif;">
+  Demikian yang dapat kami sampaikan atas kerjasama Bapak/Ibu kami ucapkan terimakasih.
+</p>', 0, 'active');
 UNLOCK TABLES;
 
 -- --------------------------------------------------------

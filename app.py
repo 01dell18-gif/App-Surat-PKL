@@ -12,7 +12,7 @@ import zipfile
 import webbrowser
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import urllib.parse
-from generate_docx import generate_surat_docx, generate_keterangan_docx, load_data
+from generate_docx import generate_surat_docx, generate_keterangan_docx, generate_permohonan_murid_docx, load_data
 from database import db_manager
 
 PORT = 8000
@@ -448,8 +448,28 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 alamat_pkl = req_data.get('alamat_pkl', '')
 
                 is_keterangan = (template_id == 'tpl_surat_keterangan_pkl' or doc_type == 'keterangan')
+                is_permohonan = (template_id == 'tpl_surat_permohonan_pkl_murid' or doc_type == 'permohonan')
 
-                if is_keterangan:
+                if is_permohonan:
+                    file_bytes = generate_permohonan_murid_docx(
+                        template_path=None,
+                        out_path=None,
+                        tempat_pkl=tempat_pkl,
+                        students=students,
+                        no_surat=no_surat,
+                        tgl_surat=tgl_surat,
+                        periode_pkl=periode_pkl,
+                        nama_sekolah=nama_sekolah,
+                        kepsek_nama=kepsek_nama,
+                        kepsek_pangkat=kepsek_pangkat,
+                        kepsek_nip=kepsek_nip,
+                        show_kop=show_kop,
+                        show_ttd=show_ttd,
+                        paper_size=paper_size
+                    )
+                    safe_name = "".join(c for c in (tempat_pkl or 'DU_DI') if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
+                    filename = f"Surat_Permohonan_PKL_{safe_name}.docx"
+                elif is_keterangan:
                     first_student = students[0] if (students and len(students) > 0) else {}
                     siswa_nama = first_student.get('siswa') or first_student.get('nama') or req_data.get('siswa_nama', '')
                     siswa_nis = first_student.get('nis') or req_data.get('siswa_nis', '-')
@@ -579,6 +599,33 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                             )
                             safe_s = re.sub(r'[^a-zA-Z0-9]', '_', s_nama)
                             master_zip.writestr(f"Surat_Keterangan_{idx:03d}_{safe_s}.docx", doc_bytes)
+                elif doc_type == 'permohonan':
+                    from collections import defaultdict
+                    du_di_map = defaultdict(list)
+                    for r in records:
+                        t = r.get('tempat', '').strip()
+                        if t:
+                            du_di_map[t].append(r)
+                    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as master_zip:
+                        for idx, (t_name, s_list) in enumerate(du_di_map.items(), 1):
+                            doc_bytes = generate_permohonan_murid_docx(
+                                template_path=None,
+                                out_path=None,
+                                tempat_pkl=t_name,
+                                students=s_list,
+                                no_surat=no_surat,
+                                tgl_surat=tgl_surat,
+                                periode_pkl=periode_pkl,
+                                nama_sekolah=nama_sekolah,
+                                kepsek_nama=kepsek_nama,
+                                kepsek_pangkat=kepsek_pangkat,
+                                kepsek_nip=kepsek_nip,
+                                show_kop=show_kop,
+                                show_ttd=show_ttd,
+                                paper_size=paper_size
+                            )
+                            safe_t = re.sub(r'[^a-zA-Z0-9]', '_', t_name)[:30]
+                            master_zip.writestr(f"Surat_Permohonan_{idx:02d}_{safe_t}.docx", doc_bytes)
                 else:
                     from collections import defaultdict
                     guru_map = defaultdict(lambda: {'nip': '', 'siswa': []})

@@ -122,6 +122,43 @@ TEMPLATE_KETERANGAN_HTML = """<p style="margin-bottom: 8px;">Yang bertanda tanga
   Demikian Surat Keterangan ini dibuat dengan benar untuk digunakan sebagaimana mestinya.
 </p>"""
 
+TEMPLATE_PERMOHONAN_MURID_HTML = """<table style="width: 100%; margin-bottom: 12px; font-size: 11pt; border-collapse: collapse; font-family: 'Arial Narrow', Arial, sans-serif;">
+  <tr>
+    <td style="width: 80px; vertical-align: top;">Nomor</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{noSurat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Lampiran</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">-</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Perihal</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top; font-weight: bold;">Permohonan Penerimaan Murid<br>Praktek Kerja Lapangan (PKL)</td>
+  </tr>
+</table>
+
+<div style="margin-bottom: 12px; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
+  <div>Kepada</div>
+  <div>Yth. Bapak/Ibu Pimpinan <strong>{tempatPkl}</strong></div>
+  <div>di</div>
+  <div>Tempat</div>
+</div>
+
+<p style="margin-bottom: 8px; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">Dengan hormat,</p>
+<p style="text-indent: 30px; margin-bottom: 10px; text-align: justify; line-height: 1.4; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
+  Sesuai dengan kurikulum {namaSekolah} terkait dengan Praktek Kerja Lapangan (PKL) murid kelas {tingkatKelas}, maka kami mohon bantuan Bapak/Ibu untuk dapat kiranya menerima murid kami konsentrasi keahlian {jurusanPkl} untuk melaksanakan Praktek Kerja Lapangan (PKL) pada perusahaan yang Bapak/Ibu pimpin. Adapun kegiatan PKL tersebut akan dilaksanakan pada tanggal {periodePkl}.
+</p>
+<p style="margin-bottom: 8px; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">Adapun nama murid kami, sebagai berikut:</p>
+
+{tabelSiswaPermohonan}
+
+<p style="text-indent: 30px; margin-top: 10px; margin-bottom: 12px; text-align: justify; line-height: 1.4; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
+  Demikian yang dapat kami sampaikan atas kerjasama Bapak/Ibu kami ucapkan terimakasih.
+</p>"""
+
 def escape_sql(val):
     if val is None:
         return "NULL"
@@ -265,6 +302,18 @@ def init_database():
         '2026-11-04 10:00:00'
     ))
 
+    cur.execute("""
+    INSERT OR REPLACE INTO template_surat (id, nama, html_content, is_default, status, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+        'tpl_surat_permohonan_pkl_murid',
+        'Surat Permohonan PKL Murid',
+        TEMPLATE_PERMOHONAN_MURID_HTML.strip(),
+        0,
+        'active',
+        '2026-11-05 10:00:00'
+    ))
+
     conn.commit()
     conn.close()
     print(f"[OK] Database SQLite berhasil dibuat: {DB_PATH}")
@@ -370,6 +419,8 @@ def init_database():
     sql_lines.append("-- Data Template Surat Resmi")
     sql_lines.append("LOCK TABLES `template_surat` WRITE;")
     sql_lines.append(f"INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_standar_resmi', 'Template Standar Resmi SMKN 1 FYJ Channel', {escape_sql(DEFAULT_TEMPLATE_HTML.strip())}, 1, 'active');")
+    sql_lines.append(f"INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_surat_keterangan_pkl', 'Surat Keterangan PKL', {escape_sql(TEMPLATE_KETERANGAN_HTML.strip())}, 0, 'active');")
+    sql_lines.append(f"INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_surat_permohonan_pkl_murid', 'Surat Permohonan PKL Murid', {escape_sql(TEMPLATE_PERMOHONAN_MURID_HTML.strip())}, 0, 'active');")
     sql_lines.append("UNLOCK TABLES;\n")
 
     # Views

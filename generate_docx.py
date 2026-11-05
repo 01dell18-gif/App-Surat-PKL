@@ -48,6 +48,43 @@ NS = {
     'r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 }
 
+
+def set_openxml_cell_text(tc, text, align="left", bold=False, sz_val="24"):
+    p = tc.find(f'{{{NS["w"]}}}p')
+    if p is None:
+        p = ET.SubElement(tc, f'{{{NS["w"]}}}p')
+    for r in list(p.findall(f'{{{NS["w"]}}}r')):
+        p.remove(r)
+    pPr = p.find(f'{{{NS["w"]}}}pPr')
+    if pPr is not None:
+        numPr = pPr.find(f'{{{NS["w"]}}}numPr')
+        if numPr is not None:
+            pPr.remove(numPr)
+        jc = pPr.find(f'{{{NS["w"]}}}jc')
+        if jc is None:
+            jc = ET.SubElement(pPr, f'{{{NS["w"]}}}jc')
+        jc.set(f'{{{NS["w"]}}}val', align)
+    else:
+        pPr = ET.SubElement(p, f'{{{NS["w"]}}}pPr')
+        jc = ET.SubElement(pPr, f'{{{NS["w"]}}}jc')
+        jc.set(f'{{{NS["w"]}}}val', align)
+
+    r = ET.SubElement(p, f'{{{NS["w"]}}}r')
+    rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')
+    rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
+    rf.set(f'{{{NS["w"]}}}ascii', 'Arial Narrow')
+    rf.set(f'{{{NS["w"]}}}hAnsi', 'Arial Narrow')
+    rf.set(f'{{{NS["w"]}}}cs', 'Arial Narrow')
+    if bold:
+        ET.SubElement(rPr, f'{{{NS["w"]}}}b')
+    sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
+    sz.set(f'{{{NS["w"]}}}val', sz_val)
+    szCs = ET.SubElement(rPr, f'{{{NS["w"]}}}szCs')
+    szCs.set(f'{{{NS["w"]}}}val', sz_val)
+    t = ET.SubElement(r, f'{{{NS["w"]}}}t')
+    t.text = str(text)
+
+
 def get_template_path():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     candidates = [
@@ -892,6 +929,180 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
         print(f"[OK] Surat Keterangan PKL berhasil dibuat: {out_path}")
 
     return file_bytes
+
+def generate_permohonan_murid_docx(template_path=None, out_path=None, tempat_pkl="", students=None,
+                                    no_surat="B.10.000/9546/SMKN1KLK/DIKPORA",
+                                    tgl_surat="06 Oktober 2026",
+                                    periode_pkl="13 November 2026 sampai dengan 30 April 2027",
+                                    nama_sekolah="SMKN 1 FYJ Channel",
+                                    kepsek_nama="Sri Rejeki, S.Pd., M.Pd.",
+                                    kepsek_pangkat="Pembina (IV/a)",
+                                    kepsek_nip="19770309 200903 2 010",
+                                    show_kop=True,
+                                    show_ttd=True,
+                                    paper_size="a4"):
+    """Menghasilkan berkas Word DOCX Surat Permohonan PKL Murid sesuai template Surat PKL Murid.docx."""
+    if students is None:
+        students = []
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        template_path,
+        os.path.join(base_dir, 'assets', 'templates', 'template_permohonan_clean.docx'),
+        os.path.join(base_dir, 'assets', 'templates', 'template_permohonan_murid.docx'),
+        'assets/templates/template_permohonan_clean.docx',
+        'assets/templates/template_permohonan_murid.docx'
+    ]
+    actual_tpl = None
+    for c in candidates:
+        if c and os.path.exists(c):
+            actual_tpl = c
+            break
+
+    if not actual_tpl:
+        raise FileNotFoundError("Template Surat Permohonan PKL Murid tidak ditemukan.")
+
+    with zipfile.ZipFile(actual_tpl, 'r') as zin:
+        all_files = {name: zin.read(name) for name in zin.namelist()}
+
+    xml_text = all_files['word/document.xml'].decode('utf-8')
+
+    # Determine tingkat and majors
+    tingkat = "XII" if any("XII" in str(s.get('kelas', '')) for s in students) else "XI"
+    jurusan_set = set()
+    for s in students:
+        j = get_jurusan_from_kelas(s.get('kelas', ''))
+        if j:
+            jurusan_set.add(j)
+    jurusan_str = " dan ".join(sorted(jurusan_set)) if jurusan_set else "Bisnis Digital (BD)"
+
+    # String replacements
+    xml_text = xml_text.replace('{noSurat}', no_surat)
+    xml_text = xml_text.replace('{tempatPkl}', tempat_pkl or 'Tempat')
+    xml_text = xml_text.replace('{namaSekolah}', nama_sekolah)
+    xml_text = xml_text.replace('{tingkatKelas}', tingkat)
+    xml_text = xml_text.replace('{jurusanPkl}', jurusan_str)
+    xml_text = xml_text.replace('{periodePkl}', periode_pkl)
+    xml_text = xml_text.replace('{tglSurat}', tgl_surat)
+
+    root = ET.fromstring(xml_text.encode('utf-8'))
+    body = root.find(f'{{{NS["w"]}}}body')
+
+    # Update paper size and margins
+    for sectPr in root.iter(f'{{{NS["w"]}}}sectPr'):
+        pgSz = sectPr.find(f'{{{NS["w"]}}}pgSz')
+        if pgSz is not None:
+            if paper_size == 'a4':
+                pgSz.set(f'{{{NS["w"]}}}w', '11906')
+                pgSz.set(f'{{{NS["w"]}}}h', '16838')
+            else:
+                pgSz.set(f'{{{NS["w"]}}}w', '12242')
+                pgSz.set(f'{{{NS["w"]}}}h', '18722')
+
+        # Check Kop visibility
+        if not show_kop:
+            for hr in list(sectPr.findall(f'{{{NS["w"]}}}headerReference')):
+                sectPr.remove(hr)
+            pgMar = sectPr.find(f'{{{NS["w"]}}}pgMar')
+            if pgMar is not None:
+                pgMar.set(f'{{{NS["w"]}}}top', '1440')
+
+    # Check TTD visibility
+    if not show_ttd and body is not None:
+        for p in list(body.findall(f'{{{NS["w"]}}}p')):
+            if p.findall(f'.//{{{NS["w"]}}}drawing'):
+                body.remove(p)
+
+    # Kop image
+    images_dir = os.path.join(base_dir, 'assets', 'images')
+    if show_kop and 'word/media/image2.jpg' in all_files:
+        try:
+            custom_kop_file = None
+            if os.path.exists(images_dir):
+                for f_name in os.listdir(images_dir):
+                    if f_name.startswith('upload_kop.'):
+                        custom_kop_file = os.path.join(images_dir, f_name)
+                        break
+            if custom_kop_file and os.path.exists(custom_kop_file):
+                im = Image.open(custom_kop_file).convert('RGB')
+                buf = io.BytesIO()
+                im.save(buf, format='JPEG', quality=95)
+                all_files['word/media/image2.jpg'] = buf.getvalue()
+            else:
+                default_kop = os.path.join(images_dir, 'kop_fyj.png')
+                if os.path.exists(default_kop):
+                    im = Image.open(default_kop).convert('RGB')
+                    buf = io.BytesIO()
+                    im.save(buf, format='JPEG', quality=95)
+                    all_files['word/media/image2.jpg'] = buf.getvalue()
+        except Exception as e:
+            print(f"[WARN] Gagal menyisipkan kop di permohonan docx: {e}")
+
+    # TTD image
+    if show_ttd and 'word/media/image1.png' in all_files:
+        try:
+            custom_ttd_file = None
+            if os.path.exists(images_dir):
+                for f_name in os.listdir(images_dir):
+                    if f_name.startswith('upload_ttd.'):
+                        custom_ttd_file = os.path.join(images_dir, f_name)
+                        break
+            if custom_ttd_file and os.path.exists(custom_ttd_file):
+                with open(custom_ttd_file, 'rb') as tf:
+                    all_files['word/media/image1.png'] = tf.read()
+            else:
+                ttd_b = create_ttd_elektronik_bytes(
+                    nama_sekolah=nama_sekolah,
+                    kepsek_nama=kepsek_nama,
+                    kepsek_pangkat=kepsek_pangkat,
+                    kepsek_nip=kepsek_nip
+                )
+                if ttd_b:
+                    all_files['word/media/image1.png'] = ttd_b
+        except Exception as e:
+            print(f"[WARN] Gagal menyisipkan ttd di permohonan docx: {e}")
+
+    # Process Student Table
+    tbl = root.find('.//w:tbl', NS)
+    if tbl is not None:
+        rows = tbl.findall(f'{{{NS["w"]}}}tr')
+        if len(rows) > 1:
+            template_row = rows[1]
+            for r in rows[1:]:
+                tbl.remove(r)
+            if not students:
+                new_row = copy.deepcopy(template_row)
+                tcs = new_row.findall(f'{{{NS["w"]}}}tc')
+                if len(tcs) >= 3:
+                    set_openxml_cell_text(tcs[0], "-", align="center")
+                    set_openxml_cell_text(tcs[1], "Belum ada siswa yang ditugaskan", align="left")
+                    set_openxml_cell_text(tcs[2], "-", align="center")
+                tbl.append(new_row)
+            else:
+                for idx, s in enumerate(students, 1):
+                    new_row = copy.deepcopy(template_row)
+                    tcs = new_row.findall(f'{{{NS["w"]}}}tc')
+                    if len(tcs) >= 3:
+                        set_openxml_cell_text(tcs[0], str(idx), align="center")
+                        set_openxml_cell_text(tcs[1], s.get('siswa') or s.get('nama') or '-', align="left")
+                        set_openxml_cell_text(tcs[2], s.get('kelas') or '-', align="center")
+                    tbl.append(new_row)
+
+    all_files['word/document.xml'] = ET.tostring(root, encoding='utf-8')
+
+    out_buffer = io.BytesIO()
+    with zipfile.ZipFile(out_buffer, 'w', zipfile.ZIP_DEFLATED) as zout:
+        for name, data in all_files.items():
+            zout.writestr(name, data)
+
+    file_bytes = out_buffer.getvalue()
+    if out_path:
+        with open(out_path, 'wb') as f:
+            f.write(file_bytes)
+        print(f"[OK] Surat Permohonan PKL Murid berhasil dibuat: {out_path}")
+
+    return file_bytes
+
 
 def main():
     parser = argparse.ArgumentParser(description="Generator Surat Pengantar PKL SMKN 1 FYJ Channel")
