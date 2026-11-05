@@ -1,7 +1,7 @@
 -- ========================================================
 -- Database Schema & Data: Surat Pengantar PKL
 -- Instansi : SMKN 1 FYJ Channel
--- Diperbarui : 2026-11-05 14:47:57
+-- Diperbarui : 2026-11-05 15:13:00
 -- Kompatibel : MySQL, MariaDB, PostgreSQL, SQLite
 -- ========================================================
 
@@ -469,6 +469,37 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 
 <p style="text-indent: 30px; margin-top: 10px; margin-bottom: 12px; text-align: justify; line-height: 1.4; font-size: 11pt; font-family: ''Arial Narrow'', Arial, sans-serif;">
   Demikian yang dapat kami sampaikan atas kerjasama Bapak/Ibu kami ucapkan terimakasih.
+</p>', 0, 'active');
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_pkl_terpadu', 'Template PKL Model Terpadu / Fleksibel', '<p style="margin-bottom: 8px;">Dengan hormat,</p>
+<p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
+  Sehubungan dengan program kurikulum vokasi {namaSekolah} Tahun Ajaran {tahunAjaran}, kami bermaksud mendelegasikan siswa/siswi kami untuk melaksanakan kegiatan Praktek Kerja Lapangan (PKL) terpadu di perusahaan/instansi yang Bapak/Ibu pimpin.
+</p>
+<p style="margin-bottom: 4px;">Bersama surat ini, kami menugaskan guru pembimbing sebagai narahubung resmi:</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 10px;">
+  <tr>
+    <td style="width: 110px;">Nama</td>
+    <td style="width: 15px;">:</td>
+    <td style="font-weight: bold;">{guruNama}</td>
+  </tr>
+  <tr>
+    <td>NIP</td>
+    <td>:</td>
+    <td>{guruNip}</td>
+  </tr>
+  <tr>
+    <td>Jabatan</td>
+    <td>:</td>
+    <td>Guru Pembimbing PKL</td>
+  </tr>
+</table>
+<p style="margin-bottom: 4px;">Adapun rincian jadwal pelaksanaan program PKL adalah sebagai berikut:</p>
+<ol style="margin-left: 20px; margin-bottom: 10px; list-style-type: decimal;">
+  <li style="padding-left: 4px;">Pelepasan siswa/siswi PKL: <strong>{tglPelepasan}</strong>.</li>
+  <li style="padding-left: 4px;">Masa PKL &amp; Evaluasi Berkala: <strong>{periodePkl}</strong>. Monitoring dilaksanakan secara berkala untuk mengevaluasi perkembangan kompetensi siswa.</li>
+  <li style="padding-left: 4px;">Penarikan resmi siswa: <strong>{tglPenarikan}</strong>.</li>
+</ol>
+<p style="text-indent: 30px; margin-bottom: 14px; text-align: justify;">
+  Rincian nama siswa/siswi terlampir pada Lampiran 2 surat ini. Besar harapan kami agar kerja sama yang baik antara institusi pendidikan dan DU/DI terus terjalin erat. Atas perhatian dan kesediaan Bapak/Ibu, kami haturkan terima kasih.
 </p>', 0, 'active');
 UNLOCK TABLES;
 

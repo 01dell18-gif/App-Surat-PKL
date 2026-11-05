@@ -859,6 +859,7 @@ function populateEditorTemplateSelect() {
   const sel = document.getElementById('editorTemplateSelect');
   if (!sel) return;
   sel.innerHTML = '';
+  let matched = false;
   AppState.templates.forEach(t => {
     const opt = document.createElement('option');
     opt.value = t.id;
@@ -866,9 +867,17 @@ function populateEditorTemplateSelect() {
     opt.textContent = (isAct ? '★ ' : '  ') + t.name;
     if (t.id === (AppState.editingTemplateId || AppState.activeTemplateId)) {
       opt.selected = true;
+      matched = true;
     }
     sel.appendChild(opt);
   });
+  if (!matched && AppState.editingTemplateId && AppState.editingTemplateId.startsWith('new_')) {
+    const newOpt = document.createElement('option');
+    newOpt.value = AppState.editingTemplateId;
+    newOpt.textContent = '✨ (Template Baru Sedang Dirancang)';
+    newOpt.selected = true;
+    sel.appendChild(newOpt);
+  }
 }
 
 function onEditorTemplateSelectChange() {
@@ -1764,6 +1773,98 @@ function resetEditorToOfficialStandard() {
   showToast('Naskah di editor dikembalikan ke Standar Resmi.');
 }
 
+// Memulai perancangan Template Baru
+function startNewTemplate() {
+  AppState.editingTemplateId = 'new_' + Date.now();
+
+  const nameInput = document.getElementById('inputTemplateName');
+  if (nameInput) {
+    nameInput.value = 'Template Surat PKL Kustom';
+  }
+
+  const starterHtml = `<p style="margin-bottom: 8px;">Yang bertanda tangan di bawah ini :</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt; border-collapse: collapse;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{kepsekNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIP</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekNip}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Pangkat/Gol</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekPangkat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jabatan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">Kepala {namaSekolah}</td>
+  </tr>
+</table>
+
+<p style="margin-bottom: 8px;">Menerangkan kepada pihak Dunia Usaha / Dunia Industri (DU/DI) bahwa siswa berikut :</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt; border-collapse: collapse;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama Siswa</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{siswaNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIS/NISN</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{siswaNisNisn}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Kelas / Jurusan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{siswaKelas} / {siswaJurusan}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Tempat PKL</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{tempatPkl}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Guru Pembimbing</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{guruNama} (NIP. {guruNip})</td>
+  </tr>
+</table>
+
+<p style="text-indent: 30px; margin-bottom: 12px; text-align: justify; line-height: 1.5;">
+  Akan melaksanakan kegiatan Praktik Kerja Lapangan (PKL) pada perusahaan/instansi yang Bapak/Ibu pimpin terhitung sejak periode <strong>{periodePkl}</strong>.
+</p>
+
+<p style="text-indent: 30px; margin-bottom: 14px; text-align: justify; line-height: 1.5;">
+  Demikian surat ini kami sampaikan, atas perhatian dan kerja sama yang baik kami ucapkan terima kasih.
+</p>`;
+
+  const editor = document.getElementById('wysiwygEditor');
+  const textarea = document.getElementById('htmlEditorTextarea');
+  if (editor) editor.innerHTML = starterHtml;
+  if (textarea) textarea.value = starterHtml;
+
+  AppState.isHtmlSourceMode = false;
+  if (editor) editor.classList.remove('hidden');
+  if (textarea) textarea.classList.add('hidden');
+  const btnToggle = document.getElementById('btnToggleHtmlMode');
+  if (btnToggle) btnToggle.innerHTML = `<i data-lucide="code" class="w-3.5 h-3.5"></i><span>Mode HTML</span>`;
+
+  switchTemplateTab('editor');
+  populateEditorTemplateSelect();
+
+  if (nameInput) {
+    nameInput.focus();
+    nameInput.select();
+  }
+
+  showToast('Form template baru siap! Silakan sesuaikan nama dan isi surat.');
+}
+
 // Save changes to the currently edited template
 function saveCurrentTemplateChanges() {
   const nameInput = document.getElementById('inputTemplateName');
@@ -1773,30 +1874,61 @@ function saveCurrentTemplateChanges() {
   const newName = nameInput ? nameInput.value.trim() : '';
   if (!newName) {
     alert('Harap isi nama template.');
+    if (nameInput) nameInput.focus();
     return;
   }
 
   const currentContent = AppState.isHtmlSourceMode && textarea ? textarea.value : (editor ? editor.innerHTML : '');
-  const tpl = getEditingTemplate();
-  tpl.name = newName;
-  tpl.htmlContent = currentContent;
+  
+  let tpl = AppState.templates.find(t => t.id === AppState.editingTemplateId);
+  const isBrandNew = !tpl;
 
+  if (isBrandNew) {
+    const newId = (AppState.editingTemplateId && AppState.editingTemplateId.startsWith('tpl_'))
+      ? AppState.editingTemplateId
+      : ('tpl_' + Date.now());
+
+    tpl = {
+      id: newId,
+      name: newName,
+      isDefault: false,
+      status: 'active',
+      createdAt: new Date().toISOString().split('T')[0],
+      htmlContent: currentContent
+    };
+    AppState.templates.push(tpl);
+    AppState.activeTemplateId = tpl.id;
+    AppState.editingTemplateId = tpl.id;
+  } else {
+    tpl.name = newName;
+    tpl.htmlContent = currentContent;
+  }
+
+  // 1. Simpan ke LocalStorage (berfungsi penuh di GitHub Pages & offline)
   saveTemplatesToStorage();
+
+  // 2. Perbarui seluruh UI & dropdown
   populateSidebarTemplateSelect();
   populateEditorTemplateSelect();
   renderTemplateTable();
   if (tpl.id === AppState.activeTemplateId) {
     renderPreview();
   }
-  showToast(`Perubahan template "${newName}" berhasil disimpan!`);
 
-  // Sync template to SQLite backend
+  // 3. Simpan ke database SQLite dan ekspor ke SQL dump (jika server python aktif)
   if (window.fetch && window.location.protocol.startsWith('http')) {
     fetch('/api/templates', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(tpl)
-    }).catch(() => {});
+    }).catch(err => console.warn('Gagal sync template ke backend:', err));
+  }
+
+  if (isBrandNew) {
+    switchTemplateTab('list');
+    showToast(`Template baru "${newName}" berhasil disimpan ke database & daftar template!`);
+  } else {
+    showToast(`Perubahan template "${newName}" berhasil disimpan!`);
   }
 }
 
@@ -1898,10 +2030,15 @@ function deleteTemplate(templateId) {
 // Render Daftar Template Table matching Image 2
 function renderTemplateTable() {
   const tbody = document.getElementById('templateTableBody');
-  const countBadge = document.getElementById('templateTotalCount');
-  if (!tbody) return;
+  const countTab = document.getElementById('templateTabCount');
+  const countHeading = document.getElementById('templateHeadingCount');
+  const countLegacy = document.getElementById('templateTotalCount');
+  const total = AppState.templates.length;
 
-  if (countBadge) countBadge.textContent = AppState.templates.length;
+  if (countTab) countTab.textContent = total;
+  if (countHeading) countHeading.textContent = total;
+  if (countLegacy) countLegacy.textContent = total;
+  if (!tbody) return;
 
   tbody.innerHTML = '';
   AppState.templates.forEach((t, idx) => {

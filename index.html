@@ -694,7 +694,7 @@
           </button>
           <button id="btnTabList" onclick="switchTemplateTab('list')" class="px-3 sm:px-4 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition whitespace-nowrap shrink-0">
             <i data-lucide="clipboard-list" class="w-4 h-4"></i>
-            <span>Daftar Template (<span id="templateTotalCount">0</span>)</span>
+            <span>Daftar Template (<span id="templateTabCount">0</span>)</span>
           </button>
         </div>
 
@@ -841,9 +841,9 @@
         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
           <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
             <span>📋</span>
-            <span>Daftar Template (<span id="templateTotalCount">0</span>)</span>
+            <span>Daftar Template (<span id="templateHeadingCount">0</span>)</span>
           </h3>
-          <button onclick="switchTemplateTab('editor')" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg text-xs flex items-center gap-1.5 shadow-sm transition">
+          <button onclick="startNewTemplate()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer" title="Buat naskah template surat baru">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i>
             <span>Buat Template Baru</span>
           </button>
@@ -1691,16 +1691,16 @@
 
   <!-- ================= SCRIPTS ================= -->
   <!-- 1. Offline Base64 Assets (kop, ttd elektronik, ttd basah, logo web) -->
-  <script src="js/assets.js?v=3.2.2"></script>
+  <script src="js/assets.js?v=3.2.3"></script>
   
   <!-- 2. Clean Embedded Base64 Docx Template -->
-  <script src="js/template_base64.js?v=3.2.2"></script>
+  <script src="js/template_base64.js?v=3.2.3"></script>
 
   <!-- 3. Full PKL Initial Records (258 siswa) -->
-  <script src="js/data_pkl.js?v=3.2.2"></script>
+  <script src="js/data_pkl.js?v=3.2.3"></script>
 
   <!-- 4. Application Logic -->
-  <script src="js/app.js?v=3.2.2"></script>
+  <script src="js/app.js?v=3.2.3"></script>
 
 </body>
 </html>
