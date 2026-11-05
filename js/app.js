@@ -4615,3 +4615,52 @@ async function saveBulkEditJurusan() {
   closeBulkEditJurusanModal();
   showToast(`Berhasil mengubah jurusan "${oldJurusan}" menjadi "${newJurusan}" untuk ${updatedCount} siswa!`);
 }
+// ================= HAPUS CACHE & REFRESH WEB =================
+async function clearCacheAndRefresh() {
+  const konfirmasi = confirm(
+    "Hapus seluruh cache peramban dan muat ulang halaman ini?\n\n" +
+    "Tindakan ini akan membersihkan Cache Storage, Session Storage, dan memuat ulang berkas aplikasi terbaru dari server/hosting."
+  );
+  if (!konfirmasi) return;
+
+  try {
+    // 1. Bersihkan Cache API (CacheStorage)
+    if ('caches' in window) {
+      const cacheKeys = await window.caches.keys();
+      await Promise.all(cacheKeys.map(k => window.caches.delete(k)));
+    }
+  } catch (e) {
+    console.warn('Gagal membersihkan window.caches:', e);
+  }
+
+  try {
+    // 2. Unregister Service Workers jika ada
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const reg of registrations) {
+        await reg.unregister();
+      }
+    }
+  } catch (e) {
+    console.warn('Gagal unregister ServiceWorker:', e);
+  }
+
+  try {
+    // 3. Bersihkan Session Storage
+    sessionStorage.clear();
+  } catch (e) {}
+
+  try {
+    // 4. Bersihkan Local Storage (agar data/aset ter-reload segar)
+    localStorage.clear();
+  } catch (e) {}
+
+  // 5. Muat ulang halaman dengan parameter anti-cache (?nocache=timestamp)
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set('nocache', Date.now());
+    window.location.replace(url.toString());
+  } catch (e) {
+    window.location.reload();
+  }
+}
