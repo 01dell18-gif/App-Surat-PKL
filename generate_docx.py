@@ -30,6 +30,7 @@ Template: template_clean.docx
 
 import os
 import sys
+import re
 import io
 import json
 import copy
@@ -752,6 +753,21 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
         mem_buffer.seek(0)
         return mem_buffer.getvalue()
 
+
+def format_nisn(val):
+    """Memformat data NISN menjadi teks 10 digit, menambahkan angka 0 di depan jika kurang dari 10 digit"""
+    if val is None:
+        return ""
+    s = str(val).strip()
+    if not s or s == '-' or s == '0':
+        return ""
+    digits = re.sub(r'\D', '', s)
+    if 0 < len(digits) < 10:
+        return digits.zfill(10)
+    elif len(digits) == 10:
+        return digits
+    return s
+
 def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", siswa_nis="-", siswa_nisn="-", siswa_kelas="", siswa_jurusan="", tempat_pkl="", no_surat="B.10.429.1/8464/SMKN1KLK/DIKPORA", tgl_surat="07 Oktober 2026",
                              nama_sekolah="SMKN 1 FYJ Channel", kepsek_nama="Sri Rejeki, S.Pd., M.Pd.",
                              kepsek_pangkat="Pembina (IV/a)", kepsek_nip="19770309 200903 2 010",
@@ -877,8 +893,8 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
             sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
             sz.set(f'{{{NS["w"]}}}val', '24')
             t = ET.SubElement(r, f'{{{NS["w"]}}}t')
-            nis_val = siswa_nis if (siswa_nis and siswa_nis != '-') else ''
-            nisn_val = siswa_nisn if (siswa_nisn and siswa_nisn != '-') else ''
+            nis_val = str(siswa_nis).strip() if (siswa_nis and str(siswa_nis).strip() != '-') else ''
+            nisn_val = format_nisn(siswa_nisn)
             if nis_val and nisn_val:
                 t.text = f' {nis_val} / {nisn_val}'
             elif nis_val:

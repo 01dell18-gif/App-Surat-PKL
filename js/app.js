@@ -89,6 +89,28 @@ function getActiveBatchStudents() {
 }
 
 // Helper: Deduce major (Jurusan) from class name (Kelas)
+// Helper: Format NISN menjadi data teks 10 digit (tambahkan angka 0 di depan jika kurang dari 10 digit)
+function formatNisn(val) {
+  if (val === null || val === undefined) return '';
+  let s = String(val).trim();
+  if (!s || s === '-' || s === '0') return '';
+  const digits = s.replace(/\D/g, '');
+  if (digits.length > 0 && digits.length < 10) {
+    return digits.padStart(10, '0');
+  } else if (digits.length === 10) {
+    return digits;
+  }
+  return s;
+}
+
+// Helper: Format NIS menjadi data teks murni
+function formatNis(val) {
+  if (val === null || val === undefined) return '';
+  let s = String(val).trim();
+  if (!s || s === '-' || s === '0') return '';
+  return s;
+}
+
 function getJurusanFromKelas(kelas) {
   if (!kelas) return '';
   const k = kelas.toString().toUpperCase().trim();
@@ -1035,6 +1057,15 @@ function setupEventListeners() {
   }
 
   // Excel File Input for Upload
+  const inputFormNisn = document.getElementById('studentFormNisn');
+  if (inputFormNisn) {
+    inputFormNisn.addEventListener('blur', function() {
+      if (this.value) {
+        this.value = formatNisn(this.value);
+      }
+    });
+  }
+
   const excelFileInput = document.getElementById('excelFileInput');
   if (excelFileInput) {
     excelFileInput.addEventListener('change', handleExcelUpload);
@@ -1306,15 +1337,17 @@ function updateUIFromState() {
       const sNisn = document.getElementById('infoDetailSiswaNisn');
       const sNisNisn = document.getElementById('infoDetailSiswaNisNisn');
       const sJurusan = document.getElementById('infoDetailSiswaJurusan');
+      const formattedNis = formatNis(s.nis);
+      const formattedNisn = formatNisn(s.nisn);
       if (sNama) sNama.textContent = s.siswa || s.nama || '-';
-      if (sNis) sNis.textContent = s.nis || '-';
-      if (sNisn) sNisn.textContent = s.nisn || '-';
-      const hasN = s.nis && s.nis !== '-';
-      const hasNn = s.nisn && s.nisn !== '-';
+      if (sNis) sNis.textContent = formattedNis || '-';
+      if (sNisn) sNisn.textContent = formattedNisn || (s.nisn && s.nisn !== '-' ? s.nisn : '-');
+      const hasN = formattedNis && formattedNis !== '-';
+      const hasNn = (formattedNisn || s.nisn) && (formattedNisn || s.nisn) !== '-';
       let combined = '-';
-      if (hasN && hasNn) combined = `${s.nis} / ${s.nisn}`;
-      else if (hasN) combined = s.nis;
-      else if (hasNn) combined = s.nisn;
+      if (hasN && hasNn) combined = `${formattedNis} / ${formattedNisn || s.nisn}`;
+      else if (hasN) combined = formattedNis;
+      else if (hasNn) combined = formattedNisn || s.nisn;
       if (sNisNisn) sNisNisn.textContent = combined;
       if (sJurusan) sJurusan.textContent = s.jurusan || getJurusanFromKelas(s.kelas) || s.kelas || '-';
     } else {
@@ -1367,8 +1400,10 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
   const s = AppState.appSettings || ds;
   const firstStudent = (letter.students && letter.students.length > 0) ? letter.students[0] : null;
   const siswaNama = firstStudent ? (firstStudent.siswa || firstStudent.nama) : (letter.siswa || '-');
-  const siswaNis = firstStudent ? (firstStudent.nis || '-') : '-';
-  const siswaNisn = firstStudent ? (firstStudent.nisn || '-') : '-';
+  const rawNis = firstStudent ? firstStudent.nis : letter.nis;
+  const rawNisn = firstStudent ? firstStudent.nisn : letter.nisn;
+  const siswaNis = formatNis(rawNis) || '-';
+  const siswaNisn = formatNisn(rawNisn) || (rawNisn && rawNisn !== '-' ? rawNisn : '-');
   const siswaKelas = firstStudent ? (firstStudent.kelas || '-') : '-';
   const siswaJurusan = firstStudent ? (firstStudent.jurusan || getJurusanFromKelas(firstStudent.kelas) || '-') : '-';
   const tempatPkl = letter.tempatPkl || (firstStudent ? firstStudent.tempat : 'Marvella');
@@ -4167,8 +4202,8 @@ function renderDatabaseTable() {
     tr.innerHTML = `
       <td class="p-2.5 text-center font-medium">${idx + 1}</td>
       <td class="p-2.5 font-semibold text-slate-900">${r.siswa || ''}</td>
-      <td class="p-2.5 text-center font-mono text-[11px] text-slate-600">${r.nis || '-'}</td>
-      <td class="p-2.5 text-center font-mono text-[11px] text-slate-600">${r.nisn || '-'}</td>
+      <td class="p-2.5 text-center font-mono text-[11px] text-slate-600">${formatNis(r.nis) || '-'}</td>
+      <td class="p-2.5 text-center font-mono text-[11px] text-slate-600">${formatNisn(r.nisn) || r.nisn || '-'}</td>
       <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[11px]">${r.kelas || ''}</span></td>
       <td class="p-2.5 text-slate-700 text-[11px]">${r.jurusan || getJurusanFromKelas(r.kelas) || '-'}</td>
       <td class="p-2.5">${r.guru || ''}</td>
@@ -4252,8 +4287,8 @@ function openStudentModal(mode, no) {
 
     document.getElementById('studentFormNo').value = rec.no;
     document.getElementById('studentFormNama').value = rec.siswa || '';
-    document.getElementById('studentFormNis').value = rec.nis || '';
-    document.getElementById('studentFormNisn').value = rec.nisn || '';
+    document.getElementById('studentFormNis').value = formatNis(rec.nis);
+    document.getElementById('studentFormNisn').value = formatNisn(rec.nisn) || rec.nisn || '';
     document.getElementById('studentFormKelas').value = rec.kelas || '';
     document.getElementById('studentFormJurusan').value = rec.jurusan || getJurusanFromKelas(rec.kelas) || '';
     document.getElementById('studentFormGuru').value = rec.guru || '';
@@ -4295,8 +4330,10 @@ function closeStudentModal() {
 async function saveStudentForm() {
   const noVal = document.getElementById('studentFormNo').value;
   const nama = document.getElementById('studentFormNama').value.trim();
-  const nis = (document.getElementById('studentFormNis') ? document.getElementById('studentFormNis').value.trim() : '');
-  const nisn = (document.getElementById('studentFormNisn') ? document.getElementById('studentFormNisn').value.trim() : '');
+  const rawNis = document.getElementById('studentFormNis') ? document.getElementById('studentFormNis').value.trim() : '';
+  const rawNisn = document.getElementById('studentFormNisn') ? document.getElementById('studentFormNisn').value.trim() : '';
+  const nis = formatNis(rawNis);
+  const nisn = formatNisn(rawNisn) || rawNisn;
   const kelas = document.getElementById('studentFormKelas').value.trim();
   const rawJurusan = (document.getElementById('studentFormJurusan') ? document.getElementById('studentFormJurusan').value.trim() : '');
   const jurusan = rawJurusan || getJurusanFromKelas(kelas);
@@ -4470,7 +4507,7 @@ function handleExcelUpload(e) {
       const workbook = XLSX.read(data, { type: 'array' });
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
 
       if (jsonData.length <= 1) {
         alert('File Excel kosong atau tidak memiliki baris data.');
@@ -4504,8 +4541,8 @@ function handleExcelUpload(e) {
           guru: (row[colGuru !== -1 ? colGuru : 1] || '').toString().trim(),
           nip: (row[colNip !== -1 ? colNip : 2] || '').toString().trim(),
           siswa: siswa.toString().trim(),
-          nis: (colNis !== -1 ? (row[colNis] || '') : '').toString().trim(),
-          nisn: (colNisn !== -1 ? (row[colNisn] || '') : '').toString().trim(),
+          nis: formatNis(colNis !== -1 ? row[colNis] : ''),
+          nisn: formatNisn(colNisn !== -1 ? row[colNisn] : ''),
           kelas: kelasVal,
           jurusan: (jurVal || '').toString().trim(),
           tempat: (row[colTempat !== -1 ? colTempat : 5] || '').toString().trim(),
@@ -4546,10 +4583,10 @@ function exportRecordsToExcel() {
   const rows = AppState.records.map((r, idx) => ({
     'No': idx + 1,
     'Nama Guru': r.guru || '',
-    'NIP': r.nip || '',
+    'NIP': r.nip ? String(r.nip) : '',
     'Nama Siswa': r.siswa || '',
-    'NIS': r.nis || '',
-    'NISN': r.nisn || '',
+    'NIS': formatNis(r.nis),
+    'NISN': formatNisn(r.nisn),
     'Kelas': r.kelas || '',
     'Jurusan': r.jurusan || getJurusanFromKelas(r.kelas) || '',
     'Tempat PKL': r.tempat || '',
@@ -4557,6 +4594,20 @@ function exportRecordsToExcel() {
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(rows);
+  // Pastikan kolom NIS (E) dan NISN (F) diformat sebagai tipe teks ('s') dengan format teks ('@')
+  if (worksheet['!ref']) {
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+      ['E', 'F'].forEach(col => {
+        const cell = worksheet[col + (R + 1)];
+        if (cell) {
+          cell.t = 's';
+          cell.z = '@';
+          if (col === 'F' && cell.v) cell.v = formatNisn(cell.v);
+        }
+      });
+    }
+  }
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Data PKL');
   XLSX.writeFile(workbook, 'Data_Pembagian_Tugas_PKL_Export.xlsx');

@@ -8,6 +8,7 @@ dan menjaga sinkronisasi otomatis dengan database/surat_pkl.sql
 import os
 import sqlite3
 import json
+import re
 from datetime import datetime
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -177,6 +178,30 @@ def export_sql_dump():
     except Exception as e:
         print(f"[WARN] Gagal menyinkronkan SQL dump: {e}")
 
+
+def format_nisn(val):
+    """Memformat data NISN menjadi teks 10 digit, menambahkan angka 0 di depan jika kurang dari 10 digit"""
+    if val is None:
+        return ""
+    s = str(val).strip()
+    if not s or s == '-' or s == '0':
+        return ""
+    digits = re.sub(r'\D', '', s)
+    if 0 < len(digits) < 10:
+        return digits.zfill(10)
+    elif len(digits) == 10:
+        return digits
+    return s
+
+def format_nis(val):
+    """Memformat data NIS sebagai teks murni"""
+    if val is None:
+        return ""
+    s = str(val).strip()
+    if s == '-' or s == '0':
+        return ""
+    return s
+
 def get_all_records():
     """Mengambil seluruh data siswa PKL dari tabel siswa_pkl"""
     conn = get_connection()
@@ -222,8 +247,8 @@ def add_student_record(data):
             data.get('guru', '').strip(),
             data.get('nip', '').strip(),
             data.get('siswa', '').strip(),
-            data.get('nis', '').strip(),
-            data.get('nisn', '').strip(),
+            format_nis(data.get('nis', '')),
+            format_nisn(data.get('nisn', '')),
             data.get('kelas', '').strip(),
             data.get('jurusan', '').strip(),
             data.get('tempat', '').strip(),
@@ -239,8 +264,8 @@ def add_student_record(data):
             'guru': data.get('guru', '').strip(),
             'nip': data.get('nip', '').strip(),
             'siswa': data.get('siswa', '').strip(),
-            'nis': data.get('nis', '').strip(),
-            'nisn': data.get('nisn', '').strip(),
+            'nis': format_nis(data.get('nis', '')),
+            'nisn': format_nisn(data.get('nisn', '')),
             'kelas': data.get('kelas', '').strip(),
             'jurusan': data.get('jurusan', '').strip(),
             'tempat': data.get('tempat', '').strip(),
@@ -266,8 +291,8 @@ def update_student_record(data):
                 data.get('guru', '').strip(),
                 data.get('nip', '').strip(),
                 data.get('siswa', '').strip(),
-                data.get('nis', '').strip(),
-                data.get('nisn', '').strip(),
+                format_nis(data.get('nis', '')),
+                format_nisn(data.get('nisn', '')),
                 data.get('kelas', '').strip(),
                 data.get('jurusan', '').strip(),
                 data.get('tempat', '').strip(),
@@ -283,8 +308,8 @@ def update_student_record(data):
                 data.get('guru', '').strip(),
                 data.get('nip', '').strip(),
                 data.get('siswa', '').strip(),
-                data.get('nis', '').strip(),
-                data.get('nisn', '').strip(),
+                format_nis(data.get('nis', '')),
+                format_nisn(data.get('nisn', '')),
                 data.get('kelas', '').strip(),
                 data.get('jurusan', '').strip(),
                 data.get('tempat', '').strip(),
@@ -359,9 +384,9 @@ def save_all_records(records):
                 no_val,
                 r.get('guru', ''),
                 r.get('nip', ''),
-                r.get('siswa', ''),
-                r.get('nis', ''),
-                r.get('nisn', ''),
+                str(r.get('siswa', '')).strip(),
+                format_nis(r.get('nis', '')),
+                format_nisn(r.get('nisn', '')),
                 r.get('kelas', ''),
                 r.get('jurusan', ''),
                 r.get('tempat', ''),
