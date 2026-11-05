@@ -940,7 +940,9 @@ def generate_permohonan_murid_docx(template_path=None, out_path=None, tempat_pkl
                                     kepsek_nip="19770309 200903 2 010",
                                     show_kop=True,
                                     show_ttd=True,
-                                    paper_size="a4"):
+                                    paper_size="a4",
+                                    alamat_pkl="",
+                                    show_alamat=True):
     """Menghasilkan berkas Word DOCX Surat Permohonan PKL Murid sesuai template Surat PKL Murid.docx."""
     if students is None:
         students = []
@@ -987,6 +989,24 @@ def generate_permohonan_murid_docx(template_path=None, out_path=None, tempat_pkl
 
     root = ET.fromstring(xml_text.encode('utf-8'))
     body = root.find(f'{{{NS["w"]}}}body')
+
+    # Add Alamat PKL under tempatPkl if show_alamat is True
+    if show_alamat and alamat_pkl and body is not None:
+        target_name = (tempat_pkl or 'Tempat').strip()
+        for p in body.findall(f'.//{{{NS["w"]}}}p'):
+            p_text = "".join(p.itertext())
+            if target_name in p_text:
+                r_addr = ET.SubElement(p, f'{{{NS["w"]}}}r')
+                rPr_addr = ET.SubElement(r_addr, f'{{{NS["w"]}}}rPr')
+                rFonts_addr = ET.SubElement(rPr_addr, f'{{{NS["w"]}}}rFonts')
+                rFonts_addr.set(f'{{{NS["w"]}}}ascii', 'Arial Narrow')
+                rFonts_addr.set(f'{{{NS["w"]}}}hAnsi', 'Arial Narrow')
+                sz_addr = ET.SubElement(rPr_addr, f'{{{NS["w"]}}}sz')
+                sz_addr.set(f'{{{NS["w"]}}}val', '20')
+                ET.SubElement(r_addr, f'{{{NS["w"]}}}br')
+                t_addr = ET.SubElement(r_addr, f'{{{NS["w"]}}}t')
+                t_addr.text = str(alamat_pkl).strip()
+                break
 
     # Update paper size and margins
     for sectPr in root.iter(f'{{{NS["w"]}}}sectPr'):

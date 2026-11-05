@@ -483,7 +483,9 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                         kepsek_nip=kepsek_nip,
                         show_kop=show_kop,
                         show_ttd=show_ttd,
-                        paper_size=paper_size
+                        paper_size=paper_size,
+                        alamat_pkl=alamat_pkl,
+                        show_alamat=show_alamat
                     )
                     safe_name = "".join(c for c in (tempat_pkl or 'DU_DI') if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
                     filename = f"Surat_Permohonan_PKL_{safe_name}.docx"
@@ -626,6 +628,7 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                             du_di_map[t].append(r)
                     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as master_zip:
                         for idx, (t_name, s_list) in enumerate(du_di_map.items(), 1):
+                            t_alamat = s_list[0].get('alamat', '') if (s_list and isinstance(s_list[0], dict)) else ''
                             doc_bytes = generate_permohonan_murid_docx(
                                 template_path=None,
                                 out_path=None,
@@ -640,7 +643,9 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                                 kepsek_nip=kepsek_nip,
                                 show_kop=show_kop,
                                 show_ttd=show_ttd,
-                                paper_size=paper_size
+                                paper_size=paper_size,
+                                alamat_pkl=t_alamat,
+                                show_alamat=show_alamat
                             )
                             safe_t = re.sub(r'[^a-zA-Z0-9]', '_', t_name)[:30]
                             master_zip.writestr(f"Surat_Permohonan_{idx:02d}_{safe_t}.docx", doc_bytes)

@@ -406,6 +406,7 @@ function loadStoredSettings() {
     AppState.appSettings = Object.assign({}, DEFAULT_APP_SETTINGS);
   }
   AppState.docSettings = AppState.appSettings;
+  loadDisplayOptions();
 }
 
 // Save Application Settings to localStorage
@@ -983,6 +984,7 @@ function setupEventListeners() {
     paperSelect.addEventListener('change', (e) => {
       AppState.displayOptions.paperSize = e.target.value;
       updatePaperSizeClass();
+      saveDisplayOptions();
     });
   }
 
@@ -993,6 +995,7 @@ function setupEventListeners() {
     toggleKop.addEventListener('change', (e) => {
       AppState.displayOptions.showKop = e.target.checked;
       renderPreview();
+      saveDisplayOptions();
     });
   }
 
@@ -1002,6 +1005,7 @@ function setupEventListeners() {
     toggleTtd.addEventListener('change', (e) => {
       AppState.displayOptions.showTtd = e.target.checked;
       renderPreview();
+      saveDisplayOptions();
     });
   }
 
@@ -1011,6 +1015,7 @@ function setupEventListeners() {
     toggleAlamat.addEventListener('change', (e) => {
       AppState.displayOptions.showAlamat = e.target.checked;
       renderPreview();
+      saveDisplayOptions();
     });
   }
 
@@ -1045,8 +1050,32 @@ function updatePaperSizeClass() {
   if (isF4) {
     styleEl.innerHTML = `@media print { @page { size: 215mm 330mm; margin: 12mm 15mm 15mm 20mm; } }`;
   } else {
-    styleEl.innerHTML = `@media print { @page { size: 210mm 297mm; margin: 12mm 15mm 15mm 20mm; } }`;
+    styleEl.innerHTML = `@media print { @page { size: 210mm 297mm; margin: 10mm 15mm 12mm 20mm; } }`;
   }
+}
+
+// Persist Display Options to localStorage
+function saveDisplayOptions() {
+  try {
+    localStorage.setItem('pkl_display_options', JSON.stringify(AppState.displayOptions));
+  } catch (e) {}
+}
+
+function loadDisplayOptions() {
+  try {
+    const saved = localStorage.getItem('pkl_display_options');
+    if (saved) {
+      Object.assign(AppState.displayOptions, JSON.parse(saved));
+    }
+  } catch (e) {}
+  const paperSelect = document.getElementById('paperSizeSelect');
+  if (paperSelect && AppState.displayOptions.paperSize) paperSelect.value = AppState.displayOptions.paperSize;
+  const toggleKop = document.getElementById('toggleKop');
+  if (toggleKop && AppState.displayOptions.showKop !== undefined) toggleKop.checked = AppState.displayOptions.showKop;
+  const toggleTtd = document.getElementById('toggleTtd');
+  if (toggleTtd && AppState.displayOptions.showTtd !== undefined) toggleTtd.checked = AppState.displayOptions.showTtd;
+  const toggleAlamat = document.getElementById('toggleAlamat');
+  if (toggleAlamat && AppState.displayOptions.showAlamat !== undefined) toggleAlamat.checked = AppState.displayOptions.showAlamat;
 }
 
 // Switch between Selection Modes: 'per-guru' vs 'per-du-di' vs 'per-siswa'
@@ -1297,6 +1326,8 @@ function updateUIFromState() {
   const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
                        (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
 
+  updatePaperSizeClass();
+
   if (isPermohonan) {
     if (bPrintTitle) bPrintTitle.textContent = 'Cetak Massal Surat Permohonan';
     if (bPrintDesc) bPrintDesc.textContent = 'Pilih & cetak surat permohonan per DU/DI';
@@ -1412,7 +1443,12 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     `;
   }
 
-  return templateHtml
+  const showAlamat = (AppState.displayOptions && AppState.displayOptions.showAlamat !== false);
+  const alamatPklHtml = (showAlamat && letter.alamatPkl) 
+    ? `<div style="font-size: 9.5pt; color: #444; margin-top: 1px;">${escapeXml(letter.alamatPkl)}</div>` 
+    : '';
+
+  let rendered = templateHtml
     .replace(/{tingkatKelas}/g, tingkatKelas)
     .replace(/{jurusanPkl}/g, jurusanPkl)
     .replace(/{tabelSiswaPermohonan}/g, tabelSiswaPermohonan)
@@ -1440,6 +1476,14 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{siswaJurusan}/g, siswaJurusan)
     .replace(/{lamaPkl}/g, '6 bulan')
     .replace(/{jabatanGuru}/g, 'Guru Pembimbing PKL');
+
+  if (rendered.includes('{tujuanAlamatPkl}')) {
+    rendered = rendered.replace(/{tujuanAlamatPkl}/g, alamatPklHtml);
+  } else if (alamatPklHtml && rendered.includes(`<strong>${tempatPkl}</strong>`)) {
+    rendered = rendered.replace(`<strong>${tempatPkl}</strong>`, `<strong>${tempatPkl}</strong>${alamatPklHtml}`);
+  }
+
+  return rendered;
 }
 
 // Render the Live Document Preview
@@ -1452,6 +1496,8 @@ function renderPreview() {
                        (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
   const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
                        (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
+
+  updatePaperSizeClass();
 
   // 1. Kop Surat (GARIS GANDA DIHILANGKAN KARENA KOP_FYJ.PNG SUDAH MEMILIKI GARIS BAWAH RESMI)
   const kopContainer = document.getElementById('docKopContainer');
@@ -2523,8 +2569,12 @@ async function downloadDocxClient() {
         if (!jurusanStr) jurusanStr = 'Bisnis Digital (BD)';
 
         const tempatVal = letter.tempatPkl || 'Tempat';
+        let tempatReplacement = escapeXml(tempatVal);
+        if (dOpt.showAlamat && letter.alamatPkl) {
+          tempatReplacement += `</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii="Arial Narrow" w:hAnsi="Arial Narrow"/><w:sz w:val="19"/></w:rPr><w:br/><w:t>${escapeXml(letter.alamatPkl)}`;
+        }
         docXml = docXml.replace(/{noSurat}/g, escapeXml(ds.noSurat));
-        docXml = docXml.replace(/{tempatPkl}/g, escapeXml(tempatVal));
+        docXml = docXml.replace(/{tempatPkl}/g, tempatReplacement);
         docXml = docXml.replace(/{namaSekolah}/g, escapeXml(ds.namaSekolah || AppState.appSettings.namaSekolah));
         docXml = docXml.replace(/{tingkatKelas}/g, escapeXml(tingkat));
         docXml = docXml.replace(/{jurusanPkl}/g, escapeXml(jurusanStr));
@@ -2973,8 +3023,13 @@ async function downloadBatchZipClient() {
           });
           jurusanStr = Array.from(jSet).join(' dan ') || 'Bisnis Digital (BD)';
 
+          let tempatReplacement = escapeXml(tempatVal);
+          if (dOpt.showAlamat && d.alamat) {
+            tempatReplacement += `</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii="Arial Narrow" w:hAnsi="Arial Narrow"/><w:sz w:val="19"/></w:rPr><w:br/><w:t>${escapeXml(d.alamat)}`;
+          }
+
           docXml = docXml.replace(/{noSurat}/g, escapeXml(ds.noSurat));
-          docXml = docXml.replace(/{tempatPkl}/g, escapeXml(tempatVal));
+          docXml = docXml.replace(/{tempatPkl}/g, tempatReplacement);
           docXml = docXml.replace(/{namaSekolah}/g, escapeXml(ds.namaSekolah || AppState.appSettings.namaSekolah));
           docXml = docXml.replace(/{tingkatKelas}/g, escapeXml(tingkat));
           docXml = docXml.replace(/{jurusanPkl}/g, escapeXml(jurusanStr));
@@ -3340,6 +3395,8 @@ function openBatchPrintModal() {
   const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
                        (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
 
+  updatePaperSizeClass();
+
   const modalTitle = document.getElementById('batchPrintModalTitle');
   const modalSub = document.getElementById('batchPrintModalSubtitle');
 
@@ -3433,6 +3490,8 @@ function executeBatchPrint() {
   const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
                        (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
 
+  updatePaperSizeClass();
+
   if (isPermohonan) {
     // CETAK MASSAL SURAT PERMOHONAN PKL MURID (1 Halaman per DU/DI dengan tabel murid)
     const placesList = (AppState.places && AppState.places.length > 0) ? AppState.places : (AppState.duDis || []);
@@ -3453,14 +3512,13 @@ function executeBatchPrint() {
       const resolvedBody = resolveTemplateVariables(activeTpl.htmlContent, letterMock, ds);
 
       const pageWrapper = document.createElement('div');
-      pageWrapper.className = `doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
-      pageWrapper.style.pageBreakAfter = 'always';
-      pageWrapper.style.minHeight = '1000px';
+      pageWrapper.className = `doc-page batch-doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
+      pageWrapper.style.fontFamily = "'Arial Narrow', Arial, sans-serif";
 
       pageWrapper.innerHTML = `
         ${dOpt.showKop ? `
           <div style="text-align: center; margin-bottom: 8px;">
-            <img src="${kopSrc}" alt="Kop Surat" style="width: 100%; max-height: 145px; object-fit: contain; display: block; margin: 0 auto;">
+            <img src="${kopSrc}" alt="Kop Surat" style="width: 100%; max-height: 140px; object-fit: contain; display: block; margin: 0 auto;">
           </div>
         ` : ''}
 
@@ -3468,27 +3526,12 @@ function executeBatchPrint() {
           ${resolvedBody}
         </div>
 
-        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px; page-break-inside: avoid;">
-          <div style="width: 320px; text-align: left; font-size: 11pt;">
-            <div style="margin-bottom: 4px;">
-              <div>Ditetapkan di Klungkung</div>
-              <div>Pada Tanggal ${ds.tglSurat}</div>
-            </div>
-            <div style="font-weight: bold; margin-bottom: 4px;">
-              KEPALA ${AppState.appSettings.namaSekolah.toUpperCase()}
-            </div>
-            <div style="min-height: 90px; display: flex; align-items: center; justify-content: flex-start; margin: 4px 0;">
-              ${getTtdHtml(ds, dOpt)}
-            </div>
-            <div style="font-weight: bold; text-decoration: underline;">
-              ${ds.kepsekNama}
-            </div>
-            <div style="font-size: 10.5pt; color: #333;">
-              ${ds.kepsekPangkat}
-            </div>
-            <div style="font-size: 10.5pt; color: #333;">
-              NIP. ${ds.kepsekNip}
-            </div>
+        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 14px; page-break-inside: avoid; break-inside: avoid;">
+          <div style="width: 250px; text-align: left; font-size: 11pt;">
+            <div>Ditetapkan di Klungkung</div>
+            <div>Pada Tanggal ${escapeXml(ds.tglSurat)}</div>
+            <div style="margin-top: 2px;">Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
+            ${getTtdHtml(ds, dOpt)}
           </div>
         </div>
       `;
@@ -3528,9 +3571,7 @@ function executeBatchPrint() {
       const resolvedBody = resolveTemplateVariables(activeTpl.htmlContent, letterMock, ds);
 
       const pageWrapper = document.createElement('div');
-      pageWrapper.className = `doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
-      pageWrapper.style.pageBreakAfter = 'always';
-      pageWrapper.style.minHeight = '1000px';
+      pageWrapper.className = `doc-page batch-doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
 
       pageWrapper.innerHTML = `
         ${dOpt.showKop ? `
@@ -3578,8 +3619,7 @@ function executeBatchPrint() {
       };
 
       const pageWrapper = document.createElement('div');
-      pageWrapper.className = `doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
-      pageWrapper.style.pageBreakAfter = 'always';
+      pageWrapper.className = `doc-page batch-doc-page ${dOpt.paperSize === 'f4' ? 'paper-f4' : 'paper-a4'}`;
 
       let tableRows = '';
       g.siswa.forEach((s, sIdx) => {
