@@ -1,8 +1,8 @@
 -- ========================================================
 -- Database Schema & Data: Surat Pengantar PKL
 -- Instansi : SMKN 1 FYJ Channel
--- Dibuat   : 2026-11-05 13:17:36
--- Kompatibel: MySQL, MariaDB, PostgreSQL, SQLite
+-- Diperbarui : 2026-11-05 14:20:57
+-- Kompatibel : MySQL, MariaDB, PostgreSQL, SQLite
 -- ========================================================
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -484,4 +484,4 @@ SELECT `tempat`, `alamat`, COUNT(*) AS `total_siswa`, GROUP_CONCAT(DISTINCT `kel
 FROM `siswa_pkl` GROUP BY `tempat`, `alamat`;
 
 SET FOREIGN_KEY_CHECKS = 1;
--- [SELESAI] Import database selesai dengan sukses.
+-- [SELESAI] Sinkronisasi database selesai.

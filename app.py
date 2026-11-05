@@ -9,6 +9,7 @@ import sys
 import json
 import io
 import zipfile
+import re
 import webbrowser
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import urllib.parse
@@ -230,6 +231,23 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 self.wfile.write(json.dumps({'success': success}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'error': str(e)}).encode('utf-8'))
+            return
+
+        if path == '/api/jurusan/update':
+            try:
+                req_data = json.loads(body.decode('utf-8'))
+                old_jurusan = req_data.get('old_jurusan', '').strip()
+                new_jurusan = req_data.get('new_jurusan', '').strip()
+                count = db_manager.update_bulk_jurusan(old_jurusan, new_jurusan)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({'success': True, 'count': count}).encode('utf-8'))
             except Exception as e:
                 self.send_response(500)
                 self.send_header('Content-Type', 'application/json')
@@ -671,7 +689,12 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                             master_zip.writestr(f"Surat_Pengantar_{idx:02d}_{safe_g}.docx", doc_bytes)
 
                 zip_bytes = zip_buffer.getvalue()
-                zip_filename = "Surat_Keterangan_PKL_Arsip.zip" if doc_type == 'keterangan' else "Surat_Pengantar_PKL_Semua_Guru.zip"
+                if doc_type == 'permohonan':
+                    zip_filename = "Surat_Permohonan_PKL_Semua_DUDI.zip"
+                elif doc_type == 'keterangan':
+                    zip_filename = "Surat_Keterangan_PKL_Arsip.zip"
+                else:
+                    zip_filename = "Surat_Pengantar_PKL_Semua_Guru.zip"
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/zip')
                 self.send_header('Content-Disposition', f'attachment; filename="{zip_filename}"')

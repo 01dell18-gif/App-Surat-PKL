@@ -266,7 +266,10 @@ def update_student_record(data):
                 data.get('guru', '').strip(),
                 data.get('nip', '').strip(),
                 data.get('siswa', '').strip(),
+                data.get('nis', '').strip(),
+                data.get('nisn', '').strip(),
                 data.get('kelas', '').strip(),
+                data.get('jurusan', '').strip(),
                 data.get('tempat', '').strip(),
                 data.get('alamat', '').strip(),
                 id_val
@@ -280,7 +283,10 @@ def update_student_record(data):
                 data.get('guru', '').strip(),
                 data.get('nip', '').strip(),
                 data.get('siswa', '').strip(),
+                data.get('nis', '').strip(),
+                data.get('nisn', '').strip(),
                 data.get('kelas', '').strip(),
+                data.get('jurusan', '').strip(),
                 data.get('tempat', '').strip(),
                 data.get('alamat', '').strip(),
                 no_val
@@ -288,6 +294,31 @@ def update_student_record(data):
         conn.commit()
         export_sql_dump()
         return True
+    finally:
+        conn.close()
+
+def update_bulk_jurusan(old_jurusan, new_jurusan):
+    """Memperbarui jurusan secara massal untuk semua siswa yang memiliki jurusan tersebut"""
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        old_j = (old_jurusan or '').strip()
+        new_j = (new_jurusan or '').strip()
+        if not new_j:
+            return 0
+
+        cur.execute('SELECT id, kelas, jurusan FROM siswa_pkl')
+        rows = cur.fetchall()
+        updated_count = 0
+        for r in rows:
+            cur_j = (r['jurusan'] or '').strip()
+            if cur_j.lower() == old_j.lower():
+                cur.execute('UPDATE siswa_pkl SET jurusan = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', (new_j, r['id']))
+                updated_count += 1
+
+        conn.commit()
+        export_sql_dump()
+        return updated_count
     finally:
         conn.close()
 

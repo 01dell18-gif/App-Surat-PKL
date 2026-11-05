@@ -715,6 +715,7 @@ function rebuildIndices() {
     ...p,
     gurus: Array.from(p.gurus.values())
   }));
+  AppState.duDis = AppState.places;
 
   // Update Stats in Header
   const statSiswa = document.getElementById('statTotalSiswa');
@@ -2935,7 +2936,7 @@ async function downloadBatchZipClient() {
         }
 
         const templateBytes = base64ToUint8Array(DOCX_PERMOHONAN_MURID_TEMPLATE_B64);
-        const duDis = AppState.duDis || [];
+        const duDis = (AppState.places && AppState.places.length > 0) ? AppState.places : (AppState.duDis || []);
 
         for (let idx = 0; idx < duDis.length; idx++) {
           const d = duDis[idx];
@@ -3348,7 +3349,8 @@ function openBatchPrintModal() {
     if (modalTitle) modalTitle.textContent = 'Cetak Massal Surat Permohonan PKL Murid';
     if (modalSub) modalSub.textContent = 'Pilih DU/DI untuk dicetak Surat Permohonan Penerimaan Murid PKL (1 surat per DU/DI dengan daftar murid).';
 
-    AppState.duDis.forEach((d, idx) => {
+    const placesList = (AppState.places && AppState.places.length > 0) ? AppState.places : (AppState.duDis || []);
+    placesList.forEach((d, idx) => {
       const label = document.createElement('label');
       label.className = "flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg cursor-pointer text-xs text-slate-700";
       label.innerHTML = `
@@ -3433,8 +3435,9 @@ function executeBatchPrint() {
 
   if (isPermohonan) {
     // CETAK MASSAL SURAT PERMOHONAN PKL MURID (1 Halaman per DU/DI dengan tabel murid)
+    const placesList = (AppState.places && AppState.places.length > 0) ? AppState.places : (AppState.duDis || []);
     selectedIndices.forEach((dIdx) => {
-      const duDi = AppState.duDis[dIdx];
+      const duDi = placesList[dIdx];
       if (!duDi) return;
 
       const letterMock = {
@@ -3492,8 +3495,6 @@ function executeBatchPrint() {
 
       batchContainer.appendChild(pageWrapper);
     });
-
-    window.print();
   } else if (isKeterangan) {
     // CETAK MASSAL SURAT KETERANGAN PKL (1 Halaman per siswa, Tanpa Lampiran 2)
     const students = getActiveBatchStudents();
@@ -3667,8 +3668,17 @@ function executeBatchPrint() {
   closeBatchPrintModal();
   updatePaperSizeClass();
   document.body.classList.add('batch-print-active');
-  window.print();
-  document.body.classList.remove('batch-print-active');
+  
+  const cleanup = () => {
+    document.body.classList.remove('batch-print-active');
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup);
+
+  setTimeout(() => {
+    window.print();
+    setTimeout(cleanup, 2500);
+  }, 150);
 }
 
 // ================= DATABASE SYNC & DOWNLOAD =================
@@ -4048,6 +4058,14 @@ function openStudentModal(mode, no) {
     };
   }
 
+  const chkAllJur = document.getElementById('studentFormUpdateAllJurusan');
+  if (chkAllJur) {
+    chkAllJur.checked = false;
+    if (chkAllJur.parentElement) {
+      chkAllJur.parentElement.style.display = (mode === 'edit') ? 'flex' : 'none';
+    }
+  }
+
   if (mode === 'edit' && no !== undefined) {
     const rec = AppState.records.find(r => r.no === no);
     if (!rec) return;
@@ -4119,7 +4137,12 @@ async function saveStudentForm() {
     // Edit Mode
     const no = parseInt(noVal, 10);
     const idx = AppState.records.findIndex(r => r.no === no);
+    let bulkJurusanUpdated = 0;
+    const updateAllJurusanChecked = document.getElementById('studentFormUpdateAllJurusan') && document.getElementById('studentFormUpdateAllJurusan').checked;
+
     if (idx !== -1) {
+      const oldStudentJurusan = (AppState.records[idx].jurusan || getJurusanFromKelas(AppState.records[idx].kelas) || '').trim();
+      
       AppState.records[idx].siswa = nama;
       AppState.records[idx].nis = nis;
       AppState.records[idx].nisn = nisn;
@@ -4129,6 +4152,16 @@ async function saveStudentForm() {
       AppState.records[idx].nip = nip;
       AppState.records[idx].tempat = tempat;
       AppState.records[idx].alamat = alamat;
+
+      if (updateAllJurusanChecked && oldStudentJurusan && oldStudentJurusan.toLowerCase() !== jurusan.toLowerCase()) {
+        AppState.records.forEach(r => {
+          const curJ = (r.jurusan || getJurusanFromKelas(r.kelas) || '').trim();
+          if (curJ.toLowerCase() === oldStudentJurusan.toLowerCase()) {
+            r.jurusan = jurusan;
+            bulkJurusanUpdated++;
+          }
+        });
+      }
     }
 
     if (window.fetch && window.location.protocol.startsWith('http')) {
@@ -4138,11 +4171,22 @@ async function saveStudentForm() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ no: no, siswa: nama, nis: nis, nisn: nisn, kelas: kelas, jurusan: jurusan, guru: guru, nip: nip, tempat: tempat, alamat: alamat })
         });
+        if (bulkJurusanUpdated > 1) {
+          await fetch('/api/jurusan/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ old_jurusan: oldStudentJurusan, new_jurusan: jurusan })
+          });
+        }
       } catch (e) {
         console.warn('Backend update error:', e);
       }
     }
-    showToast(`Data siswa "${nama}" berhasil diperbarui dan disimpan ke database!`);
+    if (bulkJurusanUpdated > 1) {
+      showToast(`Data siswa "${nama}" dan seluruh siswa jurusan (${bulkJurusanUpdated} siswa) berhasil diperbarui!`);
+    } else {
+      showToast(`Data siswa "${nama}" berhasil diperbarui dan disimpan ke database!`);
+    }
   } else {
     // Add Mode
     const maxNo = AppState.records.length > 0 ? Math.max(...AppState.records.map(r => r.no || 0)) : 0;
@@ -4376,3 +4420,158 @@ function escapeXml(unsafe) {
 
 // Initialize on DOM load
 window.addEventListener('DOMContentLoaded', initApp);
+
+
+// ================= BULK EDIT JURUSAN =================
+
+// Open Bulk Edit Jurusan Modal
+function openBulkEditJurusanModal() {
+  const modal = document.getElementById('bulkEditJurusanModal');
+  const select = document.getElementById('bulkEditOldJurusanSelect');
+  if (!modal || !select) return;
+
+  // Kumpulkan seluruh jurusan unik dari database beserta jumlah siswanya
+  const jurusanMap = new Map();
+  AppState.records.forEach(r => {
+    const j = (r.jurusan || getJurusanFromKelas(r.kelas) || 'Belum Ditentukan').trim();
+    jurusanMap.set(j, (jurusanMap.get(j) || 0) + 1);
+  });
+
+  select.innerHTML = '';
+  const sortedJurusan = Array.from(jurusanMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  
+  if (sortedJurusan.length === 0) {
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = 'Tidak ada data jurusan';
+    select.appendChild(opt);
+  } else {
+    sortedJurusan.forEach(([jurusan, count]) => {
+      const opt = document.createElement('option');
+      opt.value = jurusan;
+      opt.textContent = `${jurusan} (${count} Siswa)`;
+      select.appendChild(opt);
+    });
+  }
+
+  onBulkEditOldJurusanChange();
+
+  modal.style.display = 'flex';
+  modal.classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+}
+
+// Close Bulk Edit Jurusan Modal
+function closeBulkEditJurusanModal() {
+  const modal = document.getElementById('bulkEditJurusanModal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+  }
+}
+
+// Event when old jurusan dropdown changes
+function onBulkEditOldJurusanChange() {
+  const select = document.getElementById('bulkEditOldJurusanSelect');
+  const inputNew = document.getElementById('bulkEditNewJurusanInput');
+  const badge = document.getElementById('bulkEditStudentCountBadge');
+  if (!select || !inputNew) return;
+
+  const selectedJurusan = select.value.trim();
+  inputNew.value = selectedJurusan;
+
+  // Hitung jumlah siswa terdampak
+  let count = 0;
+  AppState.records.forEach(r => {
+    const j = (r.jurusan || getJurusanFromKelas(r.kelas) || 'Belum Ditentukan').trim();
+    if (j.toLowerCase() === selectedJurusan.toLowerCase()) {
+      count++;
+    }
+  });
+
+  if (badge) {
+    badge.innerHTML = `<i data-lucide="users" class="w-3.5 h-3.5"></i><span>${count} siswa akan terpengaruh</span>`;
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
+// Quick chip selection helper
+function applyJurusanChip(name) {
+  const inputNew = document.getElementById('bulkEditNewJurusanInput');
+  if (inputNew) {
+    inputNew.value = name;
+    inputNew.focus();
+  }
+}
+
+// Save Bulk Edit Jurusan
+async function saveBulkEditJurusan() {
+  const select = document.getElementById('bulkEditOldJurusanSelect');
+  const inputNew = document.getElementById('bulkEditNewJurusanInput');
+  if (!select || !inputNew) return;
+
+  const oldJurusan = select.value.trim();
+  const newJurusan = inputNew.value.trim();
+
+  if (!oldJurusan) {
+    alert('Pilih jurusan yang ingin diubah terlebih dahulu.');
+    return;
+  }
+
+  if (!newJurusan) {
+    alert('Nama jurusan baru tidak boleh kosong.');
+    inputNew.focus();
+    return;
+  }
+
+  if (oldJurusan.toLowerCase() === newJurusan.toLowerCase()) {
+    alert('Nama jurusan baru sama persis dengan nama jurusan lama. Silakan ubah nama jika ingin menyimpan.');
+    inputNew.focus();
+    return;
+  }
+
+  // Terapkan perubahan ke seluruh data siswa di AppState.records
+  let updatedCount = 0;
+  AppState.records.forEach(r => {
+    const j = (r.jurusan || getJurusanFromKelas(r.kelas) || 'Belum Ditentukan').trim();
+    if (j.toLowerCase() === oldJurusan.toLowerCase()) {
+      r.jurusan = newJurusan;
+      updatedCount++;
+    }
+  });
+
+  if (updatedCount === 0) {
+    alert(`Tidak ada siswa dengan jurusan "${oldJurusan}" yang ditemukan.`);
+    return;
+  }
+
+  // 1. Simpan ke LocalStorage
+  saveRecordsToStorage();
+
+  // 2. Simpan ke Backend SQLite jika aktif
+  if (window.fetch && window.location.protocol.startsWith('http')) {
+    try {
+      const res = await fetch('/api/jurusan/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ old_jurusan: oldJurusan, new_jurusan: newJurusan })
+      });
+      if (!res.ok) {
+        // Fallback simpan seluruh records
+        await syncRecordsToDatabase(false);
+      }
+    } catch (e) {
+      console.warn('Backend update error, saving all records fallback:', e);
+      await syncRecordsToDatabase(false);
+    }
+  }
+
+  // 3. Perbarui seluruh UI & Indeks
+  rebuildIndices();
+  populateDropdowns();
+  renderDatabaseTable();
+  renderPreview();
+
+  closeBulkEditJurusanModal();
+  showToast(`Berhasil mengubah jurusan "${oldJurusan}" menjadi "${newJurusan}" untuk ${updatedCount} siswa!`);
+}
