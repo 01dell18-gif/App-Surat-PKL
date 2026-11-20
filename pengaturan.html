@@ -45,21 +45,47 @@
     <div class="max-w-[1600px] mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex justify-between items-center gap-2 sm:gap-3">
       
       <!-- Brand & School Info -->
-      <a href="index.html" class="flex items-center gap-2 sm:gap-3 min-w-0 group cursor-pointer" title="Kembali ke Beranda Surat">
-        <div id="headerBrandLogoWrapper" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shadow-inner overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
-          <i id="defaultBrandIcon" data-lucide="file-badge" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-        </div>
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+        <a href="index.html" class="shrink-0 group cursor-pointer" title="Kembali ke Beranda Surat">
+          <div id="headerBrandLogoWrapper" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shadow-inner overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+            <i id="defaultBrandIcon" data-lucide="file-badge" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+          </div>
+        </a>
         <div class="min-w-0">
           <div class="flex items-center gap-1.5 sm:gap-2">
-            <h1 class="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-white leading-tight truncate">Aplikasi Surat Pengantar PKL</h1>
-            <span class="inline-flex items-center gap-1 text-[10px] font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/40 px-2 py-0.5 rounded-full shrink-0">
-              <i data-lucide="sparkles" class="w-3 h-3 text-amber-300"></i>
+            <a href="index.html" class="hover:underline truncate" title="Kembali ke Beranda Surat">
+              <h1 class="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-white leading-tight truncate">Aplikasi Surat Pengantar PKL</h1>
+            </a>
+            <button type="button" 
+                    onclick="openChangelogModal()" 
+                    class="inline-flex items-center gap-1 text-[10px] font-bold bg-indigo-500/30 hover:bg-indigo-500/60 text-indigo-200 hover:text-white border border-indigo-400/40 px-2 py-0.5 rounded-full transition shadow-xs cursor-pointer group shrink-0" 
+                    title="Klik untuk melihat catatan pembaruan versi v2.4 Pro">
+              <i data-lucide="sparkles" class="w-3 h-3 text-amber-300 group-hover:scale-110 transition-transform"></i>
               <span>v2.4 Pro</span>
-            </span>
+            </button>
           </div>
           <p id="headerSchoolSubtitle" class="text-[11px] sm:text-xs text-indigo-200/80 truncate max-w-[200px] sm:max-w-none">SMKN 1 FYJ Channel • Pengaturan Lembaga</p>
         </div>
-      </a>
+      </div>
+
+      <!-- Quick Statistics Badges (Desktop Only) -->
+      <div class="hidden xl:flex items-center gap-3 text-xs">
+        <div class="bg-slate-800/60 border border-slate-700/60 px-3 py-1.5 rounded-lg flex items-center gap-2 text-slate-300">
+          <i data-lucide="users" class="w-4 h-4 text-emerald-400"></i>
+          <span>Total Siswa:</span>
+          <span id="statTotalSiswa" class="font-bold text-white">258</span>
+        </div>
+        <div class="bg-slate-800/60 border border-slate-700/60 px-3 py-1.5 rounded-lg flex items-center gap-2 text-slate-300">
+          <i data-lucide="graduation-cap" class="w-4 h-4 text-indigo-400"></i>
+          <span>Pembimbing:</span>
+          <span id="statTotalGuru" class="font-bold text-white">54</span>
+        </div>
+        <div class="bg-slate-800/60 border border-slate-700/60 px-3 py-1.5 rounded-lg flex items-center gap-2 text-slate-300">
+          <i data-lucide="building-2" class="w-4 h-4 text-amber-400"></i>
+          <span>DU/DI:</span>
+          <span id="statTotalDuDi" class="font-bold text-white">87</span>
+        </div>
+      </div>
 
       <!-- TOOLBAR DESKTOP (MPA Navigation) -->
       <div class="hidden lg:flex items-center gap-2">
@@ -580,6 +606,161 @@
 
     </div>
   </main>
+
+  <!-- ================= MODAL INFORMASI PEMBARUAN & RIWAYAT VERSI (CHANGELOG) ================= -->
+  <div id="changelogModal" onclick="if(event.target === this) closeChangelogModal()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-amber-300 shadow-inner">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-base font-bold text-white tracking-tight">Catatan Pembaruan & Riwayat Versi</h3>
+              <span class="text-[10px] font-extrabold bg-indigo-500/40 text-amber-300 border border-indigo-400/40 px-2 py-0.5 rounded-full">v2.4 Pro</span>
+            </div>
+            <p class="text-xs text-indigo-200/80">Aplikasi Surat Pengantar PKL Terpadu</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeChangelogModal()" class="w-8 h-8 rounded-lg bg-slate-800/80 hover:bg-rose-600 text-slate-300 hover:text-white flex items-center justify-center transition cursor-pointer" title="Tutup popup">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body (Changelog Timeline) -->
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-6 flex-1 text-slate-700 text-xs">
+
+        <!-- Versi 2.4 Pro (Aktif) -->
+        <div class="relative pl-6 border-l-2 border-indigo-500 space-y-2">
+          <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-indigo-600 border-2 border-white flex items-center justify-center">
+            <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-1">
+            <div class="flex items-center gap-2">
+              <h4 class="text-sm font-bold text-slate-900">Versi 2.4 Pro</h4>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">Terbaru • Rilis Aktif</span>
+            </div>
+            <span class="text-[11px] text-slate-400 font-medium">November 2026</span>
+          </div>
+          <p class="text-slate-600 text-[11px]">Pembaruan navigasi antarmuka, accordion menu samping cerdas, optimasi header, integrasi gelar guru pembimbing, dan redaksi mandiri WYSIWYG.</p>
+          <ul class="space-y-1.5 pt-1 text-slate-600">
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5"></i>
+              <span><strong>Menu Samping Accordion Dropdown:</strong> Tata urutan baru (Template Surat ➔ Pemilihan Surat ➔ Data Nomor & Tanggal Surat ➔ Opsi Tampilan & Format Kertas) dengan fitur auto-collapse (hanya satu menu yang terbuka dalam satu waktu).</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5"></i>
+              <span><strong>Toolbar Header Kompak:</strong> Tombol-tombol di header dirampingkan secara proporsional dan elegan, memberikan kenyamanan tampilan di desktop maupun layar laptop.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5"></i>
+              <span><strong>Tombol Interaktif Informasi Versi:</strong> Badge versi kini dapat diklik langsung untuk memeriksa log pembaruan dan rincian fitur sistem.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5"></i>
+              <span><strong>Pangkat/Golongan & Jabatan Guru Pembimbing:</strong> Penambahan kolom pangkat/gol dan jabatan pembimbing ke SQLite database, sinkronisasi SQL dump, tabel data siswa, impor/ekspor Excel, dan dokumen Word (.docx).</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5"></i>
+              <span><strong>Redaksi WYSIWYG Mandiri:</strong> Judul dan Nomor Surat dapat diedit langsung di kanvas editor WYSIWYG beserta dukungan multi-halaman dan lampiran daftar siswa.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Versi 2.3 Pro -->
+        <div class="relative pl-6 border-l-2 border-slate-200 space-y-2">
+          <div class="absolute -left-[7px] top-0.5 w-3 h-3 rounded-full bg-slate-300 border-2 border-white"></div>
+          <div class="flex flex-wrap items-center justify-between gap-1">
+            <h4 class="text-xs font-bold text-slate-800">Versi 2.3 Pro</h4>
+            <span class="text-[11px] text-slate-400 font-medium">November 2026</span>
+          </div>
+          <ul class="space-y-1 pt-1 text-slate-600">
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5"></i>
+              <span><strong>Tombol Hapus Cache Header:</strong> Fitur refresh instan dan bersihkan cache browser / storage dalam satu kali klik.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5"></i>
+              <span><strong>Standarisasi NISN 10-Digit:</strong> Zero-padding otomatis untuk memastikan seluruh data NISN presisi 10 digit angka.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5"></i>
+              <span><strong>Edit Massal Jurusan:</strong> Penggantian nama jurusan secara global untuk seluruh siswa yang terdaftar dengan sinkronisasi instan ke SQLite.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Versi 2.2 Pro -->
+        <div class="relative pl-6 border-l-2 border-slate-200 space-y-2">
+          <div class="absolute -left-[7px] top-0.5 w-3 h-3 rounded-full bg-slate-300 border-2 border-white"></div>
+          <div class="flex flex-wrap items-center justify-between gap-1">
+            <h4 class="text-xs font-bold text-slate-800">Versi 2.2 Pro</h4>
+            <span class="text-[11px] text-slate-400 font-medium">November 2026</span>
+          </div>
+          <ul class="space-y-1 pt-1 text-slate-600">
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5"></i>
+              <span><strong>Cetak Massal Surat Permohonan:</strong> Dialog cetak massal fleksibel per DU/DI dan per Guru Pembimbing dengan layout cetak tanpa tumpang tindih.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5"></i>
+              <span><strong>Unduh Semua DU/DI (.ZIP):</strong> Pengemasan seluruh surat permohonan ke dalam arsip Word .docx terkompresi ZIP.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Versi 2.1 Pro -->
+        <div class="relative pl-6 border-l-2 border-slate-200 space-y-2">
+          <div class="absolute -left-[7px] top-0.5 w-3 h-3 rounded-full bg-slate-300 border-2 border-white"></div>
+          <div class="flex flex-wrap items-center justify-between gap-1">
+            <h4 class="text-xs font-bold text-slate-800">Versi 2.1 Pro</h4>
+            <span class="text-[11px] text-slate-400 font-medium">November 2026</span>
+          </div>
+          <ul class="space-y-1 pt-1 text-slate-600">
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5"></i>
+              <span><strong>Manajemen Template Surat:</strong> Buat template baru, simpan ke database SQLite, ganti template secara real-time, dan ekspor/impor.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5"></i>
+              <span><strong>Pengaturan Kop & TTD Mandiri:</strong> Kustomisasi kop surat, logo web, stempel TTD elektronik, dan TTD basah.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Versi 2.0 Pro -->
+        <div class="relative pl-6 space-y-2">
+          <div class="absolute -left-[7px] top-0.5 w-3 h-3 rounded-full bg-slate-300 border-2 border-white"></div>
+          <div class="flex flex-wrap items-center justify-between gap-1">
+            <h4 class="text-xs font-bold text-slate-800">Versi 2.0 Pro</h4>
+            <span class="text-[11px] text-slate-400 font-medium">November 2026</span>
+          </div>
+          <ul class="space-y-1 pt-1 text-slate-600">
+            <li class="flex items-start gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5"></i>
+              <span><strong>Database SQLite Terintegrasi:</strong> 258 data siswa PKL terpusat dengan backend Python dan file skrip .bat otomatis.</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        <div class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+          <span>SMKN 1 FYJ Channel • Sistem Terverifikasi</span>
+        </div>
+        <button type="button" onclick="closeChangelogModal()" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-sm cursor-pointer">
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- ================= MOBILE BOTTOM NAVIGATION BAR (MPA) ================= -->
   <nav id="mobileBottomNav" class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] px-2 py-1.5 flex items-center justify-around no-print">

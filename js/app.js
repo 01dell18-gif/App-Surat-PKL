@@ -155,7 +155,22 @@ const DEFAULT_TEMPLATES = [
   <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
 </div>
 
-{tujuanSurat}
+<table style="width: 100%; margin-top: 4px; margin-bottom: 14px;">
+  <tr>
+    <td style="width: 10%; vertical-align: top;">Kepada:</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Yth.</td>
+    <td>
+      <div style="font-weight: bold;">Pimpinan DU/DI</div>
+      <div style="font-weight: bold;">{tempatPkl}</div>
+      <div style="font-size: 10pt; color: #333;">{alamatPkl}</div>
+      <div>di -</div>
+      <div style="text-indent: 20px;">Tempat</div>
+    </td>
+  </tr>
+</table>
 
 <p style="margin-bottom: 8px;">Dengan hormat,</p>
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
@@ -235,7 +250,22 @@ const DEFAULT_TEMPLATES = [
   <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
 </div>
 
-{tujuanSurat}
+<table style="width: 100%; margin-top: 4px; margin-bottom: 14px;">
+  <tr>
+    <td style="width: 10%; vertical-align: top;">Kepada:</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Yth.</td>
+    <td>
+      <div style="font-weight: bold;">Pimpinan DU/DI</div>
+      <div style="font-weight: bold;">{tempatPkl}</div>
+      <div style="font-size: 10pt; color: #333;">{alamatPkl}</div>
+      <div>di -</div>
+      <div style="text-indent: 20px;">Tempat</div>
+    </td>
+  </tr>
+</table>
 
 <p style="margin-bottom: 8px;">Dengan hormat,</p>
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
@@ -780,6 +810,26 @@ function loadStoredTemplates() {
       AppState.templates.forEach(t => {
         if (t.id === 'tpl_surat_keterangan_pkl' || t.name === 'Surat Keterangan PKL (Contoh Surat Keterangan PKL.docx)') {
           t.name = 'Surat Keterangan PKL';
+          needsSave = true;
+        }
+        // Migrasikan {tujuanSurat} di semua template menjadi tabel Kepada Yth yang dijabarkan
+        if (t.htmlContent && t.htmlContent.includes('{tujuanSurat}')) {
+          t.htmlContent = t.htmlContent.replace(/\{tujuanSurat\}/g, `<table style="width: 100%; margin-top: 4px; margin-bottom: 14px;">
+  <tr>
+    <td style="width: 10%; vertical-align: top;">Kepada:</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Yth.</td>
+    <td>
+      <div style="font-weight: bold;">Pimpinan DU/DI</div>
+      <div style="font-weight: bold;">{tempatPkl}</div>
+      <div style="font-size: 10pt; color: #333;">{alamatPkl}</div>
+      <div>di -</div>
+      <div style="text-indent: 20px;">Tempat</div>
+    </td>
+  </tr>
+</table>`);
           needsSave = true;
         }
       });
@@ -1768,8 +1818,6 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{guruNip}/g, letter.guruNip || '-')
     .replace(/{guruPangkat}/g, guruPangkat || '-')
     .replace(/{guruJabatan}/g, guruJabatan)
-    .replace(/{tempatPkl}/g, tempatPkl)
-    .replace(/{alamatPkl}/g, letter.alamatPkl || '')
     .replace(/{siswaNama}/g, siswaNama)
     .replace(/{siswaNis}/g, siswaNis)
     .replace(/{siswaNisn}/g, siswaNisn)
@@ -1779,7 +1827,24 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{lamaPkl}/g, '6 bulan')
     .replace(/{jabatanGuru}/g, guruJabatan);
 
-  if (!templateHtml.includes('{tujuanSurat}')) {
+  // Penanganan variabel {tempatPkl} & {alamatPkl} pada blok tujuan surat yang dijabarkan
+  if (!letter.isSpecificTempat) {
+    rendered = rendered
+      .replace(/<div style="font-weight: bold;">\s*\{tempatPkl\}\s*<\/div>/g, '')
+      .replace(/<div style="font-size: 10pt; color: #333;">\s*\{alamatPkl\}\s*<\/div>/g, '')
+      .replace(/{tempatPkl}/g, escapeXml(tempatPkl))
+      .replace(/{alamatPkl}/g, '');
+  } else {
+    rendered = rendered
+      .replace(/{tempatPkl}/g, escapeXml(letter.tempatPkl || tempatPkl))
+      .replace(/{alamatPkl}/g, (showAlamat && letter.alamatPkl) ? escapeXml(letter.alamatPkl) : '');
+    if (!showAlamat || !letter.alamatPkl) {
+      rendered = rendered.replace(/<div style="font-size: 10pt; color: #333;">\s*<\/div>/g, '');
+    }
+  }
+
+  // Jika template lama masih belum memiliki Kepada / Yth dan belum memiliki {tujuanSurat}, sisipkan secara otomatis
+  if (!templateHtml.includes('{tujuanSurat}') && !templateHtml.includes('Kepada:') && !templateHtml.includes('Yth.')) {
     const isKetOrPerm = (templateHtml.toLowerCase().includes('keterangan') || templateHtml.toLowerCase().includes('permohonan'));
     if (!isKetOrPerm) {
       const dhIdx = rendered.indexOf('<p style="margin-bottom: 8px;">Dengan hormat,</p>');
@@ -2033,30 +2098,55 @@ function insertEditorVariable(varTag) {
   const editor = document.getElementById('wysiwygEditor');
   const textarea = document.getElementById('htmlEditorTextarea');
 
+  let contentToInsert = varTag;
+  const isHtmlBlock = (varTag === '{tujuanSurat}');
+  if (isHtmlBlock) {
+    contentToInsert = `<table style="width: 100%; margin-top: 4px; margin-bottom: 14px;">
+  <tr>
+    <td style="width: 10%; vertical-align: top;">Kepada:</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Yth.</td>
+    <td>
+      <div style="font-weight: bold;">Pimpinan DU/DI</div>
+      <div style="font-weight: bold;">{tempatPkl}</div>
+      <div style="font-size: 10pt; color: #333;">{alamatPkl}</div>
+      <div>di -</div>
+      <div style="text-indent: 20px;">Tempat</div>
+    </td>
+  </tr>
+</table>`;
+  }
+
   if (AppState.isHtmlSourceMode && textarea) {
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const text = textarea.value;
-    textarea.value = text.substring(0, start) + varTag + text.substring(end);
-    textarea.selectionStart = textarea.selectionEnd = start + varTag.length;
+    textarea.value = text.substring(0, start) + contentToInsert + text.substring(end);
+    textarea.selectionStart = textarea.selectionEnd = start + contentToInsert.length;
     textarea.focus();
     return;
   }
 
   if (editor) {
     editor.focus();
-    const sel = window.getSelection();
-    if (sel.getRangeAt && sel.rangeCount) {
-      const range = sel.getRangeAt(0);
-      range.deleteContents();
-      const textNode = document.createTextNode(varTag);
-      range.insertNode(textNode);
-      range.setStartAfter(textNode);
-      range.setEndAfter(textNode);
-      sel.removeAllRanges();
-      sel.addRange(range);
+    if (isHtmlBlock) {
+      document.execCommand('insertHTML', false, contentToInsert);
     } else {
-      document.execCommand('insertText', false, varTag);
+      const sel = window.getSelection();
+      if (sel.getRangeAt && sel.rangeCount) {
+        const range = sel.getRangeAt(0);
+        range.deleteContents();
+        const textNode = document.createTextNode(contentToInsert);
+        range.insertNode(textNode);
+        range.setStartAfter(textNode);
+        range.setEndAfter(textNode);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else {
+        document.execCommand('insertText', false, contentToInsert);
+      }
     }
   }
 }

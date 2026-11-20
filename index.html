@@ -195,12 +195,16 @@
       
       <!-- Brand & School Info -->
       <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-        <div id="headerBrandLogoWrapper" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shadow-inner overflow-hidden shrink-0">
-          <i id="defaultBrandIcon" data-lucide="file-badge" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-        </div>
+        <a href="index.html" class="shrink-0 group cursor-pointer" title="Beranda Aplikasi Surat">
+          <div id="headerBrandLogoWrapper" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shadow-inner overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+            <i id="defaultBrandIcon" data-lucide="file-badge" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+          </div>
+        </a>
         <div class="min-w-0">
           <div class="flex items-center gap-1.5 sm:gap-2">
-            <h1 class="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-white leading-tight truncate">Aplikasi Surat Pengantar PKL</h1>
+            <a href="index.html" class="hover:underline truncate" title="Beranda Aplikasi Surat">
+              <h1 class="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-white leading-tight truncate">Aplikasi Surat Pengantar PKL</h1>
+            </a>
             <button type="button" 
                     onclick="openChangelogModal()" 
                     class="inline-flex items-center gap-1 text-[10px] font-bold bg-indigo-500/30 hover:bg-indigo-500/60 text-indigo-200 hover:text-white border border-indigo-400/40 px-2 py-0.5 rounded-full transition shadow-xs cursor-pointer group shrink-0" 
