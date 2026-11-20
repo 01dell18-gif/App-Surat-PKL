@@ -5140,3 +5140,63 @@ async function clearCacheAndRefresh() {
     window.location.reload();
   }
 }
+
+// ================= SIDEBAR ACCORDION DROPDOWN =================
+function toggleSidebarAccordion(sectionId) {
+  const sections = ['template', 'pemilihan', 'data', 'opsi'];
+  sections.forEach(sec => {
+    const body = document.getElementById(`sidebarBody_${sec}`);
+    const chevron = document.getElementById(`sidebarChevron_${sec}`);
+    const btn = document.getElementById(`sidebarBtn_${sec}`);
+    if (sec === sectionId) {
+      const isClosed = !body || body.classList.contains('hidden');
+      if (isClosed) {
+        if (body) body.classList.remove('hidden');
+        if (chevron) chevron.classList.add('rotate-180');
+        if (btn) {
+          btn.setAttribute('aria-expanded', 'true');
+          btn.setAttribute('data-open', 'true');
+        }
+      } else {
+        // Toggle close current section if clicked again
+        if (body) body.classList.add('hidden');
+        if (chevron) chevron.classList.remove('rotate-180');
+        if (btn) {
+          btn.setAttribute('aria-expanded', 'false');
+          btn.setAttribute('data-open', 'false');
+        }
+      }
+    } else {
+      // Close all other sections automatically
+      if (body) body.classList.add('hidden');
+      if (chevron) chevron.classList.remove('rotate-180');
+      if (btn) {
+        btn.setAttribute('aria-expanded', 'false');
+        btn.setAttribute('data-open', 'false');
+      }
+    }
+  });
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+}
+
+// ================= CHANGELOG MODAL =================
+function openChangelogModal() {
+  const modal = document.getElementById('changelogModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }
+}
+
+function closeChangelogModal() {
+  const modal = document.getElementById('changelogModal');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+  }
+}
