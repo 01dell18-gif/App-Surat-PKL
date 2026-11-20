@@ -150,7 +150,12 @@ const DEFAULT_TEMPLATES = [
     isDefault: true,
     status: 'active',
     createdAt: '2026-11-03',
-    htmlContent: `<p style="margin-bottom: 8px;">Dengan hormat,</p>
+    htmlContent: `<div style="text-align: center; margin-top: 6px; margin-bottom: 14px;">
+  <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
+  <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
+</div>
+
+<p style="margin-bottom: 8px;">Dengan hormat,</p>
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
   Dalam rangka pelaksanaan kegiatan Praktek Kerja Lapangan (PKL) bagi siswa/siswi {namaSekolah} Tahun Ajaran {tahunAjaran}, bersama ini kami menugaskan guru pembimbing untuk menyerahkan sekaligus mengantarkan siswa/siswi kami melaksanakan PKL di perusahaan/instansi yang Bapak/Ibu pimpin.
 </p>
@@ -167,9 +172,14 @@ const DEFAULT_TEMPLATES = [
     <td>{guruNip}</td>
   </tr>
   <tr>
+    <td>Pangkat / Gol</td>
+    <td>:</td>
+    <td>{guruPangkat}</td>
+  </tr>
+  <tr>
     <td>Jabatan</td>
     <td>:</td>
-    <td>Guru Pembimbing PKL</td>
+    <td>{guruJabatan}</td>
   </tr>
 </table>
 <p style="margin-bottom: 4px;">Sehubungan dengan hal tersebut, berikut kami sampaikan beberapa informasi terkait teknis pelaksanaan PKL:</p>
@@ -180,7 +190,37 @@ const DEFAULT_TEMPLATES = [
 </ol>
 <p style="text-indent: 30px; margin-bottom: 14px; text-align: justify;">
   Daftar nama siswa/siswi peserta Praktek Kerja Lapangan (PKL) terlampir dalam surat ini. Demikian surat pengantar ini kami sampaikan. Atas perhatian, bimbingan, dan kerja sama yang baik dari Bapak/Ibu, kami ucapkan terima kasih.
-</p>`
+</p>
+
+{ttdSurat}
+
+<div class="page-break" style="page-break-before: always; border-top: 2px dashed #cbd5e1; margin: 28px 0; padding-top: 16px;">
+  <span class="no-print" style="display: block; text-align: center; font-size: 8.5pt; color: #94a3b8; font-style: italic; margin-bottom: 12px;">--- Batas Halaman 2 (Lampiran 2 Daftar Siswa) ---</span>
+</div>
+<div style="font-size: 10pt; line-height: 1.4;">
+  <table style="width: 100%; margin-bottom: 10px; font-size: 10pt;">
+    <tr>
+      <td style="width: 90px; vertical-align: top;">Lampiran 2</td>
+      <td style="width: 15px; vertical-align: top;">:</td>
+      <td style="vertical-align: top;">Surat Pengantar Kepala {namaSekolah}</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Nomor</td>
+      <td style="vertical-align: top;">:</td>
+      <td style="vertical-align: top;">{noSurat}</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Tanggal</td>
+      <td style="vertical-align: top;">:</td>
+      <td style="vertical-align: top;">{tglSurat}</td>
+    </tr>
+  </table>
+  <div style="text-align: center; font-weight: bold; font-size: 11pt; margin-bottom: 12px; text-transform: uppercase;">
+    DAFTAR SISWA/SISWI PRAKTEK KERJA LAPANGAN (PKL)<br>
+    {namaSekolah} TAHUN AJARAN {tahunAjaran}
+  </div>
+  {tabelDaftarSiswaLampiran}
+</div>`
   },
   {
     id: 'tpl_pkl_terpadu',
@@ -188,7 +228,12 @@ const DEFAULT_TEMPLATES = [
     isDefault: false,
     status: 'inactive',
     createdAt: '2026-11-03',
-    htmlContent: `<p style="margin-bottom: 8px;">Dengan hormat,</p>
+    htmlContent: `<div style="text-align: center; margin-top: 6px; margin-bottom: 14px;">
+  <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
+  <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
+</div>
+
+<p style="margin-bottom: 8px;">Dengan hormat,</p>
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
   Sehubungan dengan program kurikulum vokasi {namaSekolah} Tahun Ajaran {tahunAjaran}, kami bermaksud mendelegasikan siswa/siswi kami untuk melaksanakan kegiatan Praktek Kerja Lapangan (PKL) terpadu di perusahaan/instansi yang Bapak/Ibu pimpin.
 </p>
@@ -205,9 +250,14 @@ const DEFAULT_TEMPLATES = [
     <td>{guruNip}</td>
   </tr>
   <tr>
+    <td>Pangkat / Gol</td>
+    <td>:</td>
+    <td>{guruPangkat}</td>
+  </tr>
+  <tr>
     <td>Jabatan</td>
     <td>:</td>
-    <td>Guru Pembimbing PKL</td>
+    <td>{guruJabatan}</td>
   </tr>
 </table>
 <p style="margin-bottom: 4px;">Adapun rincian jadwal pelaksanaan program PKL adalah sebagai berikut:</p>
@@ -218,7 +268,37 @@ const DEFAULT_TEMPLATES = [
 </ol>
 <p style="text-indent: 30px; margin-bottom: 14px; text-align: justify;">
   Rincian nama siswa/siswi terlampir pada Lampiran 2 surat ini. Besar harapan kami agar kerja sama yang baik antara institusi pendidikan dan DU/DI terus terjalin erat. Atas perhatian dan kesediaan Bapak/Ibu, kami haturkan terima kasih.
-</p>`
+</p>
+
+{ttdSurat}
+
+<div class="page-break" style="page-break-before: always; border-top: 2px dashed #cbd5e1; margin: 28px 0; padding-top: 16px;">
+  <span class="no-print" style="display: block; text-align: center; font-size: 8.5pt; color: #94a3b8; font-style: italic; margin-bottom: 12px;">--- Batas Halaman 2 (Lampiran 2 Daftar Siswa) ---</span>
+</div>
+<div style="font-size: 10pt; line-height: 1.4;">
+  <table style="width: 100%; margin-bottom: 10px; font-size: 10pt;">
+    <tr>
+      <td style="width: 90px; vertical-align: top;">Lampiran 2</td>
+      <td style="width: 15px; vertical-align: top;">:</td>
+      <td style="vertical-align: top;">Surat Pengantar Kepala {namaSekolah}</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Nomor</td>
+      <td style="vertical-align: top;">:</td>
+      <td style="vertical-align: top;">{noSurat}</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Tanggal</td>
+      <td style="vertical-align: top;">:</td>
+      <td style="vertical-align: top;">{tglSurat}</td>
+    </tr>
+  </table>
+  <div style="text-align: center; font-weight: bold; font-size: 11pt; margin-bottom: 12px; text-transform: uppercase;">
+    DAFTAR SISWA/SISWI PRAKTEK KERJA LAPANGAN (PKL)<br>
+    {namaSekolah} TAHUN AJARAN {tahunAjaran}
+  </div>
+  {tabelDaftarSiswaLampiran}
+</div>`
   },
   {
     id: 'tpl_surat_keterangan_pkl',
@@ -226,7 +306,12 @@ const DEFAULT_TEMPLATES = [
     isDefault: false,
     status: 'active',
     createdAt: '2026-11-04',
-    htmlContent: `<p style="margin-bottom: 8px;">Yang bertanda tangan dibawah ini :</p>
+    htmlContent: `<div style="text-align: center; margin-top: 6px; margin-bottom: 16px;">
+  <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT KETERANGAN</div>
+  <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
+</div>
+
+<p style="margin-bottom: 8px;">Yang bertanda tangan dibawah ini :</p>
 <table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
   <tr>
     <td style="width: 130px; vertical-align: top;">Nama</td>
@@ -280,7 +365,9 @@ const DEFAULT_TEMPLATES = [
 
 <p style="text-indent: 30px; margin-bottom: 14px; text-align: justify; line-height: 1.5;">
   Demikian Surat Keterangan ini dibuat dengan benar untuk digunakan sebagaimana mestinya.
-</p>`
+</p>
+
+{ttdSurat}`
   },
   {
     id: 'tpl_surat_permohonan_pkl_murid',
@@ -323,7 +410,9 @@ const DEFAULT_TEMPLATES = [
 
 <p style="text-indent: 30px; margin-top: 10px; margin-bottom: 12px; text-align: justify; line-height: 1.4; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
   Demikian yang dapat kami sampaikan atas kerjasama Bapak/Ibu kami ucapkan terimakasih.
-</p>`
+</p>
+
+{ttdSurat}`
   }
 ];
 
@@ -344,7 +433,10 @@ const DEFAULT_APP_SETTINGS = {
   kopUrl: '',
   ttdUrl: '',
   ttdBasahUrl: '',
-  logoWebUrl: ''
+  logoWebUrl: '',
+  tempatSurat: 'Klungkung',
+  formatTitimangsa: 'auto', // 'auto' | 'standar' | 'ditetapkan' | 'kustom'
+  titimangsaKustom: ''
 };
 
 // Application State
@@ -472,6 +564,35 @@ function getLogoWebSrc() {
   return (typeof ASSETS !== 'undefined' && ASSETS.logo) ? ASSETS.logo : 'assets/images/logo_fyj.png';
 }
 
+// Helper: Get Active Titimangsa HTML for Signature Header & Preview
+function getTitimangsaHtml(ds, activeTpl) {
+  const s = AppState.appSettings || ds;
+  const tempat = s.tempatSurat || 'Klungkung';
+  const tgl = ds.tglSurat || s.tglSurat || '06 Oktober 2026';
+  const fmt = s.formatTitimangsa || 'auto';
+
+  if (fmt === 'standar') {
+    return `<div>${escapeXml(tempat)}, <span id="docTglSurat">${escapeXml(tgl)}</span></div>`;
+  } else if (fmt === 'ditetapkan') {
+    return `<div>Ditetapkan di ${escapeXml(tempat)}</div><div>Pada Tanggal <span id="docTglSurat">${escapeXml(tgl)}</span></div>`;
+  } else if (fmt === 'kustom') {
+    const custom = (s.titimangsaKustom || `${tempat}, ${tgl}`).trim();
+    return `<div>${escapeXml(custom).replace(/\n/g, '<br>')}</div>`;
+  } else {
+    // auto: format penetapan untuk permohonan & keterangan, standar untuk pengantar
+    const isKetOrPerm = activeTpl && (
+      (activeTpl.id === 'tpl_surat_keterangan_pkl') ||
+      (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') ||
+      (activeTpl.name && (activeTpl.name.toLowerCase().includes('keterangan') || activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')))
+    );
+    if (isKetOrPerm) {
+      return `<div>Ditetapkan di ${escapeXml(tempat)}</div><div>Pada Tanggal <span id="docTglSurat">${escapeXml(tgl)}</span></div>`;
+    } else {
+      return `<div>${escapeXml(tempat)}, <span id="docTglSurat">${escapeXml(tgl)}</span></div>`;
+    }
+  }
+}
+
 // Helper: Get Active Signature Block HTML (Dynamic Electronic Box vs Wet Signature) for Preview & Print
 function getTtdHtml(ds, dOpt) {
   if (dOpt.showTtd) {
@@ -559,6 +680,7 @@ function syncSidebarInputs() {
 
   setVal('inputNoSurat', s.noSurat);
   setVal('inputTglSurat', s.tglSurat);
+  setVal('inputTempatSurat', s.tempatSurat || 'Klungkung');
   setVal('inputTahunAjaran', s.tahunAjaran);
   setVal('inputTglPelepasan', s.tglPelepasan);
   setVal('inputPeriodePkl', s.periodePkl);
@@ -703,11 +825,15 @@ function rebuildIndices() {
       guruMap.set(gName, {
         guru: gName,
         nip: r.nip || '-',
+        guru_pangkat: r.guru_pangkat || '',
+        guru_jabatan: r.guru_jabatan || 'Guru Pembimbing PKL',
         siswa: [],
         tempatList: new Set()
       });
     }
     const gEntry = guruMap.get(gName);
+    if (!gEntry.guru_pangkat && r.guru_pangkat) gEntry.guru_pangkat = r.guru_pangkat;
+    if ((!gEntry.guru_jabatan || gEntry.guru_jabatan === 'Guru Pembimbing PKL') && r.guru_jabatan) gEntry.guru_jabatan = r.guru_jabatan;
     gEntry.siswa.push(r);
     if (r.tempat) gEntry.tempatList.add(r.tempat);
 
@@ -1000,6 +1126,7 @@ function setupEventListeners() {
 
   bindInput('inputNoSurat', 'noSurat');
   bindInput('inputTglSurat', 'tglSurat');
+  bindInput('inputTempatSurat', 'tempatSurat');
   bindInput('inputTglPelepasan', 'tglPelepasan');
   bindInput('inputPeriodePkl', 'periodePkl');
   bindInput('inputTglPenarikan', 'tglPenarikan');
@@ -1235,6 +1362,8 @@ function getCurrentLetterData() {
     return {
       guruNama: guruData.guru,
       guruNip: guruData.nip || '-',
+      guruPangkat: (firstStudent && firstStudent.guru_pangkat) || guruData.guru_pangkat || '',
+      guruJabatan: (firstStudent && firstStudent.guru_jabatan) || guruData.guru_jabatan || 'Guru Pembimbing PKL',
       tempatPkl: targetTempat,
       alamatPkl: targetAlamat,
       isSpecificTempat: isSpecificTempat || (AppState.selectedSiswaFilterPerGuru !== 'all'),
@@ -1267,6 +1396,8 @@ function getCurrentLetterData() {
     return {
       guruNama: guruFirst,
       guruNip: nipFirst,
+      guruPangkat: (firstStudent && firstStudent.guru_pangkat) || '',
+      guruJabatan: (firstStudent && firstStudent.guru_jabatan) || 'Guru Pembimbing PKL',
       tempatPkl: placeData.tempat,
       alamatPkl: placeData.alamat,
       isSpecificTempat: true,
@@ -1289,6 +1420,8 @@ function getCurrentLetterData() {
       jurusan: '-',
       guru: '-',
       nip: '-',
+      guru_pangkat: '',
+      guru_jabatan: 'Guru Pembimbing PKL',
       tempat: '-',
       alamat: ''
     };
@@ -1296,6 +1429,8 @@ function getCurrentLetterData() {
     return {
       guruNama: rec.guru || '-',
       guruNip: rec.nip || '-',
+      guruPangkat: rec.guru_pangkat || '',
+      guruJabatan: rec.guru_jabatan || 'Guru Pembimbing PKL',
       tempatPkl: rec.tempat || '-',
       alamatPkl: rec.alamat || '',
       isSpecificTempat: true,
@@ -1487,15 +1622,66 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     `;
   }
 
+  // Buat HTML tabel siswa untuk Lampiran 2 (Multi-lembar dokumen)
+  let tabelDaftarSiswaLampiran = '';
+  const studentsLampiran = (letter.students && letter.students.length > 0) ? letter.students : (letter.siswa && letter.siswa !== '-' ? [letter] : []);
+  if (studentsLampiran.length > 0) {
+    const rowsHtml = studentsLampiran.map((st, idx) => `
+      <tr>
+        <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${idx + 1}</td>
+        <td style="border: 1px solid #000; padding: 4px 8px; text-align: left; font-weight: 500;">${escapeXml(st.siswa || st.nama || '-')}</td>
+        <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${escapeXml(formatNis(st.nis) || '-')}</td>
+        <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${escapeXml(formatNisn(st.nisn) || '-')}</td>
+        <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${escapeXml(st.kelas || '-')}</td>
+        <td style="border: 1px solid #000; padding: 4px 8px; text-align: left;">${escapeXml(st.tempat || letter.tempatPkl || '-')}</td>
+      </tr>
+    `).join('');
+    tabelDaftarSiswaLampiran = `
+      <table style="width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 12px; font-size: 10pt; font-family: 'Bookman Old Style', 'Georgia', serif;">
+        <thead>
+          <tr style="background-color: #f1f5f9; text-align: center; font-weight: bold;">
+            <th style="border: 1px solid #000; padding: 5px 6px; width: 40px;">No</th>
+            <th style="border: 1px solid #000; padding: 5px 8px; text-align: left;">Nama Siswa</th>
+            <th style="border: 1px solid #000; padding: 5px 6px; width: 85px;">NIS</th>
+            <th style="border: 1px solid #000; padding: 5px 6px; width: 105px;">NISN</th>
+            <th style="border: 1px solid #000; padding: 5px 6px; width: 90px;">Kelas</th>
+            <th style="border: 1px solid #000; padding: 5px 8px; text-align: left;">Tempat PKL</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+    `;
+  } else {
+    tabelDaftarSiswaLampiran = `<div style="text-align: center; padding: 12px; color: #888; font-style: italic; border: 1px dashed #cbd5e1; margin: 8px 0;">Belum ada data siswa terlampir.</div>`;
+  }
+
   const showAlamat = (AppState.displayOptions && AppState.displayOptions.showAlamat !== false);
   const alamatPklHtml = (showAlamat && letter.alamatPkl) 
     ? `<div style="font-size: 9.5pt; color: #444; margin-top: 1px;">${escapeXml(letter.alamatPkl)}</div>` 
     : '';
 
+  const tempatSurat = s.tempatSurat || 'Klungkung';
+  const titimangsaSurat = getTitimangsaHtml(ds, getActiveTemplate());
+  const guruPangkat = letter.guruPangkat || (firstStudent ? firstStudent.guru_pangkat : '') || '';
+  const guruJabatan = letter.guruJabatan || (firstStudent ? firstStudent.guru_jabatan : '') || 'Guru Pembimbing PKL';
+
+  const ttdSuratHtml = `
+<div class="ttd-surat-block" style="width: 100%; display: flex; justify-content: flex-end; margin-top: 14px; margin-bottom: 14px; page-break-inside: avoid; break-inside: avoid;">
+  <div style="width: 250px; text-align: left; font-size: 11pt;">
+    <div>${titimangsaSurat}</div>
+    <div style="margin-top: 2px;">Kepala ${escapeXml(s.namaSekolah || 'SMKN 1 FYJ Channel')}</div>
+    ${getTtdHtml(ds, AppState.displayOptions || {})}
+  </div>
+</div>
+  `;
+
   let rendered = templateHtml
     .replace(/{tingkatKelas}/g, tingkatKelas)
     .replace(/{jurusanPkl}/g, jurusanPkl)
     .replace(/{tabelSiswaPermohonan}/g, tabelSiswaPermohonan)
+    .replace(/{tabelDaftarSiswaLampiran}/g, tabelDaftarSiswaLampiran)
     .replace(/{tahunAjaran}/g, s.tahunAjaran)
     .replace(/{namaSekolah}/g, s.namaSekolah)
     .replace(/{sekolah}/g, s.namaSekolah)
@@ -1505,11 +1691,16 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{tglPenarikan}/g, s.tglPenarikan)
     .replace(/{tglSurat}/g, s.tglSurat)
     .replace(/{noSurat}/g, s.noSurat)
+    .replace(/{tempatSurat}/g, tempatSurat)
+    .replace(/{titimangsaSurat}/g, titimangsaSurat)
+    .replace(/{ttdSurat}/g, ttdSuratHtml)
     .replace(/{kepsekNama}/g, s.kepsekNama)
     .replace(/{kepsekNip}/g, s.kepsekNip)
     .replace(/{kepsekPangkat}/g, s.kepsekPangkat)
     .replace(/{guruNama}/g, letter.guruNama)
     .replace(/{guruNip}/g, letter.guruNip || '-')
+    .replace(/{guruPangkat}/g, guruPangkat || '-')
+    .replace(/{guruJabatan}/g, guruJabatan)
     .replace(/{tempatPkl}/g, tempatPkl)
     .replace(/{alamatPkl}/g, letter.alamatPkl || '')
     .replace(/{siswaNama}/g, siswaNama)
@@ -1519,7 +1710,7 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{siswaKelas}/g, siswaKelas)
     .replace(/{siswaJurusan}/g, siswaJurusan)
     .replace(/{lamaPkl}/g, '6 bulan')
-    .replace(/{jabatanGuru}/g, 'Guru Pembimbing PKL');
+    .replace(/{jabatanGuru}/g, guruJabatan);
 
   if (rendered.includes('{tujuanAlamatPkl}')) {
     rendered = rendered.replace(/{tujuanAlamatPkl}/g, alamatPklHtml);
@@ -1560,10 +1751,10 @@ function renderPreview() {
     }
   }
 
-  // 2. Judul & Nomor Surat
+  // 2. Judul & Nomor Surat (Dikelola langsung di dalam redaksi template WYSIWYG)
   const docJudulContainer = document.getElementById('docJudulContainer') || (document.getElementById('docJudulSurat') ? document.getElementById('docJudulSurat').parentElement : null);
   if (docJudulContainer) {
-    docJudulContainer.style.display = isPermohonan ? 'none' : 'block';
+    docJudulContainer.style.display = 'none';
   }
 
   const docJudulSurat = document.getElementById('docJudulSurat');
@@ -1609,13 +1800,15 @@ function renderPreview() {
   }
 
   // 5. Tanggal Surat & Tanda Tangan
+  const docTtdSection = document.getElementById('docTtdSection');
+  const templateHasTtd = activeTpl && activeTpl.htmlContent && activeTpl.htmlContent.includes('{ttdSurat}');
+  if (docTtdSection) {
+    docTtdSection.style.display = templateHasTtd ? 'none' : 'flex';
+  }
+
   const docTitimangsaHeader = document.getElementById('docTitimangsaHeader');
   if (docTitimangsaHeader) {
-    if (isPermohonan || isKeterangan) {
-      docTitimangsaHeader.innerHTML = `<div>Ditetapkan di Klungkung</div><div>Pada Tanggal <span id="docTglSurat">${ds.tglSurat}</span></div>`;
-    } else {
-      docTitimangsaHeader.innerHTML = `<div>Klungkung, <span id="docTglSurat">${ds.tglSurat}</span></div>`;
-    }
+    docTitimangsaHeader.innerHTML = getTitimangsaHtml(ds, activeTpl);
   }
 
   const docTglSurat = document.getElementById('docTglSurat');
@@ -1629,14 +1822,16 @@ function renderPreview() {
     docTtdArea.innerHTML = getTtdHtml(ds, dOpt);
   }
 
-  // 6. Lampiran 2 Tabel Siswa (Disembunyikan otomatis jika Surat Keterangan atau Surat Permohonan Murid)
+  // 6. Lampiran 2 Tabel Siswa (Disembunyikan jika ada di template, atau surat keterangan / permohonan)
   const pageLampiran = document.getElementById('pageLampiran');
   const pageDividers = document.querySelectorAll('.page-break-divider');
+  const templateHasLampiran = activeTpl && activeTpl.htmlContent && activeTpl.htmlContent.includes('{tabelDaftarSiswaLampiran}');
+  const hideSeparateLampiran = isKeterangan || isPermohonan || templateHasLampiran;
   if (pageLampiran) {
-    pageLampiran.style.display = (isKeterangan || isPermohonan) ? 'none' : 'block';
+    pageLampiran.style.display = hideSeparateLampiran ? 'none' : 'block';
   }
   pageDividers.forEach(div => {
-    div.style.display = (isKeterangan || isPermohonan) ? 'none' : 'block';
+    div.style.display = hideSeparateLampiran ? 'none' : 'block';
   });
 
   const tbody = document.getElementById('docTbodySiswa');
@@ -1769,6 +1964,28 @@ function insertEditorVariable(varTag) {
     } else {
       document.execCommand('insertText', false, varTag);
     }
+  }
+}
+
+// Helper: Insert a Page Break into the WYSIWYG Editor
+function insertEditorPageBreak() {
+  const pageBreakHtml = `<div class="page-break" style="page-break-before: always; border-top: 2px dashed #cbd5e1; margin: 24px 0; padding-top: 12px;"><span class="no-print" style="display:block; text-align:center; font-size:9pt; color:#94a3b8; font-style:italic;">--- Batas Halaman (Halaman Baru) ---</span></div><p><br></p>`;
+  const editor = document.getElementById('wysiwygEditor');
+  const textarea = document.getElementById('htmlEditorTextarea');
+
+  if (AppState.isHtmlSourceMode && textarea) {
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    textarea.value = text.substring(0, start) + '\n' + pageBreakHtml + '\n' + text.substring(end);
+    textarea.selectionStart = textarea.selectionEnd = start + pageBreakHtml.length + 2;
+    textarea.focus();
+    return;
+  }
+
+  if (editor) {
+    editor.focus();
+    document.execCommand('insertHTML', false, pageBreakHtml);
   }
 }
 
@@ -2148,6 +2365,10 @@ function openSettingsModal(tab = 'media') {
   setVal('settingsTglPelepasan', s.tglPelepasan);
   setVal('settingsTglPenarikan', s.tglPenarikan);
   setVal('settingsPeriodePkl', s.periodePkl);
+  setVal('settingsTempatSurat', s.tempatSurat || 'Klungkung');
+  setVal('settingsFormatTitimangsa', s.formatTitimangsa || 'auto');
+  setVal('settingsTitimangsaKustom', s.titimangsaKustom || '');
+  toggleCustomTitimangsaInput();
 
   // Clear or set URL inputs
   const urlKop = document.getElementById('inputUrlKop');
@@ -2441,6 +2662,15 @@ async function resetLogoWebToDefault() {
   showToast('Logo web dikembalikan ke standar awal.');
 }
 
+// Titimangsa UI Toggle
+function toggleCustomTitimangsaInput() {
+  const sel = document.getElementById('settingsFormatTitimangsa');
+  const wrapper = document.getElementById('wrapperCustomTitimangsa');
+  if (sel && wrapper) {
+    wrapper.classList.toggle('hidden', sel.value !== 'kustom');
+  }
+}
+
 // Save All Settings
 function saveAppSettings() {
   const getVal = (id, fallback = '') => {
@@ -2460,6 +2690,9 @@ function saveAppSettings() {
   s.tglPelepasan = getVal('settingsTglPelepasan', s.tglPelepasan);
   s.tglPenarikan = getVal('settingsTglPenarikan', s.tglPenarikan);
   s.periodePkl = getVal('settingsPeriodePkl', s.periodePkl);
+  s.tempatSurat = getVal('settingsTempatSurat', s.tempatSurat || 'Klungkung');
+  s.formatTitimangsa = getVal('settingsFormatTitimangsa', s.formatTitimangsa || 'auto');
+  s.titimangsaKustom = getVal('settingsTitimangsaKustom', s.titimangsaKustom || '');
 
   saveSettingsToStorage();
   syncSidebarInputs();
@@ -3661,6 +3894,9 @@ function executeBatchPrint() {
                        (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
   const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
                        (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
+  const templateHasTtd = activeTpl && activeTpl.htmlContent && activeTpl.htmlContent.includes('{ttdSurat}');
+  const templateHasLampiran = activeTpl && activeTpl.htmlContent && activeTpl.htmlContent.includes('{tabelDaftarSiswaLampiran}');
+  const templateHasTitle = activeTpl && activeTpl.htmlContent && (activeTpl.htmlContent.includes('SURAT PENGANTAR') || activeTpl.htmlContent.includes('SURAT KETERANGAN') || activeTpl.htmlContent.includes('{noSurat}'));
 
   updatePaperSizeClass();
 
@@ -3674,6 +3910,8 @@ function executeBatchPrint() {
       const letterMock = {
         guruNama: duDi.guru || '-',
         guruNip: duDi.nip || '-',
+        guruPangkat: duDi.guru_pangkat || '',
+        guruJabatan: duDi.guru_jabatan || 'Guru Pembimbing PKL',
         tempatPkl: duDi.tempat,
         alamatPkl: duDi.alamat || '',
         isSpecificTempat: true,
@@ -3698,14 +3936,15 @@ function executeBatchPrint() {
           ${resolvedBody}
         </div>
 
-        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 14px; page-break-inside: avoid; break-inside: avoid;">
-          <div style="width: 250px; text-align: left; font-size: 11pt;">
-            <div>Ditetapkan di Klungkung</div>
-            <div>Pada Tanggal ${escapeXml(ds.tglSurat)}</div>
-            <div style="margin-top: 2px;">Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
-            ${getTtdHtml(ds, dOpt)}
+        ${!templateHasTtd ? `
+          <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 14px; page-break-inside: avoid; break-inside: avoid;">
+            <div style="width: 250px; text-align: left; font-size: 11pt;">
+              ${getTitimangsaHtml(ds, activeTpl)}
+              <div style="margin-top: 2px;">Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
+              ${getTtdHtml(ds, dOpt)}
+            </div>
           </div>
-        </div>
+        ` : ''}
       `;
 
       batchContainer.appendChild(pageWrapper);
@@ -3728,6 +3967,8 @@ function executeBatchPrint() {
       const letterMock = {
         guruNama: s.guru || '-',
         guruNip: s.nip || '-',
+        guruPangkat: s.guru_pangkat || '',
+        guruJabatan: s.guru_jabatan || 'Guru Pembimbing PKL',
         tempatPkl: sTempat,
         alamatPkl: s.alamat || '',
         isSpecificTempat: true,
@@ -3752,23 +3993,26 @@ function executeBatchPrint() {
           </div>
         ` : ''}
 
-        <div style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
-          <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT KETERANGAN</div>
-          <div style="font-size: 11pt; margin-top: 2px;">Nomor: ${escapeXml(ds.noSurat)}</div>
-        </div>
+        ${!templateHasTitle ? `
+          <div style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
+            <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT KETERANGAN</div>
+            <div style="font-size: 11pt; margin-top: 2px;">Nomor: ${escapeXml(ds.noSurat)}</div>
+          </div>
+        ` : ''}
 
         <div style="text-align: justify; line-height: 1.4; font-size: 11pt;">
           ${resolvedBody}
         </div>
 
-        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 16px; page-break-inside: avoid;">
-          <div style="width: 250px; text-align: left;">
-            <div>Ditetapkan di Klungkung</div>
-            <div>Pada Tanggal ${escapeXml(ds.tglSurat)}</div>
-            <div style="margin-top: 2px;">Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
-            ${getTtdHtml(ds, dOpt)}
+        ${!templateHasTtd ? `
+          <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 16px; page-break-inside: avoid;">
+            <div style="width: 250px; text-align: left;">
+              ${getTitimangsaHtml(ds, activeTpl)}
+              <div style="margin-top: 2px;">Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
+              ${getTtdHtml(ds, dOpt)}
+            </div>
           </div>
-        </div>
+        ` : ''}
       `;
 
       batchContainer.appendChild(pageWrapper);
@@ -3784,6 +4028,8 @@ function executeBatchPrint() {
       const letterMock = { 
         guruNama: g.guru, 
         guruNip: g.nip, 
+        guruPangkat: g.guru_pangkat || '',
+        guruJabatan: g.guru_jabatan || 'Guru Pembimbing PKL',
         tempatPkl: targetTempat, 
         alamatPkl: targetAlamat, 
         isSpecificTempat: isSinglePlace,
@@ -3814,10 +4060,12 @@ function executeBatchPrint() {
           </div>
         ` : ''}
 
-        <div style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
-          <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
-          <div style="font-size: 11pt; margin-top: 2px;">Nomor: ${escapeXml(ds.noSurat)}</div>
-        </div>
+        ${!templateHasTitle ? `
+          <div style="text-align: center; margin-top: 10px; margin-bottom: 14px;">
+            <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
+            <div style="font-size: 11pt; margin-top: 2px;">Nomor: ${escapeXml(ds.noSurat)}</div>
+          </div>
+        ` : ''}
 
         <div style="margin-bottom: 14px;">
           <table style="width: 100%;">
@@ -3842,35 +4090,39 @@ function executeBatchPrint() {
           ${resolvedBody}
         </div>
 
-        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px; page-break-inside: avoid;">
-          <div style="width: 250px; text-align: left;">
-            <div>Klungkung, ${escapeXml(ds.tglSurat)}</div>
-            <div>Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
-            ${getTtdHtml(ds, dOpt)}
+        ${!templateHasTtd ? `
+          <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px; page-break-inside: avoid;">
+            <div style="width: 250px; text-align: left;">
+              ${getTitimangsaHtml(ds, activeTpl)}
+              <div style="margin-top: 2px;">Kepala ${escapeXml(AppState.appSettings.namaSekolah || ds.namaSekolah)}</div>
+              ${getTtdHtml(ds, dOpt)}
+            </div>
           </div>
-        </div>
+        ` : ''}
 
-        <!-- Lampiran 2 -->
-        <div style="page-break-before: always; margin-top: 30px;">
-          <div style="font-weight: bold; margin-bottom: 10px;">
-            Lampiran 2 : <br>
-            Daftar Nama Siswa Peserta PKL
+        ${!templateHasLampiran ? `
+          <!-- Lampiran 2 -->
+          <div style="page-break-before: always; margin-top: 30px;">
+            <div style="font-weight: bold; margin-bottom: 10px;">
+              Lampiran 2 : <br>
+              Daftar Nama Siswa Peserta PKL
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; font-size: 10.5pt;" border="1">
+              <thead>
+                <tr style="background-color: #f1f5f9; text-align: center; font-weight: bold;">
+                  <td style="padding: 6px; width: 35px; border: 1px solid #000;">No</td>
+                  <td style="padding: 6px; border: 1px solid #000;">Nama Siswa</td>
+                  <td style="padding: 6px; width: 85px; border: 1px solid #000;">Kelas</td>
+                  <td style="padding: 6px; border: 1px solid #000;">Tempat PKL</td>
+                </tr>
+              </thead>
+              <tbody>
+                ${tableRows}
+              </tbody>
+            </table>
           </div>
-
-          <table style="width: 100%; border-collapse: collapse; font-size: 10.5pt;" border="1">
-            <thead>
-              <tr style="background-color: #f1f5f9; text-align: center; font-weight: bold;">
-                <td style="padding: 6px; width: 35px; border: 1px solid #000;">No</td>
-                <td style="padding: 6px; border: 1px solid #000;">Nama Siswa</td>
-                <td style="padding: 6px; width: 85px; border: 1px solid #000;">Kelas</td>
-                <td style="padding: 6px; border: 1px solid #000;">Tempat PKL</td>
-              </tr>
-            </thead>
-            <tbody>
-              ${tableRows}
-            </tbody>
-          </table>
-        </div>
+        ` : ''}
       `;
 
       batchContainer.appendChild(pageWrapper);
@@ -4206,7 +4458,11 @@ function renderDatabaseTable() {
       <td class="p-2.5 text-center font-mono text-[11px] text-slate-600">${formatNisn(r.nisn) || r.nisn || '-'}</td>
       <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[11px]">${r.kelas || ''}</span></td>
       <td class="p-2.5 text-slate-700 text-[11px]">${r.jurusan || getJurusanFromKelas(r.kelas) || '-'}</td>
-      <td class="p-2.5">${r.guru || ''}</td>
+      <td class="p-2.5">
+        <div class="font-medium text-slate-900">${escapeXml(r.guru || '-')}</div>
+        ${r.nip ? `<div class="text-[10px] text-slate-400 font-mono">NIP: ${escapeXml(r.nip)}</div>` : ''}
+        ${(r.guru_pangkat || r.guru_jabatan) ? `<div class="text-[9.5px] text-indigo-700">${escapeXml(r.guru_pangkat || '')}${r.guru_pangkat && r.guru_jabatan ? ' • ' : ''}${escapeXml(r.guru_jabatan || '')}</div>` : ''}
+      </td>
       <td class="p-2.5 font-medium text-indigo-700">${r.tempat || ''}</td>
       <td class="p-2.5 text-slate-500 max-w-xs truncate" title="${r.alamat || ''}">${r.alamat || '-'}</td>
       <td class="p-2.5 text-center">
@@ -4247,14 +4503,18 @@ function openStudentModal(mode, no) {
     tempatList.innerHTML = places.map(p => `<option value="${escapeXml(p)}">`).join('');
   }
 
-  // Setup auto-fill NIP and Alamat when Guru or Tempat is selected/typed
+  // Setup auto-fill NIP, Pangkat, Jabatan and Alamat when Guru or Tempat is selected/typed
   const inputGuru = document.getElementById('studentFormGuru');
   const inputNip = document.getElementById('studentFormNip');
-  if (inputGuru && inputNip) {
+  const inputGuruPangkat = document.getElementById('studentFormGuruPangkat');
+  const inputGuruJabatan = document.getElementById('studentFormGuruJabatan');
+  if (inputGuru) {
     inputGuru.onchange = function() {
       const match = AppState.records.find(r => r.guru && r.guru.toLowerCase() === inputGuru.value.trim().toLowerCase());
-      if (match && match.nip && !inputNip.value) {
-        inputNip.value = match.nip;
+      if (match) {
+        if (inputNip && match.nip && !inputNip.value) inputNip.value = match.nip;
+        if (inputGuruPangkat && match.guru_pangkat && !inputGuruPangkat.value) inputGuruPangkat.value = match.guru_pangkat;
+        if (inputGuruJabatan && match.guru_jabatan && !inputGuruJabatan.value) inputGuruJabatan.value = match.guru_jabatan;
       }
     };
   }
@@ -4293,6 +4553,8 @@ function openStudentModal(mode, no) {
     document.getElementById('studentFormJurusan').value = rec.jurusan || getJurusanFromKelas(rec.kelas) || '';
     document.getElementById('studentFormGuru').value = rec.guru || '';
     document.getElementById('studentFormNip').value = rec.nip || '';
+    if (inputGuruPangkat) inputGuruPangkat.value = rec.guru_pangkat || '';
+    if (inputGuruJabatan) inputGuruJabatan.value = rec.guru_jabatan || 'Guru Pembimbing PKL';
     document.getElementById('studentFormTempat').value = rec.tempat || '';
     document.getElementById('studentFormAlamat').value = rec.alamat || '';
   } else {
@@ -4310,6 +4572,8 @@ function openStudentModal(mode, no) {
     const curGuru = AppState.gurus[AppState.selectedGuruIdx];
     document.getElementById('studentFormGuru').value = curGuru ? curGuru.guru : '';
     document.getElementById('studentFormNip').value = curGuru ? curGuru.nip : '';
+    if (inputGuruPangkat) inputGuruPangkat.value = curGuru ? (curGuru.guru_pangkat || '') : '';
+    if (inputGuruJabatan) inputGuruJabatan.value = curGuru ? (curGuru.guru_jabatan || 'Guru Pembimbing PKL') : 'Guru Pembimbing PKL';
     document.getElementById('studentFormTempat').value = '';
     document.getElementById('studentFormAlamat').value = '';
   }
@@ -4339,6 +4603,8 @@ async function saveStudentForm() {
   const jurusan = rawJurusan || getJurusanFromKelas(kelas);
   const guru = document.getElementById('studentFormGuru').value.trim();
   const nip = document.getElementById('studentFormNip').value.trim();
+  const guruPangkat = document.getElementById('studentFormGuruPangkat') ? document.getElementById('studentFormGuruPangkat').value.trim() : '';
+  const guruJabatan = document.getElementById('studentFormGuruJabatan') ? document.getElementById('studentFormGuruJabatan').value.trim() : 'Guru Pembimbing PKL';
   const tempat = document.getElementById('studentFormTempat').value.trim();
   const alamat = document.getElementById('studentFormAlamat').value.trim();
 
@@ -4364,6 +4630,8 @@ async function saveStudentForm() {
       AppState.records[idx].jurusan = jurusan;
       AppState.records[idx].guru = guru;
       AppState.records[idx].nip = nip;
+      AppState.records[idx].guru_pangkat = guruPangkat;
+      AppState.records[idx].guru_jabatan = guruJabatan;
       AppState.records[idx].tempat = tempat;
       AppState.records[idx].alamat = alamat;
 
@@ -4383,7 +4651,7 @@ async function saveStudentForm() {
         await fetch('/api/siswa/update', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ no: no, siswa: nama, nis: nis, nisn: nisn, kelas: kelas, jurusan: jurusan, guru: guru, nip: nip, tempat: tempat, alamat: alamat })
+          body: JSON.stringify({ no: no, siswa: nama, nis: nis, nisn: nisn, kelas: kelas, jurusan: jurusan, guru: guru, nip: nip, guru_pangkat: guruPangkat, guru_jabatan: guruJabatan, tempat: tempat, alamat: alamat })
         });
         if (bulkJurusanUpdated > 1) {
           await fetch('/api/jurusan/update', {
@@ -4414,6 +4682,8 @@ async function saveStudentForm() {
       jurusan: jurusan,
       guru: guru,
       nip: nip,
+      guru_pangkat: guruPangkat,
+      guru_jabatan: guruJabatan,
       tempat: tempat,
       alamat: alamat
     };
@@ -4516,8 +4786,10 @@ function handleExcelUpload(e) {
 
       const headers = jsonData[0].map(h => (h || '').toString().trim().toLowerCase());
       const colNo = headers.findIndex(h => h.includes('no'));
-      const colGuru = headers.findIndex(h => h.includes('guru'));
+      const colGuru = headers.findIndex(h => h.includes('guru') && !h.includes('pangkat') && !h.includes('gol') && !h.includes('jabatan'));
       const colNip = headers.findIndex(h => h.includes('nip'));
+      const colGuruPangkat = headers.findIndex(h => h.includes('pangkat') || h.includes('gol'));
+      const colGuruJabatan = headers.findIndex(h => h.includes('jabatan'));
       const colSiswa = headers.findIndex(h => h.includes('siswa'));
       const colNis = headers.findIndex(h => h === 'nis' || h.includes('nomor induk') || h.includes('nis '));
       const colNisn = headers.findIndex(h => h.includes('nisn'));
@@ -4540,6 +4812,8 @@ function handleExcelUpload(e) {
           no: i,
           guru: (row[colGuru !== -1 ? colGuru : 1] || '').toString().trim(),
           nip: (row[colNip !== -1 ? colNip : 2] || '').toString().trim(),
+          guru_pangkat: (colGuruPangkat !== -1 ? (row[colGuruPangkat] || '') : '').toString().trim(),
+          guru_jabatan: (colGuruJabatan !== -1 ? (row[colGuruJabatan] || '') : '').toString().trim() || 'Guru Pembimbing PKL',
           siswa: siswa.toString().trim(),
           nis: formatNis(colNis !== -1 ? row[colNis] : ''),
           nisn: formatNisn(colNisn !== -1 ? row[colNisn] : ''),
@@ -4584,6 +4858,8 @@ function exportRecordsToExcel() {
     'No': idx + 1,
     'Nama Guru': r.guru || '',
     'NIP': r.nip ? String(r.nip) : '',
+    'Pangkat/Gol Guru': r.guru_pangkat || '',
+    'Jabatan Guru': r.guru_jabatan || 'Guru Pembimbing PKL',
     'Nama Siswa': r.siswa || '',
     'NIS': formatNis(r.nis),
     'NISN': formatNisn(r.nisn),
@@ -4594,16 +4870,28 @@ function exportRecordsToExcel() {
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(rows);
-  // Pastikan kolom NIS (E) dan NISN (F) diformat sebagai tipe teks ('s') dengan format teks ('@')
+  // Pastikan kolom NIS dan NISN diformat sebagai tipe teks ('s') dengan format teks ('@')
   if (worksheet['!ref']) {
     const range = XLSX.utils.decode_range(worksheet['!ref']);
+    let colNisIdx = null;
+    let colNisnIdx = null;
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const headerCell = worksheet[XLSX.utils.encode_cell({ r: range.s.r, c: C })];
+      if (headerCell && headerCell.v) {
+        const val = String(headerCell.v).toUpperCase().trim();
+        if (val === 'NIS') colNisIdx = C;
+        if (val === 'NISN') colNisnIdx = C;
+      }
+    }
     for (let R = range.s.r + 1; R <= range.e.r; ++R) {
-      ['E', 'F'].forEach(col => {
-        const cell = worksheet[col + (R + 1)];
-        if (cell) {
-          cell.t = 's';
-          cell.z = '@';
-          if (col === 'F' && cell.v) cell.v = formatNisn(cell.v);
+      [colNisIdx, colNisnIdx].forEach(C => {
+        if (C !== null) {
+          const cell = worksheet[XLSX.utils.encode_cell({ r: R, c: C })];
+          if (cell) {
+            cell.t = 's';
+            cell.z = '@';
+            if (C === colNisnIdx && cell.v) cell.v = formatNisn(cell.v);
+          }
         }
       });
     }

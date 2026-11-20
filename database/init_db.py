@@ -34,39 +34,162 @@ DEFAULT_SETTINGS = [
     ('kopUrl', '', 'media', 'Path / URL kustom kop surat (kosong = bawaan kop_fyj.png)'),
     ('ttdUrl', '', 'media', 'Path / URL kustom TTD barcode elektronik (kosong = bawaan ttdelektronik.jpg)'),
     ('ttdBasahUrl', '', 'media', 'Path / URL kustom TTD basah (kosong = bawaan ttd_basah.png)'),
-    ('logoWebUrl', '', 'media', 'Path / URL kustom logo web aplikasi (kosong = bawaan logo_fyj.png)')
+    ('logoWebUrl', '', 'media', 'Path / URL kustom logo web aplikasi (kosong = bawaan logo_fyj.png)'),
+    ('tempatSurat', 'Klungkung', 'jadwal', 'Kota/tempat penerbitan surat resmi'),
+    ('formatTitimangsa', 'auto', 'jadwal', 'Format titimangsa ttd: auto, standar, ditetapkan, kustom'),
+    ('titimangsaKustom', '', 'jadwal', 'Teks bebas untuk titimangsa kustom')
 ]
 
-DEFAULT_TEMPLATE_HTML = """<p style="margin-bottom: 8px;">Dengan hormat,</p>
+DEFAULT_TEMPLATE_HTML = """<div style="text-align: center; margin-top: 6px; margin-bottom: 14px;">
+  <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
+  <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
+</div>
+
+<p style="margin-bottom: 8px;">Dengan hormat,</p>
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
   Dalam rangka pelaksanaan kegiatan Praktek Kerja Lapangan (PKL) bagi siswa/siswi {namaSekolah} Tahun Ajaran {tahunAjaran}, bersama ini kami menugaskan guru pembimbing untuk menyerahkan sekaligus mengantarkan siswa/siswi kami melaksanakan PKL di perusahaan/instansi yang Bapak/Ibu pimpin.
 </p>
 <p style="margin-bottom: 4px;">Adapun identitas Guru Pembimbing yang ditugaskan adalah sebagai berikut:</p>
 <table style="width: 100%; margin-left: 20px; margin-bottom: 10px;">
   <tr>
-    <td style="width: 130px; vertical-align: top;">Nama</td>
-    <td style="width: 20px; vertical-align: top;">:</td>
-    <td style="font-weight: bold; vertical-align: top;">{guruNama}</td>
+    <td style="width: 110px;">Nama</td>
+    <td style="width: 15px;">:</td>
+    <td style="font-weight: bold;">{guruNama}</td>
   </tr>
   <tr>
-    <td style="vertical-align: top;">NIP</td>
-    <td style="vertical-align: top;">:</td>
-    <td style="vertical-align: top;">{guruNip}</td>
+    <td>NIP</td>
+    <td>:</td>
+    <td>{guruNip}</td>
   </tr>
   <tr>
-    <td style="vertical-align: top;">Tempat PKL</td>
-    <td style="vertical-align: top;">:</td>
-    <td style="font-weight: bold; vertical-align: top;">{tempatPkl}</td>
+    <td>Pangkat / Gol</td>
+    <td>:</td>
+    <td>{guruPangkat}</td>
+  </tr>
+  <tr>
+    <td>Jabatan</td>
+    <td>:</td>
+    <td>{guruJabatan}</td>
   </tr>
 </table>
-<p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
-  Siswa yang diserahkan berjumlah sebagaimana terlampir, dan kegiatan PKL akan dilaksanakan terhitung mulai tanggal {periodePkl}.
+<p style="margin-bottom: 4px;">Sehubungan dengan hal tersebut, berikut kami sampaikan beberapa informasi terkait teknis pelaksanaan PKL:</p>
+<ol style="margin-left: 20px; margin-bottom: 10px; list-style-type: decimal;">
+  <li style="padding-left: 4px;">Pelepasan siswa/siswi PKL dilaksanakan pada tanggal <strong>{tglPelepasan}</strong>.</li>
+  <li style="padding-left: 4px;">Pelaksanaan &amp; Monitoring PKL: Kegiatan PKL berlangsung mulai tanggal <strong>{periodePkl}</strong>. Selama periode tersebut, guru pembimbing akan melaksanakan kegiatan monitoring PKL secara berkala setiap seminggu sekali.</li>
+  <li style="padding-left: 4px;">Penarikan siswa/siswi dari tempat PKL akan dilaksanakan pada tanggal <strong>{tglPenarikan}</strong>.</li>
+</ol>
+<p style="text-indent: 30px; margin-bottom: 14px; text-align: justify;">
+  Daftar nama siswa/siswi peserta Praktek Kerja Lapangan (PKL) terlampir dalam surat ini. Demikian surat pengantar ini kami sampaikan. Atas perhatian, bimbingan, dan kerja sama yang baik dari Bapak/Ibu, kami ucapkan terima kasih.
 </p>
-<p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
-  Demikian surat pengantar ini kami sampaikan, atas bantuan dan kerja sama yang baik kami ucapkan terima kasih.
-</p>"""
 
-TEMPLATE_KETERANGAN_HTML = """<p style="margin-bottom: 8px;">Yang bertanda tangan dibawah ini :</p>
+{ttdSurat}
+
+<div class="page-break" style="page-break-before: always; border-top: 2px dashed #cbd5e1; margin: 28px 0; padding-top: 16px;">
+  <span class="no-print" style="display: block; text-align: center; font-size: 8.5pt; color: #94a3b8; font-style: italic; margin-bottom: 12px;">--- Batas Halaman 2 (Lampiran 2 Daftar Siswa) ---</span>
+</div>
+<div style="font-size: 10pt; line-height: 1.4;">
+  <table style="width: 100%; margin-bottom: 10px; font-size: 10pt;">
+    <tr>
+      <td style="width: 90px; vertical-align: top;">Lampiran 2</td>
+      <td style="width: 15px; vertical-align: top;">:</td>
+      <td style="vertical-align: top;">Surat Pengantar Kepala {namaSekolah}</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Nomor</td>
+      <td style="vertical-align: top;">:</td>
+      <td style="vertical-align: top;">{noSurat}</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Tanggal</td>
+      <td style="vertical-align: top;">:</td>
+      <td style="vertical-align: top;">{tglSurat}</td>
+    </tr>
+  </table>
+  <div style="text-align: center; font-weight: bold; font-size: 11pt; margin-bottom: 12px; text-transform: uppercase;">
+    DAFTAR SISWA/SISWI PRAKTEK KERJA LAPANGAN (PKL)<br>
+    {namaSekolah} TAHUN AJARAN {tahunAjaran}
+  </div>
+  {tabelDaftarSiswaLampiran}
+</div>"""
+
+TEMPLATE_TERPADU_HTML = """<div style="text-align: center; margin-top: 6px; margin-bottom: 14px;">
+  <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
+  <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
+</div>
+
+<p style="margin-bottom: 8px;">Dengan hormat,</p>
+<p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
+  Sehubungan dengan program kurikulum vokasi {namaSekolah} Tahun Ajaran {tahunAjaran}, kami bermaksud mendelegasikan siswa/siswi kami untuk melaksanakan kegiatan Praktek Kerja Lapangan (PKL) terpadu di perusahaan/instansi yang Bapak/Ibu pimpin.
+</p>
+<p style="margin-bottom: 4px;">Bersama surat ini, kami menugaskan guru pembimbing sebagai narahubung resmi:</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 10px;">
+  <tr>
+    <td style="width: 110px;">Nama</td>
+    <td style="width: 15px;">:</td>
+    <td style="font-weight: bold;">{guruNama}</td>
+  </tr>
+  <tr>
+    <td>NIP</td>
+    <td>:</td>
+    <td>{guruNip}</td>
+  </tr>
+  <tr>
+    <td>Pangkat / Gol</td>
+    <td>:</td>
+    <td>{guruPangkat}</td>
+  </tr>
+  <tr>
+    <td>Jabatan</td>
+    <td>:</td>
+    <td>{guruJabatan}</td>
+  </tr>
+</table>
+<p style="margin-bottom: 4px;">Adapun rincian jadwal pelaksanaan program PKL adalah sebagai berikut:</p>
+<ol style="margin-left: 20px; margin-bottom: 10px; list-style-type: decimal;">
+  <li style="padding-left: 4px;">Pelepasan siswa/siswi PKL: <strong>{tglPelepasan}</strong>.</li>
+  <li style="padding-left: 4px;">Masa PKL &amp; Evaluasi Berkala: <strong>{periodePkl}</strong>. Monitoring dilaksanakan secara berkala untuk mengevaluasi perkembangan kompetensi siswa.</li>
+  <li style="padding-left: 4px;">Penarikan resmi siswa: <strong>{tglPenarikan}</strong>.</li>
+</ol>
+<p style="text-indent: 30px; margin-bottom: 14px; text-align: justify;">
+  Rincian nama siswa/siswi terlampir pada Lampiran 2 surat ini. Besar harapan kami agar kerja sama yang baik antara institusi pendidikan dan DU/DI terus terjalin erat. Atas perhatian dan kesediaan Bapak/Ibu, kami haturkan terima kasih.
+</p>
+
+{ttdSurat}
+
+<div class="page-break" style="page-break-before: always; border-top: 2px dashed #cbd5e1; margin: 28px 0; padding-top: 16px;">
+  <span class="no-print" style="display: block; text-align: center; font-size: 8.5pt; color: #94a3b8; font-style: italic; margin-bottom: 12px;">--- Batas Halaman 2 (Lampiran 2 Daftar Siswa) ---</span>
+</div>
+<div style="font-size: 10pt; line-height: 1.4;">
+  <table style="width: 100%; margin-bottom: 10px; font-size: 10pt;">
+    <tr>
+      <td style="width: 90px; vertical-align: top;">Lampiran 2</td>
+      <td style="width: 15px; vertical-align: top;">:</td>
+      <td style="vertical-align: top;">Surat Pengantar Kepala {namaSekolah}</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Nomor</td>
+      <td style="vertical-align: top;">:</td>
+      <td style="vertical-align: top;">{noSurat}</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">Tanggal</td>
+      <td style="vertical-align: top;">:</td>
+      <td style="vertical-align: top;">{tglSurat}</td>
+    </tr>
+  </table>
+  <div style="text-align: center; font-weight: bold; font-size: 11pt; margin-bottom: 12px; text-transform: uppercase;">
+    DAFTAR SISWA/SISWI PRAKTEK KERJA LAPANGAN (PKL)<br>
+    {namaSekolah} TAHUN AJARAN {tahunAjaran}
+  </div>
+  {tabelDaftarSiswaLampiran}
+</div>"""
+
+TEMPLATE_KETERANGAN_HTML = """<div style="text-align: center; margin-top: 6px; margin-bottom: 16px;">
+  <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT KETERANGAN</div>
+  <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
+</div>
+
+<p style="margin-bottom: 8px;">Yang bertanda tangan dibawah ini :</p>
 <table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
   <tr>
     <td style="width: 130px; vertical-align: top;">Nama</td>
@@ -120,7 +243,9 @@ TEMPLATE_KETERANGAN_HTML = """<p style="margin-bottom: 8px;">Yang bertanda tanga
 
 <p style="text-indent: 30px; margin-bottom: 14px; text-align: justify; line-height: 1.5;">
   Demikian Surat Keterangan ini dibuat dengan benar untuk digunakan sebagaimana mestinya.
-</p>"""
+</p>
+
+{ttdSurat}"""
 
 TEMPLATE_PERMOHONAN_MURID_HTML = """<table style="width: 100%; margin-bottom: 12px; font-size: 11pt; border-collapse: collapse; font-family: 'Arial Narrow', Arial, sans-serif;">
   <tr>
@@ -157,7 +282,9 @@ TEMPLATE_PERMOHONAN_MURID_HTML = """<table style="width: 100%; margin-bottom: 12
 
 <p style="text-indent: 30px; margin-top: 10px; margin-bottom: 12px; text-align: justify; line-height: 1.4; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
   Demikian yang dapat kami sampaikan atas kerjasama Bapak/Ibu kami ucapkan terimakasih.
-</p>"""
+</p>
+
+{ttdSurat}"""
 
 def escape_sql(val):
     if val is None:
@@ -196,6 +323,8 @@ def init_database():
         no_urut INTEGER NOT NULL,
         guru VARCHAR(255) NOT NULL,
         nip VARCHAR(50) DEFAULT '',
+        guru_pangkat VARCHAR(100) DEFAULT '',
+        guru_jabatan VARCHAR(100) DEFAULT 'Guru Pembimbing PKL',
         siswa VARCHAR(255) NOT NULL,
         nis VARCHAR(50) DEFAULT '',
         nisn VARCHAR(50) DEFAULT '',
@@ -255,12 +384,14 @@ def init_database():
     # Insert Data Siswa
     for r in records:
         cur.execute("""
-        INSERT INTO siswa_pkl (no_urut, guru, nip, siswa, nis, nisn, kelas, jurusan, tempat, alamat)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO siswa_pkl (no_urut, guru, nip, guru_pangkat, guru_jabatan, siswa, nis, nisn, kelas, jurusan, tempat, alamat)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             r.get('no', 0),
             r.get('guru', ''),
             r.get('nip', ''),
+            r.get('guru_pangkat', ''),
+            r.get('guru_jabatan', 'Guru Pembimbing PKL'),
             r.get('siswa', ''),
             r.get('nis', ''),
             r.get('nisn', ''),
@@ -286,6 +417,18 @@ def init_database():
         'Template Standar Resmi SMKN 1 FYJ Channel',
         DEFAULT_TEMPLATE_HTML.strip(),
         1,
+        'active',
+        '2026-11-03 12:00:00'
+    ))
+
+    cur.execute("""
+    INSERT OR REPLACE INTO template_surat (id, nama, html_content, is_default, status, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+        'tpl_pkl_terpadu',
+        'Template PKL Model Terpadu / Fleksibel',
+        TEMPLATE_TERPADU_HTML.strip(),
+        0,
         'active',
         '2026-11-03 12:00:00'
     ))
@@ -419,6 +562,7 @@ def init_database():
     sql_lines.append("-- Data Template Surat Resmi")
     sql_lines.append("LOCK TABLES `template_surat` WRITE;")
     sql_lines.append(f"INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_standar_resmi', 'Template Standar Resmi SMKN 1 FYJ Channel', {escape_sql(DEFAULT_TEMPLATE_HTML.strip())}, 1, 'active');")
+    sql_lines.append(f"INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_pkl_terpadu', 'Template PKL Model Terpadu / Fleksibel', {escape_sql(TEMPLATE_TERPADU_HTML.strip())}, 0, 'active');")
     sql_lines.append(f"INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_surat_keterangan_pkl', 'Surat Keterangan PKL', {escape_sql(TEMPLATE_KETERANGAN_HTML.strip())}, 0, 'active');")
     sql_lines.append(f"INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_surat_permohonan_pkl_murid', 'Surat Permohonan PKL Murid', {escape_sql(TEMPLATE_PERMOHONAN_MURID_HTML.strip())}, 0, 'active');")
     sql_lines.append("UNLOCK TABLES;\n")

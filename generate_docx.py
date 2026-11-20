@@ -190,7 +190,7 @@ def load_data(excel_path='Data_Pembagian_Tugas_PKL.xlsx', json_path='data_pkl.js
                 import sqlite3
                 conn = sqlite3.connect(db_p)
                 cur = conn.cursor()
-                cur.execute("SELECT no_urut, guru, nip, siswa, kelas, tempat, alamat FROM siswa_pkl ORDER BY no_urut ASC, id ASC")
+                cur.execute("SELECT no_urut, guru, nip, guru_pangkat, guru_jabatan, siswa, nis, nisn, kelas, tempat, alamat FROM siswa_pkl ORDER BY no_urut ASC, id ASC")
                 rows = cur.fetchall()
                 conn.close()
                 if rows:
@@ -200,10 +200,14 @@ def load_data(excel_path='Data_Pembagian_Tugas_PKL.xlsx', json_path='data_pkl.js
                             'no': r[0],
                             'guru': r[1] or '',
                             'nip': r[2] or '',
-                            'siswa': r[3] or '',
-                            'kelas': r[4] or '',
-                            'tempat': r[5] or '',
-                            'alamat': r[6] or ''
+                            'guru_pangkat': r[3] or '',
+                            'guru_jabatan': r[4] or 'Guru Pembimbing PKL',
+                            'siswa': r[5] or '',
+                            'nis': r[6] or '',
+                            'nisn': r[7] or '',
+                            'kelas': r[8] or '',
+                            'tempat': r[9] or '',
+                            'alamat': r[10] or ''
                         })
                     return records
             except Exception:
@@ -433,7 +437,10 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
                         show_kop=True,
                         show_ttd=True,
                         show_alamat=True,
-                        paper_size="f4"):
+                        paper_size="f4",
+                        tempat_surat="Klungkung",
+                        guru_pangkat="",
+                        guru_jabatan="Guru Pembimbing PKL"):
     
     if students is None:
         students = []
@@ -530,12 +537,18 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
         # 4. Identitas Guru: NIP
         if 'MERGEFIELD NIP' in text:
             clean_fld_paragraph(p, 'MERGEFIELD NIP', guru_nip if guru_nip else '-')
+
+        # 4.1 Guru Jabatan
+        if 'Jabatan :' in text or 'Jabatan:' in text:
+            for t in p.findall('.//w:t', NS):
+                if 'Guru Pembimbing PKL' in (t.text or ''):
+                    t.text = t.text.replace('Guru Pembimbing PKL', guru_jabatan or 'Guru Pembimbing PKL')
             
         # 5. Tanggal Surat (Klungkung, ...)
         if 'Klungkung' in text and 'SMK' not in text and 'Nomor' not in text:
             for t in p.findall('.//w:t', NS):
                 if 'Klungkung' in (t.text or ''):
-                    t.text = f'Klungkung, {tgl_surat}'
+                    t.text = f'{tempat_surat}, {tgl_surat}'
                 elif ',' in (t.text or '') or ' ' in (t.text or ''):
                     t.text = ''
                     
@@ -771,7 +784,7 @@ def format_nisn(val):
 def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", siswa_nis="-", siswa_nisn="-", siswa_kelas="", siswa_jurusan="", tempat_pkl="", no_surat="B.10.429.1/8464/SMKN1KLK/DIKPORA", tgl_surat="07 Oktober 2026",
                              nama_sekolah="SMKN 1 FYJ Channel", kepsek_nama="Sri Rejeki, S.Pd., M.Pd.",
                              kepsek_pangkat="Pembina (IV/a)", kepsek_nip="19770309 200903 2 010",
-                             show_kop=True, show_ttd=True, paper_size="f4"):
+                             show_kop=True, show_ttd=True, paper_size="f4", tempat_surat="Klungkung"):
     """Menghasilkan berkas Word DOCX Surat Keterangan PKL sesuai Contoh Surat Keterangan PKL.docx."""
     base_dir = os.path.dirname(os.path.abspath(__file__))
     candidates = [
@@ -921,7 +934,11 @@ def generate_keterangan_docx(template_path=None, out_path=None, siswa_nama="", s
                 if 'Marvella' in (t.text or ''):
                     t.text = t.text.replace('Marvella', tempat_pkl)
 
-        # Tanggal Surat
+        # Tempat & Tanggal Surat
+        if 'Ditetapkan di' in text and tempat_surat:
+            for t in p.findall('.//w:t', NS):
+                if 'Klungkung' in (t.text or ''):
+                    t.text = t.text.replace('Klungkung', tempat_surat)
         if 'Pada Tanggal' in text and tgl_surat:
             for t in p.findall('.//w:t', NS):
                 if 'Oktober' in (t.text or '') or '202' in (t.text or ''):
@@ -958,7 +975,8 @@ def generate_permohonan_murid_docx(template_path=None, out_path=None, tempat_pkl
                                     show_ttd=True,
                                     paper_size="a4",
                                     alamat_pkl="",
-                                    show_alamat=True):
+                                    show_alamat=True,
+                                    tempat_surat="Klungkung"):
     """Menghasilkan berkas Word DOCX Surat Permohonan PKL Murid sesuai template Surat PKL Murid.docx."""
     if students is None:
         students = []
@@ -1002,6 +1020,8 @@ def generate_permohonan_murid_docx(template_path=None, out_path=None, tempat_pkl
     xml_text = xml_text.replace('{jurusanPkl}', jurusan_str)
     xml_text = xml_text.replace('{periodePkl}', periode_pkl)
     xml_text = xml_text.replace('{tglSurat}', tgl_surat)
+    if tempat_surat and tempat_surat != 'Klungkung':
+        xml_text = xml_text.replace('Klungkung', tempat_surat)
 
     root = ET.fromstring(xml_text.encode('utf-8'))
     body = root.find(f'{{{NS["w"]}}}body')

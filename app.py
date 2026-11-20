@@ -464,6 +464,9 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 kepsek_pangkat = req_data.get('kepsek_pangkat', 'Pembina (IV/a)')
                 kepsek_nip = req_data.get('kepsek_nip', '19770309 200903 2 010')
                 alamat_pkl = req_data.get('alamat_pkl', '')
+                tempat_surat = req_data.get('tempat_surat', 'Klungkung')
+                guru_pangkat = req_data.get('guru_pangkat', '')
+                guru_jabatan = req_data.get('guru_jabatan', 'Guru Pembimbing PKL')
 
                 is_keterangan = (template_id == 'tpl_surat_keterangan_pkl' or doc_type == 'keterangan')
                 is_permohonan = (template_id == 'tpl_surat_permohonan_pkl_murid' or doc_type == 'permohonan')
@@ -485,7 +488,8 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                         show_ttd=show_ttd,
                         paper_size=paper_size,
                         alamat_pkl=alamat_pkl,
-                        show_alamat=show_alamat
+                        show_alamat=show_alamat,
+                        tempat_surat=tempat_surat
                     )
                     safe_name = "".join(c for c in (tempat_pkl or 'DU_DI') if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
                     filename = f"Surat_Permohonan_PKL_{safe_name}.docx"
@@ -515,7 +519,8 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                         kepsek_nip=kepsek_nip,
                         show_kop=show_kop,
                         show_ttd=show_ttd,
-                        paper_size=paper_size
+                        paper_size=paper_size,
+                        tempat_surat=tempat_surat
                     )
                     safe_name = "".join(c for c in (siswa_nama or 'Siswa') if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
                     filename = f"Surat_Keterangan_PKL_{safe_name}.docx"
@@ -544,7 +549,10 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                         show_kop=show_kop,
                         show_ttd=show_ttd,
                         show_alamat=show_alamat,
-                        paper_size=paper_size
+                        paper_size=paper_size,
+                        tempat_surat=tempat_surat,
+                        guru_pangkat=guru_pangkat,
+                        guru_jabatan=guru_jabatan
                     )
                     safe_name = "".join(c for c in guru_nama if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
                     filename = f"Surat_Pengantar_PKL_{safe_name}.docx"
@@ -585,6 +593,7 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 kepsek_nama = req_data.get('kepsek_nama', settings.get('kepsekNama', 'Sri Rejeki, S.Pd., M.Pd.'))
                 kepsek_pangkat = req_data.get('kepsek_pangkat', settings.get('kepsekPangkat', 'Pembina (IV/a)'))
                 kepsek_nip = req_data.get('kepsek_nip', settings.get('kepsekNip', '19770309 200903 2 010'))
+                tempat_surat = req_data.get('tempat_surat', settings.get('tempatSurat', 'Klungkung'))
 
                 zip_buffer = io.BytesIO()
 
@@ -615,7 +624,8 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                                 kepsek_nip=kepsek_nip,
                                 show_kop=show_kop,
                                 show_ttd=show_ttd,
-                                paper_size=paper_size
+                                paper_size=paper_size,
+                                tempat_surat=tempat_surat
                             )
                             safe_s = re.sub(r'[^a-zA-Z0-9]', '_', s_nama)
                             master_zip.writestr(f"Surat_Keterangan_{idx:03d}_{safe_s}.docx", doc_bytes)
@@ -645,7 +655,8 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                                 show_ttd=show_ttd,
                                 paper_size=paper_size,
                                 alamat_pkl=t_alamat,
-                                show_alamat=show_alamat
+                                show_alamat=show_alamat,
+                                tempat_surat=tempat_surat
                             )
                             safe_t = re.sub(r'[^a-zA-Z0-9]', '_', t_name)[:30]
                             master_zip.writestr(f"Surat_Permohonan_{idx:02d}_{safe_t}.docx", doc_bytes)
@@ -664,6 +675,9 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                             is_single_place = len(tempat_set) == 1
                             target_tempat = list(tempat_set)[0] if is_single_place else ''
                             target_alamat = info['siswa'][0].get('alamat', '') if (is_single_place and info['siswa']) else ''
+                            first_s = info['siswa'][0] if info['siswa'] else {}
+                            g_pangkat = first_s.get('guru_pangkat', '')
+                            g_jabatan = first_s.get('guru_jabatan', 'Guru Pembimbing PKL')
 
                             doc_bytes = generate_surat_docx(
                                 template_path=template_path,
@@ -688,7 +702,10 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                                 show_kop=show_kop,
                                 show_ttd=show_ttd,
                                 show_alamat=show_alamat,
-                                paper_size=paper_size
+                                paper_size=paper_size,
+                                tempat_surat=tempat_surat,
+                                guru_pangkat=g_pangkat,
+                                guru_jabatan=g_jabatan
                             )
                             safe_g = "".join(c for c in g_name if c.isalnum() or c in (' ', '_')).strip().replace(' ', '_')
                             master_zip.writestr(f"Surat_Pengantar_{idx:02d}_{safe_g}.docx", doc_bytes)
