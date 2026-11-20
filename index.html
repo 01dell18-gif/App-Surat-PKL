@@ -195,30 +195,30 @@
 
   <!-- ================= TOP HEADER NAVIGATION ================= -->
   <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 text-white shadow-lg sticky top-0 z-30 no-print border-b border-indigo-800/40">
-    <div class="max-w-[1600px] mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-3">
+    <div class="max-w-[1600px] mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex justify-between items-center gap-2 sm:gap-3">
       
       <!-- Brand & School Info -->
-      <div class="flex items-center gap-3">
-        <div id="headerBrandLogoWrapper" class="w-10 h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shadow-inner overflow-hidden">
-          <i id="defaultBrandIcon" data-lucide="file-badge" class="w-6 h-6"></i>
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div id="headerBrandLogoWrapper" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shadow-inner overflow-hidden shrink-0">
+          <i id="defaultBrandIcon" data-lucide="file-badge" class="w-5 h-5 sm:w-6 sm:h-6"></i>
         </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">Aplikasi Surat Pengantar PKL</h1>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <h1 class="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-white leading-tight truncate">Aplikasi Surat Pengantar PKL</h1>
             <button type="button" 
                     onclick="openChangelogModal()" 
-                    class="inline-flex items-center gap-1 text-[10px] font-bold bg-indigo-500/30 hover:bg-indigo-500/60 text-indigo-200 hover:text-white border border-indigo-400/40 px-2 py-0.5 rounded-full transition shadow-xs cursor-pointer group" 
+                    class="inline-flex items-center gap-1 text-[10px] font-bold bg-indigo-500/30 hover:bg-indigo-500/60 text-indigo-200 hover:text-white border border-indigo-400/40 px-2 py-0.5 rounded-full transition shadow-xs cursor-pointer group shrink-0" 
                     title="Klik untuk melihat catatan pembaruan versi v2.4 Pro">
               <i data-lucide="sparkles" class="w-3 h-3 text-amber-300 group-hover:scale-110 transition-transform"></i>
               <span>v2.4 Pro</span>
             </button>
           </div>
-          <p id="headerSchoolSubtitle" class="text-xs text-indigo-200/80">SMKN 1 FYJ Channel • Tahun Ajaran 2026/2027</p>
+          <p id="headerSchoolSubtitle" class="text-[11px] sm:text-xs text-indigo-200/80 truncate max-w-[200px] sm:max-w-none">SMKN 1 FYJ Channel • Tahun Ajaran 2026/2027</p>
         </div>
       </div>
 
-      <!-- Quick Statistics Badges -->
-      <div class="hidden lg:flex items-center gap-3 text-xs">
+      <!-- Quick Statistics Badges (Desktop Only) -->
+      <div class="hidden xl:flex items-center gap-3 text-xs">
         <div class="bg-slate-800/60 border border-slate-700/60 px-3 py-1.5 rounded-lg flex items-center gap-2 text-slate-300">
           <i data-lucide="users" class="w-4 h-4 text-emerald-400"></i>
           <span>Total Siswa:</span>
@@ -236,30 +236,30 @@
         </div>
       </div>
 
-      <!-- Clean & Streamlined Toolbar (Mobile & Desktop Responsive - Tombol Kecil & Ramping) -->
-      <div class="flex flex-wrap sm:flex-nowrap items-center gap-1.5 sm:gap-2 w-full lg:w-auto">
+      <!-- TOOLBAR DESKTOP (Tampilan Lengkap Sesuai Semula) -->
+      <div class="hidden lg:flex items-center gap-1.5 sm:gap-2">
         
         <!-- 1. Database Button -->
-        <button onclick="openDatabaseModal()" class="flex-1 sm:flex-initial justify-center flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Kelola database siswa, tambah data, dan unggah Excel">
+        <button onclick="openDatabaseModal()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Kelola database siswa, tambah data, dan unggah Excel">
           <i data-lucide="database" class="w-3.5 h-3.5 text-sky-400"></i>
           <span>Kelola Data</span>
         </button>
 
-        <!-- 2. Template Surat Button (Opens Template Manager & Daftar Template) -->
-        <button onclick="openTemplateModal('list')" class="flex-1 sm:flex-initial justify-center flex items-center gap-1.5 bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 border border-indigo-700/70 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Buka menu template surat dan daftar template">
+        <!-- 2. Template Surat Button (Halaman Khusus) -->
+        <button onclick="openTemplateModal('list')" class="flex items-center gap-1.5 bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 border border-indigo-700/70 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Buka halaman khusus kelola template surat">
           <i data-lucide="layout-template" class="w-3.5 h-3.5 text-indigo-400"></i>
           <span>Template Surat</span>
         </button>
 
-        <!-- 3. Pengaturan Button (Opens Settings Modal) -->
-        <button onclick="openSettingsModal()" class="flex-1 sm:flex-initial justify-center flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Pengaturan Kop Surat, TTD Elektronik, TTD Basah, Logo Web, Sekolah & Tahun Ajaran">
+        <!-- 3. Pengaturan Button (Halaman Khusus) -->
+        <button onclick="openSettingsModal()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Buka halaman khusus Pengaturan Kop Surat, TTD, Logo Web & Sekolah">
           <i data-lucide="settings" class="w-3.5 h-3.5 text-amber-400"></i>
           <span>Pengaturan</span>
         </button>
 
         <!-- 4. Dropdown Cetak Dokumen -->
-        <div class="relative inline-block text-left flex-1 sm:flex-initial" id="dropdownCetakWrapper">
-          <button onclick="toggleDropdown('dropdownCetakMenu')" class="w-full sm:w-auto justify-center flex items-center gap-1.5 bg-indigo-700 hover:bg-indigo-600 text-white font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer">
+        <div class="relative inline-block text-left" id="dropdownCetakWrapper">
+          <button onclick="toggleDropdown('dropdownCetakMenu')" class="justify-center flex items-center gap-1.5 bg-indigo-700 hover:bg-indigo-600 text-white font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer">
             <i data-lucide="printer" class="w-3.5 h-3.5 text-indigo-200"></i>
             <span>Cetak Dokumen</span>
             <i data-lucide="chevron-down" class="w-3 h-3 opacity-80"></i>
@@ -284,8 +284,8 @@
         </div>
 
         <!-- 5. Dropdown Unduh Dokumen -->
-        <div class="relative inline-block text-left flex-1 sm:flex-initial" id="dropdownUnduhWrapper">
-          <button onclick="toggleDropdown('dropdownUnduhMenu')" class="w-full sm:w-auto justify-center flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer">
+        <div class="relative inline-block text-left" id="dropdownUnduhWrapper">
+          <button onclick="toggleDropdown('dropdownUnduhMenu')" class="justify-center flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer">
             <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-100"></i>
             <span>Unduh File</span>
             <i data-lucide="chevron-down" class="w-3 h-3 opacity-80"></i>
@@ -312,7 +312,7 @@
         <!-- 6. Tombol Hapus Cache & Refresh (Ikon Saja) -->
         <button type="button" 
                 onclick="clearCacheAndRefresh()" 
-                class="flex-none flex items-center justify-center bg-slate-800 hover:bg-rose-600 text-rose-400 hover:text-white border border-slate-700 hover:border-rose-500 p-2 rounded-lg transition shadow-xs cursor-pointer" 
+                class="flex items-center justify-center bg-slate-800 hover:bg-rose-600 text-rose-400 hover:text-white border border-slate-700 hover:border-rose-500 p-2 rounded-lg transition shadow-xs cursor-pointer" 
                 title="Hapus Cache & Refresh Web"
                 aria-label="Hapus Cache & Refresh Web">
           <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -320,11 +320,72 @@
 
       </div>
 
+      <!-- TOOLBAR KHUSUS MODE MOBILE (IKON SAJA: Cetak, Unduh, Hapus Cache) -->
+      <div class="flex lg:hidden items-center gap-1.5 shrink-0">
+        
+        <!-- Cetak Dokumen (Ikon Saja Mobile) -->
+        <div class="relative inline-block text-left" id="dropdownCetakMobileWrapper">
+          <button onclick="toggleDropdown('dropdownCetakMobileMenu')" class="p-2 rounded-lg bg-indigo-700 hover:bg-indigo-600 text-white transition shadow-xs cursor-pointer flex items-center justify-center" title="Cetak Dokumen">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+          </button>
+          <div id="dropdownCetakMobileMenu" class="dropdown-menu-list hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-1.5 z-50 text-slate-700 animate-in fade-in slide-in-from-top-1 duration-150">
+            <button onclick="printCurrentDoc(); closeAllDropdowns();" class="w-full text-left px-3.5 py-2.5 text-xs hover:bg-indigo-50 hover:text-indigo-700 flex items-center gap-2.5 transition">
+              <i data-lucide="file-text" class="w-4 h-4 text-indigo-600"></i>
+              <div>
+                <div class="font-semibold text-slate-800">Cetak Surat Ini</div>
+                <div class="text-[10px] text-slate-400">1 surat aktif</div>
+              </div>
+            </button>
+            <div class="border-t border-slate-100 my-1"></div>
+            <button onclick="openBatchPrintModal(); closeAllDropdowns();" class="w-full text-left px-3.5 py-2.5 text-xs hover:bg-indigo-50 hover:text-indigo-700 flex items-center gap-2.5 transition">
+              <i data-lucide="copy" class="w-4 h-4 text-amber-500"></i>
+              <div>
+                <div class="font-semibold text-slate-800">Cetak Massal</div>
+                <div class="text-[10px] text-slate-400">Semua guru / DU-DI</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Unduh File (Ikon Saja Mobile) -->
+        <div class="relative inline-block text-left" id="dropdownUnduhMobileWrapper">
+          <button onclick="toggleDropdown('dropdownUnduhMobileMenu')" class="p-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition shadow-xs cursor-pointer flex items-center justify-center" title="Unduh File">
+            <i data-lucide="download" class="w-4 h-4"></i>
+          </button>
+          <div id="dropdownUnduhMobileMenu" class="dropdown-menu-list hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-1.5 z-50 text-slate-700 animate-in fade-in slide-in-from-top-1 duration-150">
+            <button onclick="downloadDocxClient(); closeAllDropdowns();" class="w-full text-left px-3.5 py-2.5 text-xs hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2.5 transition">
+              <i data-lucide="file-type-2" class="w-4 h-4 text-emerald-600"></i>
+              <div>
+                <div class="font-semibold text-slate-800">Unduh Word (.DOCX)</div>
+                <div class="text-[10px] text-slate-400">Format resmi MS Word</div>
+              </div>
+            </button>
+            <div class="border-t border-slate-100 my-1"></div>
+            <button onclick="downloadBatchZipClient(); closeAllDropdowns();" class="w-full text-left px-3.5 py-2.5 text-xs hover:bg-cyan-50 hover:text-cyan-700 flex items-center gap-2.5 transition">
+              <i data-lucide="archive" class="w-4 h-4 text-cyan-600"></i>
+              <div>
+                <div class="font-semibold text-slate-800">Unduh Semua (.ZIP)</div>
+                <div class="text-[10px] text-slate-400">Arsip berkas .docx lengkap</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tombol Hapus Cache Mobile -->
+        <button type="button" 
+                onclick="clearCacheAndRefresh()" 
+                class="p-2 rounded-lg bg-slate-800 hover:bg-rose-600 text-rose-400 hover:text-white border border-slate-700 transition shadow-xs cursor-pointer flex items-center justify-center" 
+                title="Hapus Cache & Refresh Web">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+
+      </div>
+
     </div>
   </header>
 
-  <!-- ================= MAIN CONTAINER ================= -->
-  <main class="max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 flex flex-col lg:flex-row gap-5 lg:gap-6">
+  <!-- ================= MAIN CONTAINER (HALAMAN BERANDA / PRATINJAU SURAT) ================= -->
+  <main id="viewMainApp" class="max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 flex flex-col lg:flex-row gap-5 lg:gap-6 pb-24 lg:pb-6">
 
     <!-- ================= SIDEBAR CONTROLS (ACCORDION DROPDOWN SYSTEM) ================= -->
     <aside class="w-full lg:w-96 flex-shrink-0 flex flex-col gap-3.5 no-print">
@@ -665,33 +726,7 @@
             <!-- Injected by JS using kop_fyj.png / base64 without double line border -->
           </div>
 
-          <!-- JUDUL SURAT (Dikelola langsung di dalam Redaksi Template WYSIWYG) -->
-          <div id="docJudulContainer" style="display: none; text-align: center; margin-top: 10px; margin-bottom: 14px;">
-            <div id="docJudulSurat" style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
-            <div style="font-size: 11pt; margin-top: 2px;">Nomor: <span id="docNoSurat">B.10.000/9546/SMKN1KLK/DIKPORA</span></div>
-          </div>
-
-          <!-- TUJUAN SURAT -->
-          <div id="docTujuanSuratContainer" style="margin-bottom: 14px;">
-            <table style="width: 100%;">
-              <tr>
-                <td style="width: 10%; vertical-align: top;">Kepada:</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td style="vertical-align: top;">Yth.</td>
-                <td>
-                  <div style="font-weight: bold;">Pimpinan DU/DI</div>
-                  <div style="font-weight: bold; display: none;" id="docNamaTempat"></div>
-                  <div style="font-size: 10.5pt; color: #333; display: none;" id="docAlamatTempat"></div>
-                  <div>di -</div>
-                  <div style="text-indent: 20px;">Tempat</div>
-                </td>
-              </tr>
-            </table>
-          </div>
-
-          <!-- ISI SURAT DINAMIS (DARI TEMPLATE AKTIF) -->
+          <!-- ISI SURAT DINAMIS (DARI TEMPLATE AKTIF: Judul & Nomor Surat di awal, diikuti Tujuan Surat, Isi, dan TTD) -->
           <div id="docIsiSuratContainer" style="text-align: justify; line-height: 1.35; font-size: 11pt;">
             <!-- Rendered dynamically by JS from active template HTML -->
           </div>
@@ -746,26 +781,38 @@
   <!-- ================= BATCH PRINT OFFLINE/PRINT CONTAINER ================= -->
   <div id="batchPrintContainer"></div>
 
-  <!-- ================= MODAL MANAJEMEN TEMPLATE & WYSIWYG EDITOR ================= -->
-  <div id="templateManagerModal" class="fixed inset-0 bg-slate-900/65 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 hidden no-print" style="display: none;">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[96vh] sm:max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
+  <!-- ================= HALAMAN KHUSUS: KELOLA TEMPLATE SURAT ================= -->
+  <section id="viewTemplateManager" class="max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 hidden no-print pb-24 lg:pb-8">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col min-h-[750px]">
       
-      <!-- Modal Top Navigation Tabs -->
-      <div class="p-3 sm:p-4 px-4 sm:px-6 border-b border-slate-200 bg-slate-50/80 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none pb-1 sm:pb-0">
-          <button id="btnTabEditor" onclick="switchTemplateTab('editor')" class="px-3 sm:px-4 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm flex items-center gap-1.5 transition whitespace-nowrap shrink-0">
+      <!-- Top Navigation Header with 'Kembali ke Surat' -->
+      <div class="p-3.5 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-slate-50 via-indigo-50/30 to-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <button type="button" 
+                  onclick="navigateToView('main')" 
+                  class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 hover:text-indigo-700 border border-slate-300 text-xs font-bold transition shadow-xs cursor-pointer group">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-indigo-600 group-hover:-translate-x-0.5 transition-transform"></i>
+            <span>Kembali ke Surat</span>
+          </button>
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <i data-lucide="layout-template" class="w-5 h-5 text-indigo-600"></i>
+              <span>Kelola Template Surat</span>
+            </h2>
+            <p class="text-xs text-slate-500">Edit naskah template dengan Editor WYSIWYG atau kelola daftar template surat</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="btnTabEditor" onclick="switchTemplateTab('editor')" class="px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl bg-indigo-600 text-white shadow-sm flex items-center gap-1.5 transition cursor-pointer">
             <i data-lucide="edit-3" class="w-4 h-4"></i>
             <span>Editor Teks / WYSIWYG</span>
           </button>
-          <button id="btnTabList" onclick="switchTemplateTab('list')" class="px-3 sm:px-4 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition whitespace-nowrap shrink-0">
+          <button id="btnTabList" onclick="switchTemplateTab('list')" class="px-3.5 sm:px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition cursor-pointer">
             <i data-lucide="clipboard-list" class="w-4 h-4"></i>
             <span>Daftar Template (<span id="templateTabCount">0</span>)</span>
           </button>
         </div>
-
-        <button onclick="closeTemplateModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition shrink-0">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
       </div>
 
       <!-- TAB 1: WYSIWYG RICH TEXT EDITOR VIEW -->
@@ -869,6 +916,7 @@
           <button onclick="insertEditorVariable('{tglSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{tglSurat}</button>
           <button onclick="insertEditorVariable('{tempatSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium" title="Tempat Penerbitan Surat (Klungkung / lainnya)">+{tempatSurat}</button>
           <button onclick="insertEditorVariable('{titimangsaSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium" title="Titimangsa Lengkap (Tempat & Tanggal)">+{titimangsaSurat}</button>
+          <button onclick="insertEditorVariable('{tujuanSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-amber-100 border border-amber-300 font-mono text-amber-900 transition font-bold" title="Tujuan Surat Resmi (Kepada: Yth. Pimpinan DU/DI + Alamat)">+{tujuanSurat}</button>
           <button onclick="insertEditorVariable('{ttdSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-emerald-100 border border-emerald-300 font-mono text-emerald-900 transition font-bold" title="Blok Tanda Tangan Lengkap (Titimangsa + TTD Elektronik/Basah + Nama Kepsek)">+{ttdSurat}</button>
           <!-- Guru -->
           <button onclick="insertEditorVariable('{guruNama}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{guruNama}</button>
@@ -961,57 +1009,55 @@
 
       </div>
 
-      <!-- Modal Footer -->
+      <!-- Footer Bar -->
       <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2.5">
-        <button onclick="closeTemplateModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
-          Tutup
+        <button type="button" onclick="navigateToView('main')" class="px-5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100 transition cursor-pointer flex items-center gap-2 shadow-xs">
+          <i data-lucide="arrow-left" class="w-4 h-4 text-indigo-600"></i>
+          <span>Kembali ke Halaman Surat</span>
         </button>
       </div>
 
     </div>
-  </div>
+  </section>
 
-  <!-- ================= MODAL PENGATURAN APLIKASI & LEMBAGA ================= -->
-  <div id="settingsModal" class="fixed inset-0 bg-slate-900/65 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 hidden no-print" style="display: none;">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[96vh] sm:max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
+  <!-- ================= HALAMAN KHUSUS: PENGATURAN APLIKASI & LEMBAGA ================= -->
+  <section id="viewSettingsManager" class="max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 hidden no-print pb-24 lg:pb-8">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col min-h-[750px]">
       
-      <!-- Modal Header with Tabs -->
-      <div class="p-3.5 sm:p-4 px-4 sm:px-6 border-b border-slate-200 bg-slate-50 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shadow-xs shrink-0">
-              <i data-lucide="settings" class="w-5 h-5"></i>
-            </div>
-            <div>
-              <h3 class="text-sm sm:text-base font-bold text-slate-800">Pengaturan Aplikasi & Lembaga</h3>
-              <p class="text-[11px] text-slate-500">Kop Surat, TTD Elektronik & Basah, Logo Web, Sekolah, TA & Database</p>
-            </div>
-          </div>
-          <button onclick="closeSettingsModal()" class="lg:hidden text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition shrink-0">
-            <i data-lucide="x" class="w-5 h-5"></i>
+      <!-- Top Navigation Header with 'Kembali ke Surat' -->
+      <div class="p-3.5 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-slate-50 via-amber-50/20 to-white flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <button type="button" 
+                  onclick="navigateToView('main')" 
+                  class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 hover:text-indigo-700 border border-slate-300 text-xs font-bold transition shadow-xs cursor-pointer group">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-indigo-600 group-hover:-translate-x-0.5 transition-transform"></i>
+            <span>Kembali ke Surat</span>
           </button>
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <i data-lucide="settings" class="w-5 h-5 text-amber-500"></i>
+              <span>Pengaturan Aplikasi &amp; Lembaga</span>
+            </h2>
+            <p class="text-xs text-slate-500">Kop Surat, TTD Elektronik &amp; Basah, Logo Web, Sekolah, TA &amp; Database</p>
+          </div>
         </div>
 
         <div class="flex items-center justify-between gap-2">
           <!-- Navigation Tabs -->
           <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none pb-1 lg:pb-0 flex-nowrap flex-1 sm:flex-initial">
-            <button id="btnTabSettingMedia" onclick="switchSettingsTab('media')" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm flex items-center gap-1.5 transition whitespace-nowrap shrink-0">
+            <button id="btnTabSettingMedia" onclick="switchSettingsTab('media')" class="px-3.5 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm flex items-center gap-1.5 transition whitespace-nowrap shrink-0 cursor-pointer">
               <i data-lucide="image" class="w-3.5 h-3.5"></i>
-              <span>Kop, TTD & Logo</span>
+              <span>Kop, TTD &amp; Logo</span>
             </button>
-            <button id="btnTabSettingSchool" onclick="switchSettingsTab('school')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition whitespace-nowrap shrink-0">
+            <button id="btnTabSettingSchool" onclick="switchSettingsTab('school')" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition whitespace-nowrap shrink-0 cursor-pointer">
               <i data-lucide="school" class="w-3.5 h-3.5"></i>
-              <span>Sekolah & TA</span>
+              <span>Sekolah &amp; TA</span>
             </button>
-            <button id="btnTabSettingDatabase" onclick="switchSettingsTab('database')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition whitespace-nowrap shrink-0">
+            <button id="btnTabSettingDatabase" onclick="switchSettingsTab('database')" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition whitespace-nowrap shrink-0 cursor-pointer">
               <i data-lucide="database" class="w-3.5 h-3.5"></i>
-              <span>Database SQLite & SQL</span>
+              <span>Database SQLite &amp; SQL</span>
             </button>
           </div>
-          
-          <button onclick="closeSettingsModal()" class="hidden lg:block text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition ml-2 shrink-0">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
         </div>
       </div>
 
@@ -1452,18 +1498,18 @@
 
       </div>
 
-      <!-- Modal Footer -->
+      <!-- Footer Bar -->
       <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <button onclick="resetSettingsToDefault()" class="px-3.5 py-2 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition flex items-center gap-1.5">
+        <button onclick="resetSettingsToDefault()" class="px-3.5 py-2 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer">
           <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
           <span>Reset Semua ke Standar Awal</span>
         </button>
 
         <div class="flex items-center gap-2 self-end sm:self-auto">
-          <button onclick="closeSettingsModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
-            Batal
+          <button type="button" onclick="navigateToView('main')" class="px-4 py-2 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+            Batal &amp; Kembali
           </button>
-          <button onclick="saveAppSettings()" class="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5">
+          <button type="button" onclick="saveAppSettings()" class="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5 cursor-pointer">
             <i data-lucide="check" class="w-4 h-4"></i>
             <span>Simpan Pengaturan</span>
           </button>
@@ -1471,7 +1517,7 @@
       </div>
 
     </div>
-  </div>
+  </section>
 
   <!-- ================= BATCH PRINT MODAL ================= -->
   <div id="batchPrintModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 hidden no-print" style="display: none;">
@@ -1974,6 +2020,45 @@
 
     </div>
   </div>
+
+  <!-- ================= MOBILE BOTTOM NAVIGATION BAR (KHUSUS MODE MOBILE) ================= -->
+  <nav id="mobileBottomNav" class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] px-2 py-1.5 flex items-center justify-around no-print">
+    <!-- 1. Surat / Beranda -->
+    <button type="button" 
+            onclick="navigateToView('main')" 
+            id="mobileNavBtn_main" 
+            class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="file-text" class="w-5 h-5 mb-0.5 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-bold tracking-tight">Surat</span>
+    </button>
+
+    <!-- 2. Kelola Data -->
+    <button type="button" 
+            onclick="openDatabaseModal()" 
+            id="mobileNavBtn_database" 
+            class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="database" class="w-5 h-5 mb-0.5 text-sky-500 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-semibold tracking-tight">Kelola Data</span>
+    </button>
+
+    <!-- 3. Template Surat -->
+    <button type="button" 
+            onclick="navigateToView('template', 'list')" 
+            id="mobileNavBtn_template" 
+            class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="layout-template" class="w-5 h-5 mb-0.5 text-indigo-500 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-semibold tracking-tight">Template</span>
+    </button>
+
+    <!-- 4. Pengaturan -->
+    <button type="button" 
+            onclick="navigateToView('settings')" 
+            id="mobileNavBtn_settings" 
+            class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="settings" class="w-5 h-5 mb-0.5 text-amber-500 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-semibold tracking-tight">Pengaturan</span>
+    </button>
+  </nav>
 
   <!-- ================= SCRIPTS ================= -->
   <!-- 1. Offline Base64 Assets (kop, ttd elektronik, ttd basah, logo web) -->

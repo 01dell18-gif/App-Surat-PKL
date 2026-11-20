@@ -155,6 +155,8 @@ const DEFAULT_TEMPLATES = [
   <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
 </div>
 
+{tujuanSurat}
+
 <p style="margin-bottom: 8px;">Dengan hormat,</p>
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
   Dalam rangka pelaksanaan kegiatan Praktek Kerja Lapangan (PKL) bagi siswa/siswi {namaSekolah} Tahun Ajaran {tahunAjaran}, bersama ini kami menugaskan guru pembimbing untuk menyerahkan sekaligus mengantarkan siswa/siswi kami melaksanakan PKL di perusahaan/instansi yang Bapak/Ibu pimpin.
@@ -232,6 +234,8 @@ const DEFAULT_TEMPLATES = [
   <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
   <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
 </div>
+
+{tujuanSurat}
 
 <p style="margin-bottom: 8px;">Dengan hormat,</p>
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
@@ -1098,7 +1102,9 @@ function closeAllDropdowns() {
 function setupDropdownDismiss() {
   window.addEventListener('click', (e) => {
     if (!e.target.closest('#dropdownCetakWrapper') && 
+        !e.target.closest('#dropdownCetakMobileWrapper') && 
         !e.target.closest('#dropdownUnduhWrapper') && 
+        !e.target.closest('#dropdownUnduhMobileWrapper') && 
         !e.target.closest('#dropdownExcelWrapper')) {
       closeAllDropdowns();
     }
@@ -1677,6 +1683,32 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
 </div>
   `;
 
+  let namaTempatHtml = '';
+  if (letter.isSpecificTempat && letter.tempatPkl) {
+    namaTempatHtml = `<div style="font-weight: bold;">${escapeXml(letter.tempatPkl)}</div>`;
+  }
+  let alamatTempatHtml = '';
+  if (letter.isSpecificTempat && showAlamat && letter.alamatPkl) {
+    alamatTempatHtml = `<div style="font-size: 10pt; color: #333;">${escapeXml(letter.alamatPkl)}</div>`;
+  }
+  const tujuanSuratHtml = `
+<table style="width: 100%; margin-top: 4px; margin-bottom: 14px;">
+  <tr>
+    <td style="width: 10%; vertical-align: top;">Kepada:</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Yth.</td>
+    <td>
+      <div style="font-weight: bold;">Pimpinan DU/DI</div>
+      ${namaTempatHtml}
+      ${alamatTempatHtml}
+      <div>di -</div>
+      <div style="text-indent: 20px;">Tempat</div>
+    </td>
+  </tr>
+</table>`.trim();
+
   let rendered = templateHtml
     .replace(/{tingkatKelas}/g, tingkatKelas)
     .replace(/{jurusanPkl}/g, jurusanPkl)
@@ -1694,6 +1726,7 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{tempatSurat}/g, tempatSurat)
     .replace(/{titimangsaSurat}/g, titimangsaSurat)
     .replace(/{ttdSurat}/g, ttdSuratHtml)
+    .replace(/{tujuanSurat}/g,  tujuanSuratHtml)
     .replace(/{kepsekNama}/g, s.kepsekNama)
     .replace(/{kepsekNip}/g, s.kepsekNip)
     .replace(/{kepsekPangkat}/g, s.kepsekPangkat)
@@ -1711,6 +1744,21 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{siswaJurusan}/g, siswaJurusan)
     .replace(/{lamaPkl}/g, '6 bulan')
     .replace(/{jabatanGuru}/g, guruJabatan);
+
+  if (!templateHtml.includes('{tujuanSurat}')) {
+    const isKetOrPerm = (templateHtml.toLowerCase().includes('keterangan') || templateHtml.toLowerCase().includes('permohonan'));
+    if (!isKetOrPerm) {
+      const dhIdx = rendered.indexOf('<p style="margin-bottom: 8px;">Dengan hormat,</p>');
+      if (dhIdx !== -1) {
+        rendered = rendered.slice(0, dhIdx) + tujuanSuratHtml + '\n\n' + rendered.slice(dhIdx);
+      } else {
+        const dhPlain = rendered.search(/<p[^>]*>Dengan hormat/i);
+        if (dhPlain !== -1) {
+          rendered = rendered.slice(0, dhPlain) + tujuanSuratHtml + '\n\n' + rendered.slice(dhPlain);
+        }
+      }
+    }
+  }
 
   if (rendered.includes('{tujuanAlamatPkl}')) {
     rendered = rendered.replace(/{tujuanAlamatPkl}/g, alamatPklHtml);
@@ -1765,10 +1813,10 @@ function renderPreview() {
   const docNoSurat = document.getElementById('docNoSurat');
   if (docNoSurat) docNoSurat.textContent = ds.noSurat;
 
-  // 3. Tujuan Surat (Untuk Surat Keterangan & Permohonan Murid tidak ditampilkan di sini karena sudah ada di dalam body template)
+  // 3. Tujuan Surat (Sudah menyatu rapi di dalam template setelah Judul & Nomor Surat)
   const docTujuanSuratContainer = document.getElementById('docTujuanSuratContainer');
   if (docTujuanSuratContainer) {
-    docTujuanSuratContainer.style.display = (isKeterangan || isPermohonan) ? 'none' : 'block';
+    docTujuanSuratContainer.style.display = 'none';
   }
 
   const docNamaTempat = document.getElementById('docNamaTempat');
@@ -1860,24 +1908,79 @@ function renderPreview() {
   updatePaperSizeClass();
 }
 
-// ================= MODAL TEMPLATE MANAGEMENT & WYSIWYG =================
+// ================= MULTI-VIEW NAVIGATION (SURAT / TEMPLATE / PENGATURAN) =================
+function navigateToView(viewName, tab = null) {
+  const views = {
+    main: document.getElementById('viewMainApp'),
+    template: document.getElementById('viewTemplateManager'),
+    settings: document.getElementById('viewSettingsManager')
+  };
+
+  Object.keys(views).forEach(k => {
+    const el = views[k];
+    if (!el) return;
+    if (k === viewName) {
+      el.classList.remove('hidden');
+      el.style.display = (k === 'main') ? 'flex' : 'block';
+    } else {
+      el.classList.add('hidden');
+      el.style.display = 'none';
+    }
+  });
+
+  // Update mobile bottom navigation button active styles
+  const navBtns = {
+    main: document.getElementById('mobileNavBtn_main'),
+    template: document.getElementById('mobileNavBtn_template'),
+    settings: document.getElementById('mobileNavBtn_settings')
+  };
+
+  Object.keys(navBtns).forEach(k => {
+    const btn = navBtns[k];
+    if (!btn) return;
+    const span = btn.querySelector('span');
+    if (k === viewName) {
+      btn.classList.add('text-indigo-600');
+      btn.classList.remove('text-slate-500');
+      if (span) {
+        span.classList.add('font-bold');
+        span.classList.remove('font-semibold');
+      }
+    } else {
+      btn.classList.remove('text-indigo-600');
+      btn.classList.add('text-slate-500');
+      if (span) {
+        span.classList.remove('font-bold');
+        span.classList.add('font-semibold');
+      }
+    }
+  });
+
+  if (viewName === 'template') {
+    populateEditorTemplateSelect();
+    loadTemplateIntoEditor(AppState.editingTemplateId || AppState.activeTemplateId);
+    renderTemplateTable();
+    if (tab) switchTemplateTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (viewName === 'settings') {
+    populateSettingsInputs();
+    if (tab) switchSettingsTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    renderPreview();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if (window.lucide) lucide.createIcons();
+}
+
+// ================= MODAL / HALAMAN TEMPLATE MANAGEMENT & WYSIWYG =================
 function openTemplateModal(tab = 'list') {
-  const modal = document.getElementById('templateManagerModal');
-  if (!modal) return;
-  populateEditorTemplateSelect();
-  loadTemplateIntoEditor(AppState.editingTemplateId || AppState.activeTemplateId);
-  renderTemplateTable();
-  switchTemplateTab(tab);
-  modal.style.display = 'flex';
-  modal.classList.remove('hidden');
+  navigateToView('template', tab);
 }
 
 function closeTemplateModal() {
-  const modal = document.getElementById('templateManagerModal');
-  if (modal) {
-    modal.style.display = 'none';
-    modal.classList.add('hidden');
-  }
+  navigateToView('main');
 }
 
 function switchTemplateTab(tab) {
@@ -2341,11 +2444,8 @@ function renderTemplateTable() {
   if (window.lucide) lucide.createIcons();
 }
 
-// ================= MODAL PENGATURAN APLIKASI & LEMBAGA =================
-function openSettingsModal(tab = 'media') {
-  const modal = document.getElementById('settingsModal');
-  if (!modal) return;
-
+// ================= HALAMAN KHUSUS PENGATURAN APLIKASI & LEMBAGA =================
+function populateSettingsInputs() {
   const s = AppState.appSettings;
 
   // Populate school & year fields
@@ -2392,19 +2492,14 @@ function openSettingsModal(tab = 'media') {
     const tempatSet = new Set(AppState.records.map(r => (r.tempat || '').trim()).filter(Boolean));
     totalTempatEl.textContent = tempatSet.size;
   }
+}
 
-  switchSettingsTab(tab);
-  modal.style.display = 'flex';
-  modal.classList.remove('hidden');
-  if (window.lucide) lucide.createIcons();
+function openSettingsModal(tab = 'media') {
+  navigateToView('settings', tab);
 }
 
 function closeSettingsModal() {
-  const modal = document.getElementById('settingsModal');
-  if (modal) {
-    modal.style.display = 'none';
-    modal.classList.add('hidden');
-  }
+  navigateToView('main');
 }
 
 function switchSettingsTab(tab) {
@@ -4066,25 +4161,6 @@ function executeBatchPrint() {
             <div style="font-size: 11pt; margin-top: 2px;">Nomor: ${escapeXml(ds.noSurat)}</div>
           </div>
         ` : ''}
-
-        <div style="margin-bottom: 14px;">
-          <table style="width: 100%;">
-            <tr>
-              <td style="width: 10%; vertical-align: top;">Kepada:</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td style="vertical-align: top;">Yth.</td>
-              <td>
-                <div style="font-weight: bold;">Pimpinan DU/DI</div>
-                ${targetTempat ? `<div style="font-weight: bold;">${escapeXml(targetTempat)}</div>` : ''}
-                ${(targetTempat && dOpt.showAlamat && targetAlamat) ? `<div style="font-size: 9.5pt; color: #333;">${escapeXml(targetAlamat)}</div>` : ''}
-                <div>di -</div>
-                <div style="text-indent: 20px;">Tempat</div>
-              </td>
-            </tr>
-          </table>
-        </div>
 
         <div style="text-align: justify; line-height: 1.35; font-size: 11pt;">
           ${resolvedBody}
