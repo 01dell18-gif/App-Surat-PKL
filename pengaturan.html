@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengaturan Aplikasi & Lembaga - Aplikasi Surat Pengantar PKL</title>
+  <link id="appFavicon" rel="icon" type="image/png" href="assets/images/logo_fyj.png">
+  
+  <!-- Offline First Vendor Libraries with CDN Fallback -->
+  <script src="assets/vendor/tailwind.min.js"></script>
+  <script src="assets/vendor/lucide.min.js"></script>
+  <script src="assets/vendor/jszip.min.js"></script>
+  <script src="assets/vendor/FileSaver.min.js"></script>
+  <script src="assets/vendor/xlsx.full.min.js"></script>
+  <script>
+    if (!window.tailwind) document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
+    if (!window.lucide) document.write('<script src="https://unpkg.com/lucide@latest"><\/script>');
+    if (!window.JSZip) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>');
+    if (!window.saveAs) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"><\/script>');
+    if (!window.XLSX) document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\/script>');
+  </script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col overflow-x-hidden">
+
+  <!-- ================= TOP HEADER NAVIGATION (MPA) ================= -->
+  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 text-white shadow-lg sticky top-0 z-30 no-print border-b border-indigo-800/40">
+    <div class="max-w-[1600px] mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex justify-between items-center gap-2 sm:gap-3">
+      
+      <!-- Brand & School Info -->
+      <a href="index.html" class="flex items-center gap-2 sm:gap-3 min-w-0 group cursor-pointer" title="Kembali ke Beranda Surat">
+        <div id="headerBrandLogoWrapper" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shadow-inner overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+          <i id="defaultBrandIcon" data-lucide="file-badge" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <h1 class="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-white leading-tight truncate">Aplikasi Surat Pengantar PKL</h1>
+            <span class="inline-flex items-center gap-1 text-[10px] font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/40 px-2 py-0.5 rounded-full shrink-0">
+              <i data-lucide="sparkles" class="w-3 h-3 text-amber-300"></i>
+              <span>v2.4 Pro</span>
+            </span>
+          </div>
+          <p id="headerSchoolSubtitle" class="text-[11px] sm:text-xs text-indigo-200/80 truncate max-w-[200px] sm:max-w-none">SMKN 1 FYJ Channel • Pengaturan Lembaga</p>
+        </div>
+      </a>
+
+      <!-- TOOLBAR DESKTOP (MPA Navigation) -->
+      <div class="hidden lg:flex items-center gap-2">
+        <a href="index.html" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition shadow-xs whitespace-nowrap">
+          <i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-300"></i>
+          <span>Halaman Surat</span>
+        </a>
+
+        <a href="data.html" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition shadow-xs whitespace-nowrap">
+          <i data-lucide="database" class="w-3.5 h-3.5 text-sky-400"></i>
+          <span>Kelola Data</span>
+        </a>
+
+        <a href="template.html" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition shadow-xs whitespace-nowrap">
+          <i data-lucide="layout-template" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span>Template Surat</span>
+        </a>
+
+        <a href="pengaturan.html" class="flex items-center gap-1.5 bg-indigo-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition shadow-xs whitespace-nowrap ring-2 ring-indigo-400/50">
+          <i data-lucide="settings" class="w-3.5 h-3.5 text-amber-300"></i>
+          <span>Pengaturan</span>
+        </a>
+
+        <!-- Tombol Hapus Cache -->
+        <button type="button" 
+                onclick="clearCacheAndRefresh()" 
+                class="flex items-center justify-center bg-slate-800 hover:bg-rose-600 text-rose-400 hover:text-white border border-slate-700 hover:border-rose-500 p-2 rounded-lg transition shadow-xs cursor-pointer" 
+                title="Hapus Cache & Refresh Web">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- TOOLBAR MOBILE (MPA) -->
+      <div class="flex lg:hidden items-center gap-1.5 shrink-0">
+        <a href="index.html" class="p-2 rounded-lg bg-indigo-700 hover:bg-indigo-600 text-white transition shadow-xs flex items-center justify-center" title="Kembali ke Surat">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        </a>
+        <button type="button" 
+                onclick="clearCacheAndRefresh()" 
+                class="p-2 rounded-lg bg-slate-800 hover:bg-rose-600 text-rose-400 hover:text-white border border-slate-700 transition shadow-xs" 
+                title="Hapus Cache & Refresh Web">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= HALAMAN KHUSUS: PENGATURAN APLIKASI & LEMBAGA ================= -->
+  <main id="settingsPageRoot" class="max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 pb-24 lg:pb-8">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col min-h-[750px]">
+      
+      <!-- Top Navigation Header with 'Kembali ke Surat' -->
+      <div class="p-3.5 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-slate-50 via-amber-50/20 to-white flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <a href="index.html" 
+             class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 hover:text-indigo-700 border border-slate-300 text-xs font-bold transition shadow-xs cursor-pointer group">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-indigo-600 group-hover:-translate-x-0.5 transition-transform"></i>
+            <span>Kembali ke Surat</span>
+          </a>
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <i data-lucide="settings" class="w-5 h-5 text-amber-500"></i>
+              <span>Pengaturan Aplikasi &amp; Lembaga</span>
+            </h2>
+            <p class="text-xs text-slate-500">Kop Surat, TTD Elektronik &amp; Basah, Logo Web, Sekolah, TA &amp; Database</p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between gap-2">
+          <!-- Navigation Tabs -->
+          <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none pb-1 lg:pb-0 flex-nowrap flex-1 sm:flex-initial">
+            <button id="btnTabSettingMedia" onclick="switchSettingsTab('media')" class="px-3.5 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm flex items-center gap-1.5 transition whitespace-nowrap shrink-0 cursor-pointer">
+              <i data-lucide="image" class="w-3.5 h-3.5"></i>
+              <span>Kop, TTD &amp; Logo</span>
+            </button>
+            <button id="btnTabSettingSchool" onclick="switchSettingsTab('school')" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition whitespace-nowrap shrink-0 cursor-pointer">
+              <i data-lucide="school" class="w-3.5 h-3.5"></i>
+              <span>Sekolah &amp; TA</span>
+            </button>
+            <button id="btnTabSettingDatabase" onclick="switchSettingsTab('database')" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition whitespace-nowrap shrink-0 cursor-pointer">
+              <i data-lucide="database" class="w-3.5 h-3.5"></i>
+              <span>Database SQLite &amp; SQL</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Body -->
+      <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50/50">
+        
+        <!-- TAB 1: KOP SURAT, TTD ELEKTRONIK, TTD BASAH & LOGO WEB -->
+        <div id="settingsTabMedia" class="space-y-6">
+          
+          <!-- 1. KOP SURAT CARD -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">1. Gambar Kop Surat</h4>
+                  <span id="badgeSettingsKop" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">Standar Bawaan (kop_fyj.png)</span>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-0.5">Format file: PNG, JPG, JPEG, WEBP. Dapat diunggah langsung atau melalui tautan URL.</p>
+              </div>
+              <button onclick="resetKopToDefault()" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1 self-start sm:self-auto transition cursor-pointer">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>Gunakan Kop Bawaan</span>
+              </button>
+            </div>
+
+            <!-- Preview Box -->
+            <div class="bg-slate-100 border border-dashed border-slate-300 rounded-xl p-3 flex items-center justify-center min-h-[90px] overflow-hidden">
+              <img id="previewSettingsKop" src="" alt="Pratinjau Kop Surat" class="max-h-24 max-w-full object-contain">
+            </div>
+
+            <!-- Upload & URL Controls -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi A: Unggah Berkas Gambar</label>
+                <div class="flex items-center gap-2">
+                  <label class="w-full px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-xs font-bold text-indigo-700 cursor-pointer flex items-center justify-center gap-2 transition">
+                    <i data-lucide="upload" class="w-4 h-4 text-indigo-600"></i>
+                    <span>Pilih Berkas Kop Gambar...</span>
+                    <input type="file" id="inputUploadKop" accept="image/*" class="hidden" onchange="handleKopFileUpload(event)">
+                  </label>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">Disimpan secara lokal di browser dan database backend.</p>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi B: Tautan / Link URL Gambar</label>
+                <div class="flex items-center gap-1.5">
+                  <input type="url" id="inputUrlKop" placeholder="https://domain.com/kop-sekolah.png" class="flex-1 p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+                  <button onclick="applyKopUrl()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer">
+                    Terapkan
+                  </button>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">Masukkan URL langsung berkas gambar kop resmi.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. TTD ELEKTRONIK CARD -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">2. Tanda Tangan Elektronik / Barcode Kepala Sekolah</h4>
+                  <span id="badgeSettingsTtd" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">Standar Bawaan (ttdelektronik.jpg)</span>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-0.5">Digunakan saat opsi "Gunakan TTD Elektronik" dicentang.</p>
+              </div>
+              <button onclick="resetTtdToDefault()" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1 self-start sm:self-auto transition cursor-pointer">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>Gunakan TTD Bawaan</span>
+              </button>
+            </div>
+
+            <!-- Preview Box -->
+            <div class="bg-slate-100 border border-dashed border-slate-300 rounded-xl p-3 flex items-center justify-center min-h-[90px] overflow-hidden">
+              <img id="previewSettingsTtd" src="" alt="Pratinjau TTD Elektronik" class="max-h-24 max-w-full object-contain">
+            </div>
+
+            <!-- Upload & URL Controls -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi A: Unggah Berkas Gambar</label>
+                <div class="flex items-center gap-2">
+                  <label class="w-full px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-xs font-bold text-indigo-700 cursor-pointer flex items-center justify-center gap-2 transition">
+                    <i data-lucide="upload" class="w-4 h-4 text-indigo-600"></i>
+                    <span>Pilih Berkas TTD / Barcode...</span>
+                    <input type="file" id="inputUploadTtd" accept="image/*" class="hidden" onchange="handleTtdFileUpload(event)">
+                  </label>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">Disimpan secara lokal di browser dan database backend.</p>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi B: Tautan / Link URL Gambar</label>
+                <div class="flex items-center gap-1.5">
+                  <input type="url" id="inputUrlTtd" placeholder="https://domain.com/ttd-kepsek.png" class="flex-1 p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+                  <button onclick="applyTtdUrl()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer">
+                    Terapkan
+                  </button>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">Masukkan URL langsung gambar tanda tangan elektronik.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. TTD BASAH CARD -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">3. Gambar TTD Basah / Stempel Kepala Sekolah</h4>
+                  <span id="badgeSettingsTtdBasah" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">Standar Bawaan (ttdbasah.png)</span>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-0.5">Digunakan saat opsi "Gunakan Gambar TTD Basah" dicentang.</p>
+              </div>
+              <button onclick="resetTtdBasahToDefault()" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1 self-start sm:self-auto transition cursor-pointer">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>Gunakan TTD Basah Bawaan</span>
+              </button>
+            </div>
+
+            <!-- Preview Box -->
+            <div class="bg-slate-100 border border-dashed border-slate-300 rounded-xl p-3 flex items-center justify-center min-h-[90px] overflow-hidden">
+              <img id="previewSettingsTtdBasah" src="" alt="Pratinjau TTD Basah" class="max-h-24 max-w-full object-contain">
+            </div>
+
+            <!-- Upload & URL Controls -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi A: Unggah Berkas Gambar</label>
+                <div class="flex items-center gap-2">
+                  <label class="w-full px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-xs font-bold text-indigo-700 cursor-pointer flex items-center justify-center gap-2 transition">
+                    <i data-lucide="upload" class="w-4 h-4 text-indigo-600"></i>
+                    <span>Pilih Berkas TTD Basah...</span>
+                    <input type="file" id="inputUploadTtdBasah" accept="image/*" class="hidden" onchange="handleTtdBasahFileUpload(event)">
+                  </label>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">Disarankan menggunakan gambar transparan (PNG).</p>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi B: Tautan / Link URL Gambar</label>
+                <div class="flex items-center gap-1.5">
+                  <input type="url" id="inputUrlTtdBasah" placeholder="https://domain.com/ttd-basah.png" class="flex-1 p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+                  <button onclick="applyTtdBasahUrl()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer">
+                    Terapkan
+                  </button>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">Masukkan tautan langsung gambar TTD basah.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. LOGO WEB & FAVICON CARD -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">4. Logo Header Aplikasi &amp; Favicon Browser</h4>
+                  <span id="badgeSettingsLogoWeb" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">Standar Bawaan (logo_fyj.png)</span>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-0.5">Ikon logo institusi pada navigasi atas dan tab peramban.</p>
+              </div>
+              <button onclick="resetLogoWebToDefault()" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1 self-start sm:self-auto transition cursor-pointer">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>Gunakan Logo Bawaan</span>
+              </button>
+            </div>
+
+            <!-- Preview Box -->
+            <div class="bg-slate-100 border border-dashed border-slate-300 rounded-xl p-3 flex items-center justify-center min-h-[90px] overflow-hidden">
+              <img id="previewSettingsLogoWeb" src="" alt="Pratinjau Logo Web" class="max-h-20 max-w-full object-contain">
+              <span id="placeholderSettingsLogoWeb" class="text-xs text-slate-400 hidden">Belum ada logo khusus</span>
+            </div>
+
+            <!-- Upload & URL Controls -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi A: Unggah Berkas Gambar</label>
+                <div class="flex items-center gap-2">
+                  <label class="w-full px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-xs font-bold text-indigo-700 cursor-pointer flex items-center justify-center gap-2 transition">
+                    <i data-lucide="upload" class="w-4 h-4 text-indigo-600"></i>
+                    <span>Pilih Berkas Logo...</span>
+                    <input type="file" id="inputUploadLogoWeb" accept="image/*" class="hidden" onchange="handleLogoWebFileUpload(event)">
+                  </label>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">Disarankan gambar berbentuk persegi (1:1) PNG transparan.</p>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi B: Tautan / Link URL Gambar</label>
+                <div class="flex items-center gap-1.5">
+                  <input type="url" id="inputUrlLogoWeb" placeholder="https://domain.com/logo-sekolah.png" class="flex-1 p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+                  <button onclick="applyLogoWebUrl()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer">
+                    Terapkan
+                  </button>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-1">Masukkan tautan langsung gambar logo.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB 2: DATA SEKOLAH, KEPALA SEKOLAH, TAHUN AJARAN & TITIMANGSA -->
+        <div id="settingsTabSchool" class="space-y-6 hidden">
+          
+          <!-- Identitas Sekolah & Lembaga -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2">Identitas Sekolah &amp; Tahun Ajaran</h4>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Nama Lembaga / Sekolah</label>
+                <input type="text" id="settingsNamaSekolah" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Tahun Ajaran</label>
+                <input type="text" id="settingsTahunAjaran" placeholder="Contoh: 2026/2027" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Alamat Lengkap Sekolah</label>
+                <input type="text" id="settingsAlamatSekolah" placeholder="Contoh: Jl. Ngurah Rai No. 1, Semarapura, Klungkung - Bali" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Kepala Sekolah & Pejabat Penandatangan -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2">Kepala Sekolah / Pejabat Penandatangan</h4>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Nama Kepala Sekolah</label>
+                <input type="text" id="settingsKepsekNama" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Pangkat / Golongan</label>
+                <input type="text" id="settingsKepsekPangkat" placeholder="Contoh: Pembina (IV/a)" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">NIP Kepala Sekolah</label>
+                <input type="text" id="settingsKepsekNip" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Pengaturan Surat Dinas & Titimangsa Penerbitan -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2">Format Surat &amp; Titimangsa Penerbitan</h4>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Nomor Surat Bawaan</label>
+                <input type="text" id="settingsNoSurat" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Tanggal Surat Bawaan</label>
+                <input type="text" id="settingsTglSurat" placeholder="Contoh: 06 Oktober 2026" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Kota / Tempat Terbit Surat</label>
+                <input type="text" id="settingsTempatSurat" placeholder="Contoh: Klungkung" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Tanggal Pelepasan PKL</label>
+                <input type="text" id="settingsTglPelepasan" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Periode PKL</label>
+                <input type="text" id="settingsPeriodePkl" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Tanggal Penarikan PKL</label>
+                <input type="text" id="settingsTglPenarikan" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div class="sm:col-span-2 lg:col-span-3 border-t border-slate-100 pt-3">
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Model Format Titimangsa di Kolom TTD</label>
+                <select id="settingsFormatTitimangsa" onchange="toggleCustomTitimangsaInput()" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
+                  <option value="auto">Otomatis Sesuai Jenis Surat (Surat Pengantar: Kota, Tanggal | Surat Keterangan: Ditetapkan di...)</option>
+                  <option value="ditetapkan">Selalu Pakai: Ditetapkan di [Tempat] Pada Tanggal [Tanggal]</option>
+                  <option value="tempat_tanggal">Selalu Pakai: [Tempat], [Tanggal] (Format Standar Surat Dinas)</option>
+                  <option value="custom">Format Teks Kustom (Tulis Manual Bebas)</option>
+                </select>
+              </div>
+
+              <div id="settingsCustomTitimangsaWrapper" class="sm:col-span-2 lg:col-span-3 hidden">
+                <label class="block text-[11px] font-bold text-indigo-700 mb-1">Teks Format Titimangsa Kustom</label>
+                <input type="text" id="settingsTitimangsaKustom" placeholder="Contoh: Semarapura, 10 Oktober 2026" class="w-full p-2 bg-indigo-50/50 border border-indigo-200 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
+                <p class="text-[10px] text-slate-500 mt-1">Variabel yang tersedia: <code class="text-indigo-600 font-mono">{tempatSurat}</code> dan <code class="text-indigo-600 font-mono">{tglSurat}</code></p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TAB 3: DATABASE SQLITE & SQL DUMP -->
+        <div id="settingsTabDatabase" class="space-y-6 hidden">
+          
+          <!-- Status Ringkasan Database -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Status &amp; Ringkasan Database</h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">Database tersimpan di berkas lokal SQLite (<code class="font-mono text-indigo-600 font-semibold">database/surat_pkl.db</code>) dan disinkronkan ke cache browser.</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Terhubung Aktif</span>
+              </span>
+            </div>
+
+            <!-- Statistik Data Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="bg-indigo-50/60 border border-indigo-100 rounded-xl p-3.5 flex items-center justify-between">
+                <div>
+                  <div class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Total Siswa</div>
+                  <div class="text-xl font-black text-indigo-950 mt-0.5" id="dbSettingTotalRows">258</div>
+                </div>
+                <div class="w-9 h-9 rounded-lg bg-indigo-200/60 text-indigo-700 flex items-center justify-center">
+                  <i data-lucide="users" class="w-5 h-5"></i>
+                </div>
+              </div>
+
+              <div class="bg-sky-50/60 border border-sky-100 rounded-xl p-3.5 flex items-center justify-between">
+                <div>
+                  <div class="text-[10px] font-bold text-sky-600 uppercase tracking-wider">Guru Pembimbing</div>
+                  <div class="text-xl font-black text-sky-950 mt-0.5" id="dbSettingTotalGurus">54</div>
+                </div>
+                <div class="w-9 h-9 rounded-lg bg-sky-200/60 text-sky-700 flex items-center justify-center">
+                  <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                </div>
+              </div>
+
+              <div class="bg-amber-50/60 border border-amber-100 rounded-xl p-3.5 flex items-center justify-between">
+                <div>
+                  <div class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Tempat / DU-DI</div>
+                  <div class="text-xl font-black text-amber-950 mt-0.5" id="dbSettingTotalTempat">87</div>
+                </div>
+                <div class="w-9 h-9 rounded-lg bg-amber-200/60 text-amber-700 flex items-center justify-center">
+                  <i data-lucide="building-2" class="w-5 h-5"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cadangan & Backup Database -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-3">
+            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2">Cadangan &amp; Ekspor Database</h4>
+            <p class="text-xs text-slate-600">Unduh salinan penuh basis data untuk cadangan berkala sebelum pembaruan sistem.</p>
+
+            <div class="flex flex-wrap items-center gap-2.5 pt-1">
+              <button type="button" onclick="downloadSqliteDatabase()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer">
+                <i data-lucide="database" class="w-4 h-4"></i>
+                <span>Unduh File SQLite Asli (.DB)</span>
+              </button>
+
+              <button type="button" onclick="downloadSqlDatabase()" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer">
+                <i data-lucide="file-code-2" class="w-4 h-4"></i>
+                <span>Unduh Skrip SQL Dump (.SQL)</span>
+              </button>
+
+              <button type="button" onclick="syncRecordsToDatabase(true)" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 rounded-lg text-xs font-semibold transition flex items-center gap-2 cursor-pointer">
+                <i data-lucide="upload-cloud" class="w-4 h-4 text-indigo-600"></i>
+                <span>Sinkronkan Sekarang ke DB</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pemulihan & Import Database -->
+          <div class="bg-gradient-to-r from-emerald-50/50 to-teal-50/30 border border-emerald-200 rounded-xl p-5 shadow-xs space-y-3">
+            <div class="flex items-center justify-between border-b border-emerald-100 pb-2.5">
+              <h4 class="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-2">
+                <i data-lucide="hard-drive-upload" class="w-4 h-4 text-emerald-600"></i>
+                <span>Pemulihan &amp; Import Database (Restore Database)</span>
+              </h4>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Format .DB / .SQL</span>
+            </div>
+
+            <p class="text-xs text-slate-700 leading-relaxed">
+              Unggah berkas database SQLite (<code class="px-1.5 py-0.5 rounded bg-emerald-100/60 text-emerald-900 font-mono text-[11px]">.db</code> / <code class="px-1.5 py-0.5 rounded bg-emerald-100/60 text-emerald-900 font-mono text-[11px]">.sqlite</code>) atau skrip dump SQL (<code class="px-1.5 py-0.5 rounded bg-emerald-100/60 text-emerald-900 font-mono text-[11px]">.sql</code>) untuk memulihkan seluruh data aplikasi dan pengaturan lembaga secara menyeluruh.
+            </p>
+
+            <!-- Hidden File Input for DB Import -->
+            <input type="file" id="dbImportFileInput" accept=".db,.sqlite,.sqlite3,.sql" class="hidden" onchange="handleDatabaseImport(event)">
+
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <button type="button" onclick="document.getElementById('dbImportFileInput').click()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+                <span>Pilih Berkas &amp; Pulihkan Database (.db / .sql)</span>
+              </button>
+            </div>
+
+            <div class="bg-white/80 border border-emerald-200 rounded-lg p-3 flex items-start gap-2.5 text-[11px] text-slate-600 leading-relaxed">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+              <div>
+                <span class="font-bold text-slate-800">Proteksi Cadangan Otomatis:</span> Sebelum proses pemulihan dijalankan, sistem akan secara otomatis membuat berkas cadangan database saat ini ke <code class="px-1.5 py-0.5 rounded bg-slate-100 text-indigo-700 font-mono">database/surat_pkl.db.bak</code>. Data di tampilan web akan langsung diperbarui seketika.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Footer Bar -->
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <button onclick="resetSettingsToDefault()" class="px-3.5 py-2 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Reset Semua ke Standar Awal</span>
+        </button>
+
+        <div class="flex items-center gap-2 self-end sm:self-auto">
+          <a href="index.html" class="px-4 py-2 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+            Batal &amp; Kembali
+          </a>
+          <button type="button" onclick="saveAppSettings()" class="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Simpan Pengaturan</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ================= MOBILE BOTTOM NAVIGATION BAR (MPA) ================= -->
+  <nav id="mobileBottomNav" class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] px-2 py-1.5 flex items-center justify-around no-print">
+    <!-- 1. Surat -->
+    <a href="index.html" class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="file-text" class="w-5 h-5 mb-0.5 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-semibold tracking-tight">Surat</span>
+    </a>
+
+    <!-- 2. Kelola Data -->
+    <a href="data.html" class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="database" class="w-5 h-5 mb-0.5 text-sky-500 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-semibold tracking-tight">Kelola Data</span>
+    </a>
+
+    <!-- 3. Template Surat -->
+    <a href="template.html" class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="layout-template" class="w-5 h-5 mb-0.5 text-indigo-500 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-semibold tracking-tight">Template</span>
+    </a>
+
+    <!-- 4. Pengaturan (Active) -->
+    <a href="pengaturan.html" class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="settings" class="w-5 h-5 mb-0.5 text-amber-500 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-bold tracking-tight">Pengaturan</span>
+    </a>
+  </nav>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script src="js/assets.js?v=3.2.5"></script>
+  <script src="js/template_base64.js?v=3.2.5"></script>
+  <script src="js/data_pkl.js?v=3.2.5"></script>
+  <script src="js/app.js?v=3.2.5"></script>
+</body>
+</html>

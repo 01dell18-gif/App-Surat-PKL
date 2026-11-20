@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Data Siswa & DU/DI - Aplikasi Surat Pengantar PKL</title>
+  <link id="appFavicon" rel="icon" type="image/png" href="assets/images/logo_fyj.png">
+  
+  <!-- Offline First Vendor Libraries with CDN Fallback -->
+  <script src="assets/vendor/tailwind.min.js"></script>
+  <script src="assets/vendor/lucide.min.js"></script>
+  <script src="assets/vendor/jszip.min.js"></script>
+  <script src="assets/vendor/FileSaver.min.js"></script>
+  <script src="assets/vendor/xlsx.full.min.js"></script>
+  <script>
+    if (!window.tailwind) document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
+    if (!window.lucide) document.write('<script src="https://unpkg.com/lucide@latest"><\/script>');
+    if (!window.JSZip) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>');
+    if (!window.saveAs) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"><\/script>');
+    if (!window.XLSX) document.write('<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"><\/script>');
+  </script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col overflow-x-hidden">
+
+  <!-- ================= TOP HEADER NAVIGATION (MPA) ================= -->
+  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 text-white shadow-lg sticky top-0 z-30 no-print border-b border-indigo-800/40">
+    <div class="max-w-[1600px] mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex justify-between items-center gap-2 sm:gap-3">
+      
+      <!-- Brand & School Info -->
+      <a href="index.html" class="flex items-center gap-2 sm:gap-3 min-w-0 group cursor-pointer" title="Kembali ke Beranda Surat">
+        <div id="headerBrandLogoWrapper" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shadow-inner overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+          <i id="defaultBrandIcon" data-lucide="file-badge" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <h1 class="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-white leading-tight truncate">Aplikasi Surat Pengantar PKL</h1>
+            <span class="inline-flex items-center gap-1 text-[10px] font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/40 px-2 py-0.5 rounded-full shrink-0">
+              <i data-lucide="sparkles" class="w-3 h-3 text-amber-300"></i>
+              <span>v2.4 Pro</span>
+            </span>
+          </div>
+          <p id="headerSchoolSubtitle" class="text-[11px] sm:text-xs text-indigo-200/80 truncate max-w-[200px] sm:max-w-none">SMKN 1 FYJ Channel • Kelola Database Siswa</p>
+        </div>
+      </a>
+
+      <!-- TOOLBAR DESKTOP (MPA Navigation) -->
+      <div class="hidden lg:flex items-center gap-2">
+        <a href="index.html" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition shadow-xs whitespace-nowrap">
+          <i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-300"></i>
+          <span>Halaman Surat</span>
+        </a>
+
+        <a href="data.html" class="flex items-center gap-1.5 bg-sky-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition shadow-xs whitespace-nowrap ring-2 ring-sky-400/50">
+          <i data-lucide="database" class="w-3.5 h-3.5 text-sky-100"></i>
+          <span>Kelola Data</span>
+        </a>
+
+        <a href="template.html" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition shadow-xs whitespace-nowrap">
+          <i data-lucide="layout-template" class="w-3.5 h-3.5 text-indigo-400"></i>
+          <span>Template Surat</span>
+        </a>
+
+        <a href="pengaturan.html" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition shadow-xs whitespace-nowrap">
+          <i data-lucide="settings" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Pengaturan</span>
+        </a>
+
+        <!-- Tombol Hapus Cache -->
+        <button type="button" 
+                onclick="clearCacheAndRefresh()" 
+                class="flex items-center justify-center bg-slate-800 hover:bg-rose-600 text-rose-400 hover:text-white border border-slate-700 hover:border-rose-500 p-2 rounded-lg transition shadow-xs cursor-pointer" 
+                title="Hapus Cache & Refresh Web">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- TOOLBAR MOBILE (MPA) -->
+      <div class="flex lg:hidden items-center gap-1.5 shrink-0">
+        <a href="index.html" class="p-2 rounded-lg bg-indigo-700 hover:bg-indigo-600 text-white transition shadow-xs flex items-center justify-center" title="Kembali ke Surat">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        </a>
+        <button type="button" 
+                onclick="clearCacheAndRefresh()" 
+                class="p-2 rounded-lg bg-slate-800 hover:bg-rose-600 text-rose-400 hover:text-white border border-slate-700 transition shadow-xs" 
+                title="Hapus Cache & Refresh Web">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= HALAMAN KHUSUS: KELOLA DATABASE ================= -->
+  <main id="dataPageRoot" class="max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 pb-24 lg:pb-8">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col min-h-[750px]">
+      
+      <!-- Top Navigation Header -->
+      <div class="p-3.5 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-slate-50 via-sky-50/20 to-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <a href="index.html" 
+             class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 hover:text-indigo-700 border border-slate-300 text-xs font-bold transition shadow-xs cursor-pointer group">
+            <i data-lucide="arrow-left" class="w-4 h-4 text-indigo-600 group-hover:-translate-x-0.5 transition-transform"></i>
+            <span>Kembali ke Surat</span>
+          </a>
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <i data-lucide="database" class="w-5 h-5 text-sky-600"></i>
+              <span>Database Siswa &amp; Penugasan PKL</span>
+            </h2>
+            <div id="dbConnectionStatus" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mt-0.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span>Database Web Aktif: (258 data siswa aktif)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 self-end sm:self-auto">
+          <button onclick="syncRecordsToDatabase(true)" class="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 font-semibold rounded-lg flex items-center gap-1.5 transition text-xs cursor-pointer" title="Simpan perubahan aktif ke database SQLite">
+            <i data-lucide="upload-cloud" class="w-4 h-4 text-blue-600"></i>
+            <span>Simpan ke DB</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Toolbar Database (Filter & Actions) -->
+      <div class="p-3 bg-slate-50 border-b border-slate-200 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 text-xs">
+        
+        <!-- Search & Filter Controls -->
+        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 flex-1 max-w-2xl">
+          <div class="relative flex-1 min-w-[200px]">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+            <input type="text" id="dbSearchInput" placeholder="Cari nama siswa, NIS, NISN, atau tempat PKL..." oninput="AppState.dbSearchQuery = this.value; renderDatabaseTable();" class="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-sky-500 outline-none">
+          </div>
+          <select id="dbFilterKelasSelect" onchange="AppState.dbFilterKelas = this.value; renderDatabaseTable();" class="p-1.5 px-2 bg-white border border-slate-300 rounded-lg text-xs shrink-0 font-medium text-slate-700 focus:ring-2 focus:ring-sky-500 outline-none">
+            <option value="all">Semua Kelas</option>
+          </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <!-- Tambah Siswa -->
+          <button onclick="openStudentModal('add')" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg flex items-center gap-1.5 transition shadow-xs text-xs whitespace-nowrap cursor-pointer" title="Tambah data siswa baru ke database">
+            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+            <span>+ Tambah Siswa</span>
+          </button>
+
+          <!-- Edit Jurusan Massal -->
+          <button onclick="openBulkEditJurusanModal()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg flex items-center gap-1.5 transition shadow-xs text-xs whitespace-nowrap cursor-pointer" title="Ubah nama jurusan secara massal untuk semua siswa">
+            <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i>
+            <span>Edit Jurusan</span>
+          </button>
+
+          <!-- Dropdown Excel -->
+          <div class="relative inline-block text-left" id="dropdownExcelWrapper">
+            <button onclick="toggleDropdown('dropdownExcelMenu')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-semibold rounded-lg flex items-center gap-1.5 transition text-xs whitespace-nowrap cursor-pointer" title="Import atau Export berkas Excel">
+              <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-600"></i>
+              <span>Data Excel</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 opacity-70"></i>
+            </button>
+            <div id="dropdownExcelMenu" class="dropdown-menu-list hidden absolute right-0 mt-1.5 w-60 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 text-slate-700 animate-in fade-in slide-in-from-top-1 duration-150">
+              <button onclick="document.getElementById('excelFileInput').click(); closeAllDropdowns();" class="w-full text-left px-3.5 py-2 text-xs hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2.5 transition">
+                <i data-lucide="upload" class="w-4 h-4 text-emerald-600"></i>
+                <div>
+                  <div class="font-semibold text-slate-800">Import Berkas Excel</div>
+                  <div class="text-[10px] text-slate-400">Unggah berkas .xlsx atau .xls</div>
+                </div>
+              </button>
+              <div class="border-t border-slate-100 my-1"></div>
+              <button onclick="exportRecordsToExcel(); closeAllDropdowns();" class="w-full text-left px-3.5 py-2 text-xs hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2.5 transition">
+                <i data-lucide="download" class="w-4 h-4 text-emerald-600"></i>
+                <div>
+                  <div class="font-semibold text-slate-800">Export ke Excel (.xlsx)</div>
+                  <div class="text-[10px] text-slate-400">Unduh data siswa dalam format Excel</div>
+                </div>
+              </button>
+            </div>
+            <input type="file" id="excelFileInput" accept=".xlsx,.xls" class="hidden">
+          </div>
+
+          <!-- Reset Default -->
+          <button onclick="resetToDefaultData()" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-lg flex items-center gap-1.5 transition text-xs whitespace-nowrap cursor-pointer" title="Kembalikan data ke awal">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>Reset</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Full-Height Responsive Data Table Area -->
+      <div class="flex-1 overflow-y-auto overflow-x-auto bg-white border-y border-slate-200 min-h-[500px]">
+        <table class="w-full border-separate border-spacing-0 text-left min-w-[1000px]">
+          <thead style="position: sticky; top: 0; z-index: 20;">
+            <tr class="text-[11px] font-bold uppercase tracking-wider text-slate-700 bg-slate-100">
+              <th style="position: sticky; top: 0; z-index: 20; background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;" class="p-2.5 text-center w-12">No</th>
+              <th style="position: sticky; top: 0; z-index: 20; background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;" class="p-2.5">Nama Siswa</th>
+              <th style="position: sticky; top: 0; z-index: 20; background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;" class="p-2.5 text-center w-24">NIS</th>
+              <th style="position: sticky; top: 0; z-index: 20; background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;" class="p-2.5 text-center w-28">NISN (10 Digit)</th>
+              <th style="position: sticky; top: 0; z-index: 20; background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;" class="p-2.5 text-center w-20">Kelas</th>
+              <th style="position: sticky; top: 0; z-index: 20; background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;" class="p-2.5">Jurusan</th>
+              <th style="position: sticky; top: 0; z-index: 20; background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;" class="p-2.5">Guru Pembimbing</th>
+              <th style="position: sticky; top: 0; z-index: 20; background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;" class="p-2.5">Tempat PKL (DU/DI)</th>
+              <th style="position: sticky; top: 0; z-index: 20; background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;" class="p-2.5">Alamat Tempat PKL</th>
+              <th style="position: sticky; top: 0; z-index: 20; background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;" class="p-2.5 text-center w-24">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="dbTableBody" class="divide-y divide-slate-100 text-xs text-slate-700">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer Bar -->
+      <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+        <div>Menampilkan baris data: <span id="dbTotalRows" class="font-bold text-slate-800">0</span></div>
+        <a href="index.html" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-lg text-xs transition cursor-pointer flex items-center gap-1.5">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          <span>Kembali ke Surat</span>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ================= DEDICATED OVERLAY MODAL: TAMBAH / EDIT SISWA ================= -->
+  <div id="studentModal" class="fixed inset-0 bg-slate-900/65 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 hidden no-print" style="display: none;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full max-h-[96vh] sm:max-h-[90vh] flex flex-col overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Header Modal -->
+      <div class="p-3.5 sm:p-4 px-4 sm:px-6 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+            <i id="studentModalIcon" data-lucide="user-plus" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="studentModalTitle" class="text-sm sm:text-base font-bold text-slate-800">Tambah Data Siswa PKL</h3>
+            <p class="text-[11px] text-slate-500">Tersimpan langsung ke database SQLite &amp; skrip SQL</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeStudentModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200 transition shrink-0 cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <form id="studentForm" onsubmit="event.preventDefault(); saveStudentForm();" class="p-4 sm:p-6 space-y-3.5 sm:space-y-4 text-xs overflow-y-auto flex-1">
+        <input type="hidden" id="studentFormNo">
+        <input type="hidden" id="studentFormId">
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="sm:col-span-2">
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama Siswa <span class="text-rose-500">*</span></label>
+            <input type="text" id="studentFormNama" required placeholder="Contoh: Ni Komang Sri Damayanti" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Kelas <span class="text-rose-500">*</span></label>
+            <input type="text" id="studentFormKelas" required placeholder="XII BD 1" oninput="autoFillJurusan(this.value)" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">NIS (Nomor Induk Siswa)</label>
+            <input type="text" id="studentFormNis" placeholder="Contoh: 12345" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">NISN (10 Digit)</label>
+            <input type="text" id="studentFormNisn" placeholder="Contoh: 00XXXXXXXX" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Jurusan / Keahlian</label>
+            <input type="text" id="studentFormJurusan" placeholder="Contoh: Bisnis Digital" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+            <label class="flex items-center gap-1.5 mt-1 text-[10.5px] text-slate-500 cursor-pointer select-none">
+              <input type="checkbox" id="studentFormUpdateAllJurusan" class="w-3.5 h-3.5 rounded text-purple-600 focus:ring-purple-500">
+              <span>Terapkan ke SEMUA siswa jurusan ini</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Guru Pembimbing <span class="text-rose-500">*</span></label>
+            <input type="text" id="studentFormGuru" list="guruSuggestionsList" required placeholder="Nama Guru Lengkap" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+            <datalist id="guruSuggestionsList"></datalist>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">NIP Guru Pembimbing</label>
+            <input type="text" id="studentFormNip" placeholder="19XXXXXXXX XXXXXX X XXX" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Pangkat / Golongan Guru</label>
+            <input type="text" id="studentFormGuruPangkat" placeholder="Contoh: Penata Muda (III/a) atau -" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Jabatan Guru</label>
+            <input type="text" id="studentFormGuruJabatan" placeholder="Contoh: Guru Pembimbing PKL" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Tempat PKL (DU/DI / Mitra) <span class="text-rose-500">*</span></label>
+          <input type="text" id="studentFormTempat" list="tempatSuggestionsList" required placeholder="Contoh: PT. Sumber Alfaria Trijaya Tbk" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          <datalist id="tempatSuggestionsList"></datalist>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">Alamat Tempat PKL</label>
+          <textarea id="studentFormAlamat" rows="2" placeholder="Alamat lengkap instansi / perusahaan mitra" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+        </div>
+
+        <div class="pt-4 border-t border-slate-200 flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeStudentModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span id="studentModalSubmitBtnText">Simpan Data</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ================= BULK EDIT JURUSAN MODAL ================= -->
+  <div id="bulkEditJurusanModal" class="fixed inset-0 bg-slate-900/65 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden no-print" style="display: none;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full flex flex-col overflow-hidden border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
+      
+      <div class="p-3.5 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-purple-50 to-indigo-50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-md">
+            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm sm:text-base font-bold text-slate-800">Edit Jurusan Massal</h3>
+            <p class="text-[11px] text-slate-500">Ubah nama jurusan untuk seluruh siswa di jurusan tersebut sekaligus</p>
+          </div>
+        </div>
+        <button onclick="closeBulkEditJurusanModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-6 space-y-4 text-xs">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">
+            Pilih Jurusan yang Ingin Diubah: <span class="text-rose-500">*</span>
+          </label>
+          <select id="bulkEditOldJurusanSelect" onchange="onBulkEditOldJurusanChange()" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold focus:bg-white focus:ring-2 focus:ring-purple-500 outline-none text-slate-800">
+            <!-- Populated dynamically -->
+          </select>
+          <div id="bulkEditStudentCountBadge" class="mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-purple-100 text-purple-800 text-[11px] font-medium">
+            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+            <span>0 siswa akan terpengaruh</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">
+            Nama Jurusan Baru: <span class="text-rose-500">*</span>
+          </label>
+          <input type="text" id="bulkEditNewJurusanInput" placeholder="Contoh: Bisnis Digital" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-purple-500 outline-none">
+        </div>
+
+        <div>
+          <div class="text-[11px] font-semibold text-slate-500 mb-1.5">Pilihan Cepat Standar Jurusan SMK:</div>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="applyJurusanChip('Bisnis Digital')" class="px-2 py-1 rounded-md bg-slate-100 hover:bg-purple-100 hover:text-purple-700 text-slate-700 text-[11px] font-medium transition border border-slate-200 cursor-pointer">Bisnis Digital</button>
+            <button type="button" onclick="applyJurusanChip('Desain Komunikasi Visual')" class="px-2 py-1 rounded-md bg-slate-100 hover:bg-purple-100 hover:text-purple-700 text-slate-700 text-[11px] font-medium transition border border-slate-200 cursor-pointer">Desain Komunikasi Visual</button>
+            <button type="button" onclick="applyJurusanChip('Akuntansi dan Keuangan Lembaga')" class="px-2 py-1 rounded-md bg-slate-100 hover:bg-purple-100 hover:text-purple-700 text-slate-700 text-[11px] font-medium transition border border-slate-200 cursor-pointer">Akuntansi dan Keuangan Lembaga</button>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeBulkEditJurusanModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+            Batal
+          </button>
+          <button type="button" onclick="saveBulkEditJurusan()" class="px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Terapkan Perubahan</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= MOBILE BOTTOM NAVIGATION BAR (MPA) ================= -->
+  <nav id="mobileBottomNav" class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] px-2 py-1.5 flex items-center justify-around no-print">
+    <!-- 1. Surat -->
+    <a href="index.html" class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="file-text" class="w-5 h-5 mb-0.5 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-semibold tracking-tight">Surat</span>
+    </a>
+
+    <!-- 2. Kelola Data (Active) -->
+    <a href="data.html" class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-sky-600 transition group cursor-pointer">
+      <i data-lucide="database" class="w-5 h-5 mb-0.5 text-sky-600 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-bold tracking-tight">Kelola Data</span>
+    </a>
+
+    <!-- 3. Template Surat -->
+    <a href="template.html" class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="layout-template" class="w-5 h-5 mb-0.5 text-indigo-500 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-semibold tracking-tight">Template</span>
+    </a>
+
+    <!-- 4. Pengaturan -->
+    <a href="pengaturan.html" class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+      <i data-lucide="settings" class="w-5 h-5 mb-0.5 text-amber-500 group-hover:scale-110 transition-transform"></i>
+      <span class="text-[10px] font-semibold tracking-tight">Pengaturan</span>
+    </a>
+  </nav>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script src="js/assets.js?v=3.2.5"></script>
+  <script src="js/template_base64.js?v=3.2.5"></script>
+  <script src="js/data_pkl.js?v=3.2.5"></script>
+  <script src="js/app.js?v=3.2.5"></script>
+</body>
+</html>

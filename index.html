@@ -26,10 +26,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    .hidden {
-      display: none !important;
-    }
-
     .sticky-th {
       position: sticky !important;
       top: 0 !important;
@@ -236,26 +232,26 @@
         </div>
       </div>
 
-      <!-- TOOLBAR DESKTOP (Tampilan Lengkap Sesuai Semula) -->
+      <!-- TOOLBAR DESKTOP (Tampilan Lengkap Multi-Page Application) -->
       <div class="hidden lg:flex items-center gap-1.5 sm:gap-2">
         
         <!-- 1. Database Button -->
-        <button onclick="openDatabaseModal()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Kelola database siswa, tambah data, dan unggah Excel">
+        <a href="data.html" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Kelola database siswa, tambah data, dan kelola Excel">
           <i data-lucide="database" class="w-3.5 h-3.5 text-sky-400"></i>
           <span>Kelola Data</span>
-        </button>
+        </a>
 
-        <!-- 2. Template Surat Button (Halaman Khusus) -->
-        <button onclick="openTemplateModal('list')" class="flex items-center gap-1.5 bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 border border-indigo-700/70 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Buka halaman khusus kelola template surat">
+        <!-- 2. Template Surat Button -->
+        <a href="template.html" class="flex items-center gap-1.5 bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 border border-indigo-700/70 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Buka halaman khusus kelola template surat">
           <i data-lucide="layout-template" class="w-3.5 h-3.5 text-indigo-400"></i>
           <span>Template Surat</span>
-        </button>
+        </a>
 
-        <!-- 3. Pengaturan Button (Halaman Khusus) -->
-        <button onclick="openSettingsModal()" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Buka halaman khusus Pengaturan Kop Surat, TTD, Logo Web & Sekolah">
+        <!-- 3. Pengaturan Button -->
+        <a href="pengaturan.html" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold px-2.5 py-1.5 rounded-lg text-[11px] transition shadow-xs whitespace-nowrap cursor-pointer" title="Buka halaman pengaturan Kop Surat, TTD, Logo Web & Sekolah">
           <i data-lucide="settings" class="w-3.5 h-3.5 text-amber-400"></i>
           <span>Pengaturan</span>
-        </button>
+        </a>
 
         <!-- 4. Dropdown Cetak Dokumen -->
         <div class="relative inline-block text-left" id="dropdownCetakWrapper">
@@ -410,10 +406,10 @@
         <div id="sidebarBody_template" class="p-4 pt-1 space-y-3">
           <div class="flex items-center justify-between pt-1">
             <label class="block text-[11px] font-semibold text-slate-600">Template Aktif Digunakan</label>
-            <button type="button" onclick="openTemplateModal('list')" class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded-lg transition cursor-pointer" title="Buka kelola daftar template surat">
+            <a href="template.html" class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded-lg transition cursor-pointer" title="Buka kelola daftar template surat">
               <i data-lucide="list" class="w-3 h-3"></i>
               <span>Daftar Template</span>
-            </button>
+            </a>
           </div>
 
           <div>
@@ -422,10 +418,10 @@
             </select>
           </div>
 
-          <button type="button" onclick="openTemplateModal('editor')" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+          <a href="template.html#editor" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs flex items-center justify-center gap-2 transition cursor-pointer">
             <i data-lucide="file-pen" class="w-4 h-4 text-indigo-600"></i>
             <span>Edit Redaksi di Editor Teks (WYSIWYG)</span>
-          </button>
+          </a>
         </div>
       </div>
 
@@ -671,10 +667,10 @@
               <span>Tampilkan Alamat DU/DI di Tujuan Surat</span>
             </label>
 
-            <button type="button" onclick="openSettingsModal()" class="w-full mt-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-semibold rounded-lg text-xs flex items-center justify-center gap-2 transition shadow-xs cursor-pointer">
+            <a href="pengaturan.html" class="w-full mt-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-semibold rounded-lg text-xs flex items-center justify-center gap-2 transition shadow-xs cursor-pointer">
               <i data-lucide="settings" class="w-4 h-4 text-indigo-600"></i>
               <span>Atur Kop, TTD, Logo & Sekolah</span>
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -691,10 +687,10 @@
           <span class="font-medium">Pratinjau Dokumen Nyata (WYSIWYG)</span>
         </div>
         <div class="flex items-center gap-2 sm:gap-3">
-          <button onclick="openTemplateModal('editor')" class="text-xs bg-white border border-slate-300 hover:bg-slate-50 text-indigo-700 px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-medium transition shadow-sm">
+          <a href="template.html#editor" class="text-xs bg-white border border-slate-300 hover:bg-slate-50 text-indigo-700 px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-medium transition shadow-sm cursor-pointer">
             <i data-lucide="file-pen" class="w-3.5 h-3.5 text-indigo-600"></i>
             <span>Edit Template</span>
-          </button>
+          </a>
           <button onclick="window.print()" class="text-xs bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1.5 font-medium transition shadow-sm">
             <i data-lucide="printer" class="w-3.5 h-3.5 text-indigo-600"></i>
             <span>Cetak Pratinjau Ini</span>
@@ -780,744 +776,6 @@
 
   <!-- ================= BATCH PRINT OFFLINE/PRINT CONTAINER ================= -->
   <div id="batchPrintContainer"></div>
-
-  <!-- ================= HALAMAN KHUSUS: KELOLA TEMPLATE SURAT ================= -->
-  <section id="viewTemplateManager" class="max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 hidden no-print pb-24 lg:pb-8">
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col min-h-[750px]">
-      
-      <!-- Top Navigation Header with 'Kembali ke Surat' -->
-      <div class="p-3.5 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-slate-50 via-indigo-50/30 to-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <button type="button" 
-                  onclick="navigateToView('main')" 
-                  class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 hover:text-indigo-700 border border-slate-300 text-xs font-bold transition shadow-xs cursor-pointer group">
-            <i data-lucide="arrow-left" class="w-4 h-4 text-indigo-600 group-hover:-translate-x-0.5 transition-transform"></i>
-            <span>Kembali ke Surat</span>
-          </button>
-          <div>
-            <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <i data-lucide="layout-template" class="w-5 h-5 text-indigo-600"></i>
-              <span>Kelola Template Surat</span>
-            </h2>
-            <p class="text-xs text-slate-500">Edit naskah template dengan Editor WYSIWYG atau kelola daftar template surat</p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button id="btnTabEditor" onclick="switchTemplateTab('editor')" class="px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl bg-indigo-600 text-white shadow-sm flex items-center gap-1.5 transition cursor-pointer">
-            <i data-lucide="edit-3" class="w-4 h-4"></i>
-            <span>Editor Teks / WYSIWYG</span>
-          </button>
-          <button id="btnTabList" onclick="switchTemplateTab('list')" class="px-3.5 sm:px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition cursor-pointer">
-            <i data-lucide="clipboard-list" class="w-4 h-4"></i>
-            <span>Daftar Template (<span id="templateTabCount">0</span>)</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- TAB 1: WYSIWYG RICH TEXT EDITOR VIEW -->
-      <div id="templateEditorView" class="p-3.5 sm:p-6 overflow-y-auto space-y-4 flex-1">
-        
-        <!-- Editor Header Info -->
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-          <div>
-            <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-              <span>📝</span>
-              <span>Redaksi Template Surat (Editor Teks / WYSIWYG)</span>
-            </h3>
-            <div class="flex items-center gap-2 mt-1.5">
-              <span class="text-xs font-semibold text-slate-600">Pilih Template yang Diedit:</span>
-              <select id="editorTemplateSelect" onchange="onEditorTemplateSelectChange()" class="p-1 px-2.5 bg-indigo-50/80 border border-indigo-200 rounded-lg text-xs font-bold text-indigo-950 focus:ring-2 focus:ring-indigo-500">
-                <!-- Populated by JS -->
-              </select>
-            </div>
-            <p class="text-xs text-slate-500 mt-1">Format teks secara bebas dan rapi. Tampilan di editor ini akan sama persis ketika diunduh sebagai PDF.</p>
-          </div>
-          <div class="flex items-center gap-2 self-end sm:self-auto">
-            <button onclick="resetEditorToOfficialStandard()" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition shadow-sm">
-              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-indigo-600"></i>
-              <span>Standar Resmi</span>
-            </button>
-            <button id="btnToggleHtmlMode" onclick="toggleEditorHtmlMode()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-medium flex items-center gap-1.5 transition shadow-sm">
-              <i data-lucide="code" class="w-3.5 h-3.5"></i>
-              <span>Mode HTML</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- WYSIWYG Toolbar -->
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-2 flex flex-wrap items-center gap-1.5 text-xs text-slate-700 shadow-inner">
-          
-          <!-- B, I, U, S -->
-          <div class="flex items-center bg-white border border-slate-200 rounded-lg overflow-hidden shadow-xs">
-            <button onclick="execEditorCmd('bold')" title="Tebal (Ctrl+B)" class="px-2.5 py-1.5 hover:bg-indigo-50 font-bold border-r border-slate-200">B</button>
-            <button onclick="execEditorCmd('italic')" title="Miring (Ctrl+I)" class="px-2.5 py-1.5 hover:bg-indigo-50 italic border-r border-slate-200">/</button>
-            <button onclick="execEditorCmd('underline')" title="Garis Bawah (Ctrl+U)" class="px-2.5 py-1.5 hover:bg-indigo-50 underline border-r border-slate-200">U</button>
-            <button onclick="execEditorCmd('strikeThrough')" title="Coretan" class="px-2.5 py-1.5 hover:bg-indigo-50 line-through">S</button>
-          </div>
-
-          <span class="text-slate-300">|</span>
-
-          <!-- Alignment -->
-          <div class="flex items-center bg-white border border-slate-200 rounded-lg overflow-hidden shadow-xs">
-            <button onclick="execEditorCmd('justifyLeft')" title="Rata Kiri" class="px-2 py-1.5 hover:bg-indigo-50 border-r border-slate-200">
-              <i data-lucide="align-left" class="w-3.5 h-3.5"></i>
-            </button>
-            <button onclick="execEditorCmd('justifyCenter')" title="Rata Tengah" class="px-2 py-1.5 hover:bg-indigo-50 border-r border-slate-200">
-              <i data-lucide="align-center" class="w-3.5 h-3.5"></i>
-            </button>
-            <button onclick="execEditorCmd('justifyRight')" title="Rata Kanan" class="px-2 py-1.5 hover:bg-indigo-50 border-r border-slate-200">
-              <i data-lucide="align-right" class="w-3.5 h-3.5"></i>
-            </button>
-            <button onclick="execEditorCmd('justifyFull')" title="Rata Kiri Kanan (Justify)" class="px-2 py-1.5 hover:bg-indigo-50">
-              <i data-lucide="align-justify" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
-
-          <span class="text-slate-300">|</span>
-
-          <!-- Lists & Indent -->
-          <div class="flex items-center bg-white border border-slate-200 rounded-lg overflow-hidden shadow-xs">
-            <button onclick="execEditorCmd('insertOrderedList')" title="Daftar Bernomor (1, 2, 3)" class="px-2.5 py-1.5 hover:bg-indigo-50 font-bold border-r border-slate-200">1.</button>
-            <button onclick="execEditorCmd('insertUnorderedList')" title="Daftar Poin (Bullet)" class="px-2.5 py-1.5 hover:bg-indigo-50 text-base leading-none border-r border-slate-200">•</button>
-            <button onclick="execEditorCmd('indent')" title="Tambah Indent" class="px-2 py-1.5 hover:bg-indigo-50 border-r border-slate-200">
-              <i data-lucide="indent" class="w-3.5 h-3.5"></i>
-            </button>
-            <button onclick="execEditorCmd('outdent')" title="Kurangi Indent" class="px-2 py-1.5 hover:bg-indigo-50">
-              <i data-lucide="outdent" class="w-3.5 h-3.5"></i>
-            </button>
-          </div>
-
-          <span class="text-slate-300">|</span>
-
-          <!-- Clear format -->
-          <button onclick="execEditorCmd('removeFormat')" title="Hapus Format / Bersihkan" class="px-2.5 py-1.5 bg-white hover:bg-indigo-50 border border-slate-200 rounded-lg shadow-xs">
-            <i data-lucide="eraser" class="w-3.5 h-3.5 text-slate-500"></i>
-          </button>
-
-          <span class="text-slate-300">|</span>
-
-          <!-- Insert Page Break Button -->
-          <button onclick="insertEditorPageBreak()" title="Sisipkan batas halaman baru untuk dokumen multi-lembar (Lampiran 2, dll)" class="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg shadow-xs flex items-center gap-1.5 font-bold text-xs transition">
-            <i data-lucide="file-plus-2" class="w-3.5 h-3.5 text-indigo-600"></i>
-            <span>+ [Pemisah Halaman]</span>
-          </button>
-
-        </div>
-
-        <!-- Variable Pills Inserter -->
-        <div class="bg-indigo-50/50 border border-indigo-100 rounded-xl p-2.5 flex flex-wrap items-center gap-1.5 text-[11px]">
-          <span class="font-bold text-indigo-900 mr-1 flex items-center gap-1">
-            <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-indigo-600"></i>
-            <span>Sisipkan Variabel:</span>
-          </span>
-          <!-- Nomor, Tanggal & Tempat Surat -->
-          <button onclick="insertEditorVariable('{noSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-amber-100 border border-amber-300 font-mono text-amber-900 transition font-bold" title="Nomor Surat Resmi">+{noSurat}</button>
-          <button onclick="insertEditorVariable('{tglSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{tglSurat}</button>
-          <button onclick="insertEditorVariable('{tempatSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium" title="Tempat Penerbitan Surat (Klungkung / lainnya)">+{tempatSurat}</button>
-          <button onclick="insertEditorVariable('{titimangsaSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium" title="Titimangsa Lengkap (Tempat & Tanggal)">+{titimangsaSurat}</button>
-          <button onclick="insertEditorVariable('{tujuanSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-amber-100 border border-amber-300 font-mono text-amber-900 transition font-bold" title="Tujuan Surat Resmi (Kepada: Yth. Pimpinan DU/DI + Alamat)">+{tujuanSurat}</button>
-          <button onclick="insertEditorVariable('{ttdSurat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-emerald-100 border border-emerald-300 font-mono text-emerald-900 transition font-bold" title="Blok Tanda Tangan Lengkap (Titimangsa + TTD Elektronik/Basah + Nama Kepsek)">+{ttdSurat}</button>
-          <!-- Guru -->
-          <button onclick="insertEditorVariable('{guruNama}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{guruNama}</button>
-          <button onclick="insertEditorVariable('{guruNip}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{guruNip}</button>
-          <button onclick="insertEditorVariable('{guruPangkat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-emerald-100 border border-emerald-300 font-mono text-emerald-900 transition font-bold" title="Pangkat / Golongan Guru Pembimbing">+{guruPangkat}</button>
-          <button onclick="insertEditorVariable('{guruJabatan}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-emerald-100 border border-emerald-300 font-mono text-emerald-900 transition font-bold" title="Jabatan Guru Pembimbing">+{guruJabatan}</button>
-          <!-- Kepala Sekolah & Lembaga -->
-          <button onclick="insertEditorVariable('{kepsekNama}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{kepsekNama}</button>
-          <button onclick="insertEditorVariable('{kepsekNip}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{kepsekNip}</button>
-          <button onclick="insertEditorVariable('{kepsekPangkat}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{kepsekPangkat}</button>
-          <button onclick="insertEditorVariable('{namaSekolah}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{namaSekolah}</button>
-          <button onclick="insertEditorVariable('{tahunAjaran}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{tahunAjaran}</button>
-          <!-- Jadwal PKL -->
-          <button onclick="insertEditorVariable('{periodePkl}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{periodePkl}</button>
-          <button onclick="insertEditorVariable('{tglPelepasan}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{tglPelepasan}</button>
-          <button onclick="insertEditorVariable('{tglPenarikan}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{tglPenarikan}</button>
-          <!-- Siswa & Mitra PKL -->
-          <button onclick="insertEditorVariable('{tempatPkl}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{tempatPkl}</button>
-          <button onclick="insertEditorVariable('{alamatPkl}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{alamatPkl}</button>
-          <button onclick="insertEditorVariable('{siswaNama}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{siswaNama}</button>
-          <button onclick="insertEditorVariable('{siswaNis}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{siswaNis}</button>
-          <button onclick="insertEditorVariable('{siswaNisn}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{siswaNisn}</button>
-          <button onclick="insertEditorVariable('{siswaNisNisn}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{siswaNisNisn}</button>
-          <button onclick="insertEditorVariable('{siswaKelas}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{siswaKelas}</button>
-          <button onclick="insertEditorVariable('{siswaJurusan}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{siswaJurusan}</button>
-          <button onclick="insertEditorVariable('{tingkatKelas}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{tingkatKelas}</button>
-          <button onclick="insertEditorVariable('{jurusanPkl}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-indigo-100 border border-indigo-200 font-mono text-indigo-800 transition font-medium">+{jurusanPkl}</button>
-          <!-- Tabel Lampiran & Dokumen -->
-          <button onclick="insertEditorVariable('{tabelSiswaPermohonan}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-purple-100 border border-purple-300 font-mono text-purple-900 transition font-bold" title="Tabel Siswa untuk Permohonan PKL">+{tabelSiswaPermohonan}</button>
-          <button onclick="insertEditorVariable('{tabelDaftarSiswaLampiran}')" class="px-2 py-0.5 rounded-md bg-white hover:bg-purple-100 border border-purple-300 font-mono text-purple-900 transition font-bold" title="Tabel Daftar Siswa untuk Lampiran 2 (Multi Lembar)">+{tabelDaftarSiswaLampiran}</button>
-        </div>
-
-        <!-- Editable WYSIWYG Content Area -->
-        <div class="relative border border-slate-300 rounded-xl bg-white shadow-inner focus-within:ring-2 focus-within:ring-indigo-500">
-          <div id="wysiwygEditor" contenteditable="true" class="p-6 min-h-[300px] max-h-[420px] overflow-y-auto">
-            <!-- Injected by JS -->
-          </div>
-          <textarea id="htmlEditorTextarea" class="w-full p-4 min-h-[300px] max-h-[420px] font-mono text-xs bg-slate-900 text-slate-100 rounded-xl outline-none hidden leading-relaxed"></textarea>
-        </div>
-
-        <!-- Save and Metadata Controls -->
-        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div class="flex-1 w-full">
-            <label class="block text-[11px] font-bold text-slate-600 mb-1">Nama Template</label>
-            <input type="text" id="inputTemplateName" placeholder="Contoh: Template Resmi SMKN 1 FYJ Channel" class="w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
-          </div>
-
-          <div class="flex items-center gap-2 self-end sm:self-auto pt-4 sm:pt-0">
-            <button onclick="saveCurrentTemplateChanges()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-1.5">
-              <i data-lucide="save" class="w-4 h-4"></i>
-              <span>Simpan Perubahan</span>
-            </button>
-            <button onclick="saveAsNewTemplate()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-1.5">
-              <i data-lucide="plus" class="w-4 h-4"></i>
-              <span>Simpan Sebagai Baru</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- TAB 2: DAFTAR TEMPLATE VIEW -->
-      <div id="templateListView" class="p-6 overflow-y-auto space-y-4 flex-1 hidden">
-        
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-          <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-            <span>📋</span>
-            <span>Daftar Template (<span id="templateHeadingCount">0</span>)</span>
-          </h3>
-          <button onclick="startNewTemplate()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer" title="Buat naskah template surat baru">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            <span>Buat Template Baru</span>
-          </button>
-        </div>
-
-        <div class="border border-slate-200 rounded-xl overflow-x-auto bg-white shadow-xs">
-          <table class="w-full border-collapse text-left min-w-[520px]">
-            <thead>
-              <tr class="bg-slate-50 text-slate-600 font-bold text-[11px] uppercase tracking-wider border-b border-slate-200">
-                <th class="p-3">Nama Template</th>
-                <th class="p-3 text-center w-36">Status</th>
-                <th class="p-3 text-center w-48">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="templateTableBody">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-
-      <!-- Footer Bar -->
-      <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2.5">
-        <button type="button" onclick="navigateToView('main')" class="px-5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100 transition cursor-pointer flex items-center gap-2 shadow-xs">
-          <i data-lucide="arrow-left" class="w-4 h-4 text-indigo-600"></i>
-          <span>Kembali ke Halaman Surat</span>
-        </button>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ================= HALAMAN KHUSUS: PENGATURAN APLIKASI & LEMBAGA ================= -->
-  <section id="viewSettingsManager" class="max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 flex-1 hidden no-print pb-24 lg:pb-8">
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col min-h-[750px]">
-      
-      <!-- Top Navigation Header with 'Kembali ke Surat' -->
-      <div class="p-3.5 sm:p-5 border-b border-slate-200 bg-gradient-to-r from-slate-50 via-amber-50/20 to-white flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <button type="button" 
-                  onclick="navigateToView('main')" 
-                  class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 hover:text-indigo-700 border border-slate-300 text-xs font-bold transition shadow-xs cursor-pointer group">
-            <i data-lucide="arrow-left" class="w-4 h-4 text-indigo-600 group-hover:-translate-x-0.5 transition-transform"></i>
-            <span>Kembali ke Surat</span>
-          </button>
-          <div>
-            <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <i data-lucide="settings" class="w-5 h-5 text-amber-500"></i>
-              <span>Pengaturan Aplikasi &amp; Lembaga</span>
-            </h2>
-            <p class="text-xs text-slate-500">Kop Surat, TTD Elektronik &amp; Basah, Logo Web, Sekolah, TA &amp; Database</p>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between gap-2">
-          <!-- Navigation Tabs -->
-          <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none pb-1 lg:pb-0 flex-nowrap flex-1 sm:flex-initial">
-            <button id="btnTabSettingMedia" onclick="switchSettingsTab('media')" class="px-3.5 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-sm flex items-center gap-1.5 transition whitespace-nowrap shrink-0 cursor-pointer">
-              <i data-lucide="image" class="w-3.5 h-3.5"></i>
-              <span>Kop, TTD &amp; Logo</span>
-            </button>
-            <button id="btnTabSettingSchool" onclick="switchSettingsTab('school')" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition whitespace-nowrap shrink-0 cursor-pointer">
-              <i data-lucide="school" class="w-3.5 h-3.5"></i>
-              <span>Sekolah &amp; TA</span>
-            </button>
-            <button id="btnTabSettingDatabase" onclick="switchSettingsTab('database')" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1.5 transition whitespace-nowrap shrink-0 cursor-pointer">
-              <i data-lucide="database" class="w-3.5 h-3.5"></i>
-              <span>Database SQLite &amp; SQL</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50/50">
-        
-        <!-- TAB 1: KOP SURAT, TTD ELEKTRONIK, TTD BASAH & LOGO WEB -->
-        <div id="settingsTabMedia" class="space-y-6">
-          
-          <!-- 1. KOP SURAT CARD -->
-          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-              <div>
-                <div class="flex items-center gap-2">
-                  <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">1. Gambar Kop Surat</h4>
-                  <span id="badgeSettingsKop" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">Standar Bawaan (kop_fyj.png)</span>
-                </div>
-                <p class="text-[11px] text-slate-500 mt-0.5">Format file: PNG, JPG, JPEG, WEBP. Dapat diunggah langsung atau melalui link URL.</p>
-              </div>
-              <button onclick="resetKopToDefault()" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1 self-start sm:self-auto transition">
-                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                <span>Gunakan Kop Bawaan</span>
-              </button>
-            </div>
-
-            <!-- Preview Box -->
-            <div class="bg-slate-100 border border-dashed border-slate-300 rounded-xl p-3 flex items-center justify-center min-h-[90px] overflow-hidden">
-              <img id="previewSettingsKop" src="" alt="Pratinjau Kop Surat" class="max-h-24 max-w-full object-contain">
-            </div>
-
-            <!-- Upload & URL Controls -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi A: Unggah Berkas Gambar</label>
-                <div class="flex items-center gap-2">
-                  <label class="w-full px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-xs font-bold text-indigo-700 cursor-pointer flex items-center justify-center gap-2 transition">
-                    <i data-lucide="upload" class="w-4 h-4 text-indigo-600"></i>
-                    <span>Pilih Berkas Kop Gambar...</span>
-                    <input type="file" id="inputUploadKop" accept="image/*" class="hidden" onchange="handleKopFileUpload(event)">
-                  </label>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-1">Disimpan secara lokal di browser dan backend database.</p>
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi B: Tautan / Link URL Gambar</label>
-                <div class="flex items-center gap-1.5">
-                  <input type="url" id="inputUrlKop" placeholder="https://domain.com/kop-sekolah.png" class="flex-1 p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
-                  <button onclick="applyKopUrl()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition shrink-0">
-                    Terapkan
-                  </button>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-1">Masukkan URL langsung berkas gambar kop resmi.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- 2. TTD ELEKTRONIK CARD -->
-          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-              <div>
-                <div class="flex items-center gap-2">
-                  <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">2. Tanda Tangan Elektronik / Barcode Kepala Sekolah</h4>
-                  <span id="badgeSettingsTtd" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">Standar Bawaan (ttdelektronik.jpg)</span>
-                </div>
-                <p class="text-[11px] text-slate-500 mt-0.5">Digunakan saat opsi "Gunakan TTD Elektronik" dicentang.</p>
-              </div>
-              <button onclick="resetTtdToDefault()" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1 self-start sm:self-auto transition">
-                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                <span>Gunakan TTD Bawaan</span>
-              </button>
-            </div>
-
-            <!-- Preview Box -->
-            <div class="bg-slate-100 border border-dashed border-slate-300 rounded-xl p-3 flex items-center justify-center min-h-[90px] overflow-hidden">
-              <img id="previewSettingsTtd" src="" alt="Pratinjau TTD Elektronik" class="max-h-24 max-w-full object-contain">
-            </div>
-
-            <!-- Upload & URL Controls -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi A: Unggah Berkas Gambar</label>
-                <div class="flex items-center gap-2">
-                  <label class="w-full px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-xs font-bold text-indigo-700 cursor-pointer flex items-center justify-center gap-2 transition">
-                    <i data-lucide="upload" class="w-4 h-4 text-indigo-600"></i>
-                    <span>Pilih Berkas TTD / Barcode...</span>
-                    <input type="file" id="inputUploadTtd" accept="image/*" class="hidden" onchange="handleTtdFileUpload(event)">
-                  </label>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-1">Disimpan secara lokal di browser dan backend database.</p>
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi B: Tautan / Link URL Gambar</label>
-                <div class="flex items-center gap-1.5">
-                  <input type="url" id="inputUrlTtd" placeholder="https://domain.com/ttd-kepsek.png" class="flex-1 p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
-                  <button onclick="applyTtdUrl()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition shrink-0">
-                    Terapkan
-                  </button>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-1">Masukkan URL langsung berkas gambar TTD/barcode.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- 3. TTD BASAH CARD -->
-          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-              <div>
-                <div class="flex items-center gap-2">
-                  <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">3. Tanda Tangan Basah Kepala Sekolah</h4>
-                  <span id="badgeSettingsTtdBasah" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">Standar Bawaan (ttd_basah.png)</span>
-                </div>
-                <p class="text-[11px] text-slate-500 mt-0.5">Digunakan otomatis jika TTD Elektronik tidak digunakan, disertai Nama & NIP resmi Kepala Sekolah.</p>
-              </div>
-              <button onclick="resetTtdBasahToDefault()" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1 self-start sm:self-auto transition">
-                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                <span>Gunakan TTD Basah Bawaan</span>
-              </button>
-            </div>
-
-            <!-- Preview Box -->
-            <div class="bg-slate-100 border border-dashed border-slate-300 rounded-xl p-3 flex items-center justify-center min-h-[90px] overflow-hidden">
-              <img id="previewSettingsTtdBasah" src="" alt="Pratinjau TTD Basah" class="max-h-24 max-w-full object-contain">
-            </div>
-
-            <!-- Upload & URL Controls -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi A: Unggah Berkas TTD Basah</label>
-                <div class="flex items-center gap-2">
-                  <label class="w-full px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-xs font-bold text-indigo-700 cursor-pointer flex items-center justify-center gap-2 transition">
-                    <i data-lucide="upload" class="w-4 h-4 text-indigo-600"></i>
-                    <span>Pilih Berkas TTD Basah...</span>
-                    <input type="file" id="inputUploadTtdBasah" accept="image/*" class="hidden" onchange="handleTtdBasahFileUpload(event)">
-                  </label>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-1">Format PNG transparan sangat disarankan untuk hasil cetak yang bersih.</p>
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi B: Tautan / Link URL Gambar</label>
-                <div class="flex items-center gap-1.5">
-                  <input type="url" id="inputUrlTtdBasah" placeholder="https://domain.com/ttd_basah.png" class="flex-1 p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
-                  <button onclick="applyTtdBasahUrl()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition shrink-0">
-                    Terapkan
-                  </button>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-1">Masukkan URL langsung ke berkas gambar TTD basah.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- 4. LOGO WEB CARD -->
-          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-              <div>
-                <div class="flex items-center gap-2">
-                  <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">4. Logo Web Aplikasi & Favicon</h4>
-                  <span id="badgeSettingsLogoWeb" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">Standar Bawaan (logo_fyj.png)</span>
-                </div>
-                <p class="text-[11px] text-slate-500 mt-0.5">Ditampilkan pada pojok kiri atas bilah navigasi header dan tab peramban.</p>
-              </div>
-              <button onclick="resetLogoWebToDefault()" class="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center gap-1 self-start sm:self-auto transition">
-                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                <span>Gunakan Logo Bawaan</span>
-              </button>
-            </div>
-
-            <!-- Preview Box -->
-            <div class="bg-slate-100 border border-dashed border-slate-300 rounded-xl p-3 flex items-center justify-center min-h-[80px]">
-              <div class="flex items-center gap-3">
-                <div class="w-14 h-14 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center justify-center overflow-hidden">
-                  <img id="previewSettingsLogoWeb" src="" alt="Pratinjau Logo Web" class="w-full h-full object-cover hidden">
-                  <div id="placeholderSettingsLogoWeb" class="text-indigo-600 font-bold text-xs flex flex-col items-center justify-center">
-                    <i data-lucide="file-badge" class="w-7 h-7"></i>
-                  </div>
-                </div>
-                <div class="text-xs text-slate-600">
-                  <div class="font-bold">Pratinjau Ikon Aplikasi</div>
-                  <div class="text-[11px] text-slate-400">Rekomendasi rasio 1:1 (persegi), format PNG transparan atau JPG</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Upload & URL Controls -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi A: Unggah Berkas Logo</label>
-                <div class="flex items-center gap-2">
-                  <label class="w-full px-3 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-xs font-bold text-indigo-700 cursor-pointer flex items-center justify-center gap-2 transition">
-                    <i data-lucide="upload" class="w-4 h-4 text-indigo-600"></i>
-                    <span>Pilih Berkas Logo Web...</span>
-                    <input type="file" id="inputUploadLogoWeb" accept="image/*" class="hidden" onchange="handleLogoWebFileUpload(event)">
-                  </label>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-1">Disimpan secara lokal di browser dan langsung diterapkan.</p>
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 mb-1">Opsi B: Tautan / Link URL Logo</label>
-                <div class="flex items-center gap-1.5">
-                  <input type="url" id="inputUrlLogoWeb" placeholder="https://domain.com/logo-sekolah.png" class="flex-1 p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-indigo-500">
-                  <button onclick="applyLogoWebUrl()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold transition shrink-0">
-                    Terapkan
-                  </button>
-                </div>
-                <p class="text-[10px] text-slate-400 mt-1">Masukkan URL langsung ke berkas logo.</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- TAB 2: IDENTITAS SEKOLAH & TAHUN AJARAN -->
-        <div id="settingsTabSchool" class="space-y-5 hidden">
-          
-          <!-- Identitas Lembaga & Tahun Ajaran -->
-          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2.5 flex items-center gap-2">
-              <i data-lucide="building" class="w-4 h-4 text-indigo-600"></i>
-              <span>Identitas Sekolah & Tahun Ajaran</span>
-            </h4>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama Sekolah / Lembaga</label>
-                <input type="text" id="settingsNamaSekolah" placeholder="Contoh: SMKN 1 FYJ Channel" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Tahun Ajaran Aktif</label>
-                <input type="text" id="settingsTahunAjaran" placeholder="Contoh: 2026/2027" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500">
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1">Alamat Lengkap & Nomor Kontak Sekolah</label>
-              <input type="text" id="settingsAlamatSekolah" placeholder="Alamat sekolah..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500">
-            </div>
-          </div>
-
-          <!-- Kepala Sekolah -->
-          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2.5 flex items-center gap-2">
-              <i data-lucide="user-check" class="w-4 h-4 text-indigo-600"></i>
-              <span>Data Kepala Sekolah</span>
-            </h4>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama Lengkap & Gelar</label>
-                <input type="text" id="settingsKepsekNama" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-slate-800">
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Pangkat / Golongan</label>
-                <input type="text" id="settingsKepsekPangkat" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium text-slate-800">
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">NIP Kepala Sekolah</label>
-                <input type="text" id="settingsKepsekNip" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium text-slate-800">
-              </div>
-            </div>
-          </div>
-
-          <!-- Jadwal PKL & Penomoran Default -->
-          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs space-y-4">
-            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2.5 flex items-center gap-2">
-              <i data-lucide="calendar" class="w-4 h-4 text-indigo-600"></i>
-              <span>Jadwal Pelaksanaan PKL & Format Surat</span>
-            </h4>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Nomor Surat Standar</label>
-                <input type="text" id="settingsNoSurat" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium">
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Tanggal Surat Standar</label>
-                <input type="text" id="settingsTglSurat" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium">
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Tanggal Pelepasan Siswa</label>
-                <input type="text" id="settingsTglPelepasan" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium">
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Tanggal Penarikan Siswa</label>
-                <input type="text" id="settingsTglPenarikan" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium">
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1">Periode Pelaksanaan & Monitoring PKL</label>
-              <input type="text" id="settingsPeriodePkl" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium">
-            </div>
-
-            <!-- Tempat Surat & Titimangsa TTD -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-100">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Tempat Penerbitan Surat (Titimangsa TTD)</label>
-                <input type="text" id="settingsTempatSurat" placeholder="Contoh: Klungkung" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-slate-800">
-                <span class="text-[10px] text-slate-500">Misal: Klungkung, Denpasar, Semapura, dsb.</span>
-              </div>
-
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Format Titimangsa TTD</label>
-                <select id="settingsFormatTitimangsa" onchange="toggleCustomTitimangsaInput()" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-slate-800">
-                  <option value="auto">Otomatis (Sesuai Karakteristik Surat)</option>
-                  <option value="standar">Standar: [Tempat], [Tanggal]</option>
-                  <option value="ditetapkan">Penetapan: Ditetapkan di [Tempat] / Pada Tanggal [Tanggal]</option>
-                  <option value="kustom">Teks Bebas / Kustom Sendiri...</option>
-                </select>
-                <span class="text-[10px] text-slate-500">Pilih susunan tempat & tanggal pada tanda tangan</span>
-              </div>
-            </div>
-
-            <div id="wrapperCustomTitimangsa" class="hidden">
-              <label class="block text-[11px] font-bold text-slate-700 mb-1">Teks Titimangsa Kustom (Bisa multi-baris)</label>
-              <textarea id="settingsTitimangsaKustom" rows="2" placeholder="Contoh:&#10;Ditetapkan di Klungkung&#10;Pada Tanggal 06 Oktober 2026" class="w-full p-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium text-slate-800"></textarea>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- TAB 3: DATABASE SQLITE & SQL DUMP -->
-        <div id="settingsTabDatabase" class="space-y-4 hidden">
-          
-          <!-- 1. Status Penyimpanan Database -->
-          <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3">
-            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2.5 flex items-center gap-2">
-              <i data-lucide="database" class="w-4 h-4 text-sky-600"></i>
-              <span>Status Penyimpanan Database SQLite & File SQL</span>
-            </h4>
-
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Seluruh data siswa, penugasan guru pembimbing, tempat PKL, pengaturan kop, tanda tangan, dan template surat tersimpan secara persisten pada berkas database SQLite mandiri di folder <code class="px-2 py-0.5 rounded bg-slate-100 text-indigo-700 font-mono text-[11px]">database/surat_pkl.db</code> dan dicadangkan secara otomatis ke skrip dump <code class="px-2 py-0.5 rounded bg-slate-100 text-purple-700 font-mono text-[11px]">database/surat_pkl.sql</code>.
-            </p>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
-                  <i data-lucide="users" class="w-5 h-5"></i>
-                </div>
-                <div>
-                  <div class="text-[10px] text-slate-500 uppercase font-bold">Total Siswa di DB</div>
-                  <div id="dbSettingTotalRows" class="text-lg font-extrabold text-slate-800">258</div>
-                </div>
-              </div>
-
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
-                  <i data-lucide="graduation-cap" class="w-5 h-5"></i>
-                </div>
-                <div>
-                  <div class="text-[10px] text-slate-500 uppercase font-bold">Guru Pembimbing</div>
-                  <div id="dbSettingTotalGurus" class="text-lg font-extrabold text-slate-800">54</div>
-                </div>
-              </div>
-
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                  <i data-lucide="building-2" class="w-5 h-5"></i>
-                </div>
-                <div>
-                  <div class="text-[10px] text-slate-500 uppercase font-bold">Mitra DU/DI</div>
-                  <div id="dbSettingTotalTempat" class="text-lg font-extrabold text-slate-800">87</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 2. Pencadangan Database (Backup / Download) -->
-          <div class="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3">
-            <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2.5 flex items-center gap-2">
-              <i data-lucide="download-cloud" class="w-4 h-4 text-indigo-600"></i>
-              <span>Pencadangan Database (Backup / Download)</span>
-            </h4>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Unduh salinan berkas database aktif atau skrip dump SQL untuk disimpan sebagai cadangan lokal di komputer Anda:
-            </p>
-            <div class="flex flex-wrap items-center gap-2.5 pt-1">
-              <button type="button" onclick="downloadSqliteDatabase()" class="px-3.5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer">
-                <i data-lucide="database" class="w-4 h-4"></i>
-                <span>Unduh Berkas Database (.DB)</span>
-              </button>
-
-              <button type="button" onclick="downloadSqlDatabase()" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer">
-                <i data-lucide="file-code-2" class="w-4 h-4"></i>
-                <span>Unduh Skrip SQL Dump (.SQL)</span>
-              </button>
-
-              <button type="button" onclick="syncRecordsToDatabase(true)" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 rounded-lg text-xs font-semibold transition flex items-center gap-2 cursor-pointer">
-                <i data-lucide="upload-cloud" class="w-4 h-4 text-indigo-600"></i>
-                <span>Sinkronkan Sekarang ke DB</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- 3. Pemulihan & Import Database (Restore Database) -->
-          <div class="bg-gradient-to-r from-emerald-50/50 to-teal-50/30 border border-emerald-200 rounded-xl p-4 sm:p-5 shadow-xs space-y-3">
-            <div class="flex items-center justify-between border-b border-emerald-100 pb-2.5">
-              <h4 class="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-2">
-                <i data-lucide="hard-drive-upload" class="w-4 h-4 text-emerald-600"></i>
-                <span>Pemulihan & Import Database (Restore Database)</span>
-              </h4>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Format .DB / .SQL</span>
-            </div>
-
-            <p class="text-xs text-slate-700 leading-relaxed">
-              Unggah berkas database SQLite (<code class="px-1.5 py-0.5 rounded bg-emerald-100/60 text-emerald-900 font-mono text-[11px]">.db</code> / <code class="px-1.5 py-0.5 rounded bg-emerald-100/60 text-emerald-900 font-mono text-[11px]">.sqlite</code>) atau skrip dump SQL (<code class="px-1.5 py-0.5 rounded bg-emerald-100/60 text-emerald-900 font-mono text-[11px]">.sql</code>) untuk memulihkan seluruh data aplikasi dan pengaturan lembaga secara menyeluruh.
-            </p>
-
-            <!-- Hidden File Input for DB Import -->
-            <input type="file" id="dbImportFileInput" accept=".db,.sqlite,.sqlite3,.sql" class="hidden" onchange="handleDatabaseImport(event)">
-
-            <div class="flex flex-wrap items-center gap-3 pt-1">
-              <button type="button" onclick="document.getElementById('dbImportFileInput').click()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer">
-                <i data-lucide="upload" class="w-4 h-4"></i>
-                <span>Pilih Berkas & Pulihkan Database (.db / .sql)</span>
-              </button>
-            </div>
-
-            <!-- Notice & Safety Info -->
-            <div class="bg-white/80 border border-emerald-200 rounded-lg p-3 flex items-start gap-2.5 text-[11px] text-slate-600 leading-relaxed">
-              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-              <div>
-                <span class="font-bold text-slate-800">Proteksi Cadangan Otomatis:</span> Sebelum proses pemulihan dijalankan, sistem akan secara otomatis membuat berkas cadangan database saat ini ke <code class="px-1.5 py-0.5 rounded bg-slate-100 text-indigo-700 font-mono">database/surat_pkl.db.bak</code>. Data di tampilan web akan langsung diperbarui seketika.
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- Footer Bar -->
-      <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <button onclick="resetSettingsToDefault()" class="px-3.5 py-2 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer">
-          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-          <span>Reset Semua ke Standar Awal</span>
-        </button>
-
-        <div class="flex items-center gap-2 self-end sm:self-auto">
-          <button type="button" onclick="navigateToView('main')" class="px-4 py-2 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer">
-            Batal &amp; Kembali
-          </button>
-          <button type="button" onclick="saveAppSettings()" class="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow-sm flex items-center gap-1.5 cursor-pointer">
-            <i data-lucide="check" class="w-4 h-4"></i>
-            <span>Simpan Pengaturan</span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </section>
 
   <!-- ================= BATCH PRINT MODAL ================= -->
   <div id="batchPrintModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 hidden no-print" style="display: none;">
@@ -2021,43 +1279,39 @@
     </div>
   </div>
 
-  <!-- ================= MOBILE BOTTOM NAVIGATION BAR (KHUSUS MODE MOBILE) ================= -->
+  <!-- ================= MOBILE BOTTOM NAVIGATION BAR (KHUSUS MODE MOBILE - MPA) ================= -->
   <nav id="mobileBottomNav" class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] px-2 py-1.5 flex items-center justify-around no-print">
     <!-- 1. Surat / Beranda -->
-    <button type="button" 
-            onclick="navigateToView('main')" 
-            id="mobileNavBtn_main" 
-            class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-indigo-600 transition group cursor-pointer">
+    <a href="index.html" 
+       id="mobileNavBtn_main" 
+       class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-indigo-600 transition group cursor-pointer">
       <i data-lucide="file-text" class="w-5 h-5 mb-0.5 group-hover:scale-110 transition-transform"></i>
       <span class="text-[10px] font-bold tracking-tight">Surat</span>
-    </button>
+    </a>
 
     <!-- 2. Kelola Data -->
-    <button type="button" 
-            onclick="openDatabaseModal()" 
-            id="mobileNavBtn_database" 
-            class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+    <a href="data.html" 
+       id="mobileNavBtn_database" 
+       class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-sky-600 transition group cursor-pointer">
       <i data-lucide="database" class="w-5 h-5 mb-0.5 text-sky-500 group-hover:scale-110 transition-transform"></i>
       <span class="text-[10px] font-semibold tracking-tight">Kelola Data</span>
-    </button>
+    </a>
 
     <!-- 3. Template Surat -->
-    <button type="button" 
-            onclick="navigateToView('template', 'list')" 
-            id="mobileNavBtn_template" 
-            class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+    <a href="template.html" 
+       id="mobileNavBtn_template" 
+       class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
       <i data-lucide="layout-template" class="w-5 h-5 mb-0.5 text-indigo-500 group-hover:scale-110 transition-transform"></i>
       <span class="text-[10px] font-semibold tracking-tight">Template</span>
-    </button>
+    </a>
 
     <!-- 4. Pengaturan -->
-    <button type="button" 
-            onclick="navigateToView('settings')" 
-            id="mobileNavBtn_settings" 
-            class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-indigo-600 transition group cursor-pointer">
+    <a href="pengaturan.html" 
+       id="mobileNavBtn_settings" 
+       class="flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl text-slate-500 hover:text-amber-600 transition group cursor-pointer">
       <i data-lucide="settings" class="w-5 h-5 mb-0.5 text-amber-500 group-hover:scale-110 transition-transform"></i>
       <span class="text-[10px] font-semibold tracking-tight">Pengaturan</span>
-    </button>
+    </a>
   </nav>
 
   <!-- ================= SCRIPTS ================= -->

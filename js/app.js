@@ -495,6 +495,40 @@ function initApp() {
   syncSidebarInputs();
   updateUIFromState();
   renderPreview();
+
+  // Multi-Page Application (MPA) Dynamic Page Initializers
+  const isTemplatePage = !!document.getElementById('templatePageRoot') || window.location.pathname.toLowerCase().includes('template.html');
+  const isSettingsPage = !!document.getElementById('settingsPageRoot') || window.location.pathname.toLowerCase().includes('pengaturan.html');
+  const isDataPage = !!document.getElementById('dataPageRoot') || window.location.pathname.toLowerCase().includes('data.html');
+
+  if (isTemplatePage) {
+    populateEditorTemplateSelect();
+    loadTemplateIntoEditor(AppState.editingTemplateId || AppState.activeTemplateId);
+    renderTemplateTable();
+    const hash = window.location.hash;
+    if (hash === '#editor') {
+      switchTemplateTab('editor');
+    } else {
+      switchTemplateTab('list');
+    }
+  }
+
+  if (isSettingsPage) {
+    populateSettingsInputs();
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'school') {
+      switchSettingsTab('school');
+    } else if (hash === 'database') {
+      switchSettingsTab('database');
+    } else {
+      switchSettingsTab('media');
+    }
+  }
+
+  if (isDataPage) {
+    renderDatabaseTable();
+  }
+
   if (window.lucide) {
     lucide.createIcons();
   }
@@ -1908,79 +1942,36 @@ function renderPreview() {
   updatePaperSizeClass();
 }
 
-// ================= MULTI-VIEW NAVIGATION (SURAT / TEMPLATE / PENGATURAN) =================
+// ================= MULTI-PAGE APPLICATION (MPA) NAVIGATION =================
 function navigateToView(viewName, tab = null) {
-  const views = {
-    main: document.getElementById('viewMainApp'),
-    template: document.getElementById('viewTemplateManager'),
-    settings: document.getElementById('viewSettingsManager')
-  };
-
-  Object.keys(views).forEach(k => {
-    const el = views[k];
-    if (!el) return;
-    if (k === viewName) {
-      el.classList.remove('hidden');
-      el.style.display = (k === 'main') ? 'flex' : 'block';
-    } else {
-      el.classList.add('hidden');
-      el.style.display = 'none';
-    }
-  });
-
-  // Update mobile bottom navigation button active styles
-  const navBtns = {
-    main: document.getElementById('mobileNavBtn_main'),
-    template: document.getElementById('mobileNavBtn_template'),
-    settings: document.getElementById('mobileNavBtn_settings')
-  };
-
-  Object.keys(navBtns).forEach(k => {
-    const btn = navBtns[k];
-    if (!btn) return;
-    const span = btn.querySelector('span');
-    if (k === viewName) {
-      btn.classList.add('text-indigo-600');
-      btn.classList.remove('text-slate-500');
-      if (span) {
-        span.classList.add('font-bold');
-        span.classList.remove('font-semibold');
-      }
-    } else {
-      btn.classList.remove('text-indigo-600');
-      btn.classList.add('text-slate-500');
-      if (span) {
-        span.classList.remove('font-bold');
-        span.classList.add('font-semibold');
-      }
-    }
-  });
-
   if (viewName === 'template') {
-    populateEditorTemplateSelect();
-    loadTemplateIntoEditor(AppState.editingTemplateId || AppState.activeTemplateId);
-    renderTemplateTable();
-    if (tab) switchTemplateTab(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    openTemplateModal(tab || 'list');
   } else if (viewName === 'settings') {
-    populateSettingsInputs();
-    if (tab) switchSettingsTab(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    openSettingsModal(tab || 'media');
+  } else if (viewName === 'database' || viewName === 'data') {
+    openDatabaseModal();
   } else {
-    renderPreview();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!window.location.pathname.toLowerCase().endsWith('index.html') && !window.location.pathname.endsWith('/')) {
+      window.location.href = 'index.html';
+    } else {
+      renderPreview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
-
-  if (window.lucide) lucide.createIcons();
 }
 
 // ================= MODAL / HALAMAN TEMPLATE MANAGEMENT & WYSIWYG =================
 function openTemplateModal(tab = 'list') {
-  navigateToView('template', tab);
+  if (window.location.pathname.toLowerCase().includes('template.html') || !!document.getElementById('templatePageRoot')) {
+    switchTemplateTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    window.location.href = tab === 'editor' ? 'template.html#editor' : 'template.html';
+  }
 }
 
 function closeTemplateModal() {
-  navigateToView('main');
+  window.location.href = 'index.html';
 }
 
 function switchTemplateTab(tab) {
@@ -2495,11 +2486,24 @@ function populateSettingsInputs() {
 }
 
 function openSettingsModal(tab = 'media') {
-  navigateToView('settings', tab);
+  if (window.location.pathname.toLowerCase().includes('pengaturan.html') || !!document.getElementById('settingsPageRoot')) {
+    switchSettingsTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    window.location.href = tab ? `pengaturan.html#${tab}` : 'pengaturan.html';
+  }
 }
 
 function closeSettingsModal() {
-  navigateToView('main');
+  if (window.location.pathname.toLowerCase().includes('pengaturan.html')) {
+    window.location.href = 'index.html';
+  } else {
+    const modal = document.getElementById('settingsModal');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.add('hidden');
+    }
+  }
 }
 
 function switchSettingsTab(tab) {
@@ -4461,24 +4465,25 @@ async function rebuildDatabaseFromBackend() {
   }
 }
 
-// Database Manager Modal
+// Database Manager Modal / Page
 function openDatabaseModal() {
-  const modal = document.getElementById('databaseModal');
-  if (!modal) return;
-  renderDatabaseTable();
-  updateDatabaseStatusBadge();
-  modal.style.display = 'flex';
-  modal.classList.remove('hidden');
-  if (window.lucide) {
-    try { lucide.createIcons(); } catch(e) {}
+  if (window.location.pathname.toLowerCase().includes('data.html') || !!document.getElementById('dataPageRoot')) {
+    renderDatabaseTable();
+    updateDatabaseStatusBadge();
+  } else {
+    window.location.href = 'data.html';
   }
 }
 
 function closeDatabaseModal() {
-  const modal = document.getElementById('databaseModal');
-  if (modal) {
-    modal.style.display = 'none';
-    modal.classList.add('hidden');
+  if (window.location.pathname.toLowerCase().includes('data.html')) {
+    window.location.href = 'index.html';
+  } else {
+    const modal = document.getElementById('databaseModal');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.add('hidden');
+    }
   }
 }
 
