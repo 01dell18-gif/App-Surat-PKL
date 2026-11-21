@@ -525,6 +525,9 @@ function initApp() {
   syncSidebarInputs();
   updateUIFromState();
   renderPreview();
+  if (typeof initMobileDocViewer === 'function') {
+    initMobileDocViewer();
+  }
 
   // Multi-Page Application (MPA) Dynamic Page Initializers
   const isTemplatePage = !!document.getElementById('templatePageRoot') || window.location.pathname.toLowerCase().includes('template.html');
@@ -2005,6 +2008,9 @@ function renderPreview() {
 
   // Update paper size class
   updatePaperSizeClass();
+  if (typeof updateMobileDocScale === 'function') {
+    updateMobileDocScale();
+  }
 }
 
 // ================= MULTI-PAGE APPLICATION (MPA) NAVIGATION =================
@@ -5370,4 +5376,293 @@ function closeChangelogModal() {
     modal.style.display = 'none';
     modal.classList.add('hidden');
   }
+}
+
+
+// ================= MOBILE DOCUMENT INTERACTIVE VIEWER (SCALING, ZOOMING & PANNING) =================
+const MobileDocState = {
+  fitScale: 1,
+  currentScale: 1,
+  panX: 0,
+  panY: 0,
+  isDragging: false,
+  dragStartX: 0,
+  dragStartY: 0,
+  startPanX: 0,
+  startPanY: 0,
+  initialPinchDist: 0,
+  initialPinchScale: 1,
+  isPinching: false,
+  isUserZoomed: false,
+  lastTapTime: 0,
+  isInitialized: false
+};
+
+// Hitung skala pas layar (fit-to-screen) berdasarkan lebar layar ponsel & kertas
+function calculateMobileFitScale() {
+  const viewport = document.getElementById('mobileDocViewport');
+  const doc = document.getElementById('documentTemplate');
+  if (!viewport || !doc) return 1;
+
+  const isMobile = window.innerWidth < 1024;
+  if (!isMobile) {
+    MobileDocState.fitScale = 1;
+    return 1;
+  }
+
+  // Lebar alami dokumen (F4: ~813px, A4: ~794px)
+  const paperWidth = doc.offsetWidth || (doc.classList.contains('paper-a4') ? 794 : 813);
+  const availWidth = Math.max(280, viewport.clientWidth - 16);
+  const scale = Math.min(1, Math.max(0.2, availWidth / paperWidth));
+  MobileDocState.fitScale = Math.round(scale * 1000) / 1000;
+  return MobileDocState.fitScale;
+}
+
+// Terapkan transformasi skala & posisi geser ke canvas pratinjau dokumen
+function applyMobileDocTransform(withTransition = false) {
+  const canvas = document.getElementById('mobileDocCanvas');
+  const viewport = document.getElementById('mobileDocViewport');
+  const doc = document.getElementById('documentTemplate');
+  const badge = document.getElementById('mobileZoomValueBtn');
+  if (!canvas || !doc) return;
+
+  const isMobile = window.innerWidth < 1024;
+  if (!isMobile) {
+    // Mode desktop: matikan transform agar tampilan normal dan tajam 1:1
+    canvas.style.transform = 'none';
+    canvas.style.transformOrigin = 'top center';
+    canvas.style.transition = 'none';
+    if (viewport) {
+      viewport.style.height = 'auto';
+      viewport.style.overflow = 'visible';
+    }
+    return;
+  }
+
+  const scale = MobileDocState.currentScale;
+  const panX = MobileDocState.panX;
+  const panY = MobileDocState.panY;
+
+  canvas.style.transition = withTransition ? 'transform 0.22s cubic-bezier(0.2, 0, 0, 1)' : 'none';
+  canvas.style.transformOrigin = 'top center';
+  canvas.style.transform = `translate3d(${panX}px, ${panY}px, 0) scale(${scale})`;
+
+  // Sesuaikan tinggi container viewport agar pas dengan tinggi visual surat yang diskala
+  if (viewport) {
+    const docHeight = doc.offsetHeight || 1300;
+    const scaledHeight = (docHeight * scale) + Math.max(0, panY);
+    viewport.style.height = `${Math.ceil(scaledHeight + 20)}px`;
+    viewport.style.overflow = 'hidden';
+  }
+
+  // Update badge persentase / status zoom di toolbar mobile
+  if (badge) {
+    const pct = Math.round(scale * 100);
+    const isFit = Math.abs(scale - MobileDocState.fitScale) < 0.03;
+    badge.textContent = isFit ? `Pas (${pct}%)` : `${pct}%`;
+    badge.title = isFit ? 'Mode Pas Layar HP aktif. Klik untuk beralih ke 100%' : 'Skala kustom. Klik untuk Pas Layar';
+  }
+}
+
+// Pembaruan dinamis skala saat render atau rotasi layar
+function updateMobileDocScale() {
+  const isMobile = window.innerWidth < 1024;
+  if (!isMobile) {
+    applyMobileDocTransform(false);
+    return;
+  }
+
+  const oldFit = MobileDocState.fitScale;
+  calculateMobileFitScale();
+
+  // Jika pengguna belum melakukan zoom manual, otomatis pertahankan mode Pas Layar
+  if (!MobileDocState.isUserZoomed || Math.abs(MobileDocState.currentScale - oldFit) < 0.03) {
+    MobileDocState.currentScale = MobileDocState.fitScale;
+    MobileDocState.panX = 0;
+    MobileDocState.panY = 0;
+    MobileDocState.isUserZoomed = false;
+  }
+  applyMobileDocTransform(false);
+}
+
+// Tombol Perbesar (+) / Perkecil (-)
+function zoomMobileDoc(delta) {
+  MobileDocState.isUserZoomed = true;
+  let newScale = MobileDocState.currentScale + delta;
+  newScale = Math.min(2.5, Math.max(0.25, Math.round(newScale * 10) / 10));
+  MobileDocState.currentScale = newScale;
+  applyMobileDocTransform(true);
+}
+
+// Kembalikan ke Pas Layar HP (Reset)
+function resetMobileDocToFit() {
+  calculateMobileFitScale();
+  MobileDocState.isUserZoomed = false;
+  MobileDocState.currentScale = MobileDocState.fitScale;
+  MobileDocState.panX = 0;
+  MobileDocState.panY = 0;
+  applyMobileDocTransform(true);
+}
+
+// Beralih cepat antara Pas Layar & 100%
+function toggleMobileFitOr100() {
+  if (Math.abs(MobileDocState.currentScale - 1) < 0.05) {
+    resetMobileDocToFit();
+  } else {
+    MobileDocState.isUserZoomed = true;
+    MobileDocState.currentScale = 1.0;
+    MobileDocState.panX = 0;
+    MobileDocState.panY = 0;
+    applyMobileDocTransform(true);
+  }
+}
+
+// Batasi jarak pergeseran (panning) agar dokumen tidak keluar dari layar
+function clampPan(x, y) {
+  const doc = document.getElementById('documentTemplate');
+  const viewport = document.getElementById('mobileDocViewport');
+  if (!doc || !viewport) return { x, y };
+
+  const paperWidth = doc.offsetWidth || 813;
+  const scaledWidth = paperWidth * MobileDocState.currentScale;
+  const viewWidth = viewport.clientWidth;
+  
+  const maxPanX = Math.max(60, (scaledWidth - viewWidth) / 2 + 100);
+  const clampedX = Math.max(-maxPanX, Math.min(maxPanX, x));
+
+  const docHeight = doc.offsetHeight || 1300;
+  const scaledHeight = docHeight * MobileDocState.currentScale;
+  const maxPanY = Math.max(100, scaledHeight * 0.8);
+  const clampedY = Math.max(-maxPanY, Math.min(100, y));
+
+  return { x: clampedX, y: clampedY };
+}
+
+// Inisialisasi Pengendali Mobile Viewer (Gestur Sentuh, Cubit / Pinch-to-zoom, Drag & Mouse)
+function initMobileDocViewer() {
+  const viewport = document.getElementById('mobileDocViewport');
+  const canvas = document.getElementById('mobileDocCanvas');
+  if (!viewport || !canvas) return;
+
+  if (MobileDocState.isInitialized) {
+    updateMobileDocScale();
+    return;
+  }
+  MobileDocState.isInitialized = true;
+
+  calculateMobileFitScale();
+  MobileDocState.currentScale = MobileDocState.fitScale;
+  applyMobileDocTransform(false);
+
+  // Listener resize & orientasi HP
+  let resizeTimeout = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      updateMobileDocScale();
+    }, 150);
+  });
+
+  // Touch Events (Gestur sentuh 1 jari untuk geser, 2 jari untuk cubit / pinch zoom)
+  viewport.addEventListener('touchstart', (e) => {
+    if (window.innerWidth >= 1024) return;
+
+    if (e.touches.length === 1) {
+      // Deteksi ketukan ganda (double-tap) untuk toggle Pas Layar / 100%
+      const now = Date.now();
+      if (now - MobileDocState.lastTapTime < 300) {
+        toggleMobileFitOr100();
+        MobileDocState.lastTapTime = 0;
+        return;
+      }
+      MobileDocState.lastTapTime = now;
+
+      MobileDocState.isDragging = true;
+      MobileDocState.isPinching = false;
+      MobileDocState.dragStartX = e.touches[0].clientX;
+      MobileDocState.dragStartY = e.touches[0].clientY;
+      MobileDocState.startPanX = MobileDocState.panX;
+      MobileDocState.startPanY = MobileDocState.panY;
+    } else if (e.touches.length === 2) {
+      // Memulai pinch-to-zoom
+      MobileDocState.isDragging = false;
+      MobileDocState.isPinching = true;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      MobileDocState.initialPinchDist = Math.hypot(dx, dy);
+      MobileDocState.initialPinchScale = MobileDocState.currentScale;
+    }
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', (e) => {
+    if (window.innerWidth >= 1024) return;
+
+    if (MobileDocState.isPinching && e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      if (MobileDocState.initialPinchDist > 0) {
+        const factor = dist / MobileDocState.initialPinchDist;
+        let newScale = MobileDocState.initialPinchScale * factor;
+        newScale = Math.min(2.5, Math.max(MobileDocState.fitScale * 0.7, newScale));
+        MobileDocState.currentScale = Math.round(newScale * 100) / 100;
+        MobileDocState.isUserZoomed = true;
+        applyMobileDocTransform(false);
+      }
+      if (e.cancelable) e.preventDefault();
+    } else if (MobileDocState.isDragging && e.touches.length === 1) {
+      const dx = e.touches[0].clientX - MobileDocState.dragStartX;
+      const dy = e.touches[0].clientY - MobileDocState.dragStartY;
+      
+      const isZoomed = MobileDocState.currentScale > (MobileDocState.fitScale + 0.05);
+      if (isZoomed || Math.abs(dx) > Math.abs(dy)) {
+        const targetX = MobileDocState.startPanX + dx;
+        const targetY = MobileDocState.startPanY + dy;
+        const clamped = clampPan(targetX, targetY);
+        MobileDocState.panX = clamped.x;
+        MobileDocState.panY = clamped.y;
+        applyMobileDocTransform(false);
+        if (e.cancelable && (isZoomed || Math.abs(dx) > 10)) {
+          e.preventDefault();
+        }
+      }
+    }
+  }, { passive: false });
+
+  const endDragOrPinch = () => {
+    MobileDocState.isDragging = false;
+    MobileDocState.isPinching = false;
+  };
+
+  viewport.addEventListener('touchend', endDragOrPinch, { passive: true });
+  viewport.addEventListener('touchcancel', endDragOrPinch, { passive: true });
+
+  // Mouse Drag Support (untuk kenyamanan testing mode mobile di browser desktop)
+  viewport.addEventListener('mousedown', (e) => {
+    if (window.innerWidth >= 1024) return;
+    if (e.button !== 0) return;
+    MobileDocState.isDragging = true;
+    MobileDocState.dragStartX = e.clientX;
+    MobileDocState.dragStartY = e.clientY;
+    MobileDocState.startPanX = MobileDocState.panX;
+    MobileDocState.startPanY = MobileDocState.panY;
+    viewport.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!MobileDocState.isDragging) return;
+    const dx = e.clientX - MobileDocState.dragStartX;
+    const dy = e.clientY - MobileDocState.dragStartY;
+    const clamped = clampPan(MobileDocState.startPanX + dx, MobileDocState.startPanY + dy);
+    MobileDocState.panX = clamped.x;
+    MobileDocState.panY = clamped.y;
+    applyMobileDocTransform(false);
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (MobileDocState.isDragging) {
+      MobileDocState.isDragging = false;
+      if (viewport) viewport.style.cursor = 'grab';
+    }
+  });
 }
