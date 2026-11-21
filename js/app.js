@@ -146,7 +146,7 @@ function autoFillJurusan(kelas) {
 const DEFAULT_TEMPLATES = [
   {
     id: 'tpl_standar_resmi',
-    name: 'Template Standar Resmi SMKN 1 FYJ Channel',
+    name: 'Suket Pengantar PKL',
     isDefault: true,
     status: 'active',
     createdAt: '2026-11-03',
