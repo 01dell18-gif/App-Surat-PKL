@@ -46,8 +46,14 @@ except ImportError:
 
 NS = {
     'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
-    'r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+    'r': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships',
+    'wp': 'http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing',
+    'a': 'http://schemas.openxmlformats.org/drawingml/2006/main',
+    'pic': 'http://schemas.openxmlformats.org/drawingml/2006/picture'
 }
+
+for prefix, uri in NS.items():
+    ET.register_namespace(prefix, uri)
 
 
 def set_openxml_cell_text(tc, text, align="left", bold=False, sz_val="24"):
@@ -166,7 +172,7 @@ def create_ttd_elektronik_bytes(nama_sekolah="SMKN 1 FYJ Channel", kepsek_nama="
         draw.text((x_text, y), f'NIP. {kepsek_nip}', fill=(40, 40, 40), font=font_regular)
         
         buf = io.BytesIO()
-        im.save(buf, format='JPEG', quality=95)
+        im.save(buf, format='PNG')
         return buf.getvalue()
     except Exception as e:
         print('[WARN] Gagal membuat gambar TTD dinamis:', e)
@@ -387,14 +393,165 @@ def set_p_text(p, text, bold=False, underline=False, font_size=24, indent="5103"
     t = ET.SubElement(r, f'{{{NS["w"]}}}t')
     t.text = str(text)
 
+def replace_in_p(p, target, replacement):
+    """Mengganti teks target dengan replacement pada paragraf w:p secara aman melintasi multi-run w:t."""
+    if p is None or not target:
+        return False
+    runs = p.findall('.//w:r', NS)
+    t_nodes = []
+    for r in runs:
+        for t in r.findall('w:t', NS):
+            t_nodes.append(t)
+    full_str = ''.join(t.text or '' for t in t_nodes)
+    if target in full_str:
+        new_full = full_str.replace(target, str(replacement))
+        if t_nodes:
+            t_nodes[0].text = new_full
+            for t in t_nodes[1:]:
+                t.text = ''
+        return True
+    return False
+
+def create_page_break_paragraph():
+    """Membuat paragraf pembatas halaman (Page Break resmi OpenXML) agar Lampiran 2 selalu berada di Halaman 2."""
+    p = ET.Element(f'{{{NS["w"]}}}p')
+    pPr = ET.SubElement(p, f'{{{NS["w"]}}}pPr')
+    sp = ET.SubElement(pPr, f'{{{NS["w"]}}}spacing')
+    sp.set(f'{{{NS["w"]}}}after', '100')
+    r = ET.SubElement(p, f'{{{NS["w"]}}}r')
+    br = ET.SubElement(r, f'{{{NS["w"]}}}br')
+    br.set(f'{{{NS["w"]}}}type', 'page')
+    return p
+
+def create_lampiran_meta_table(nama_sekolah, no_surat, tgl_surat):
+    """Membuat tabel tanpa border untuk metadata Lampiran 2 (Lampiran, Nomor, Tanggal) persis seperti WYSIWYG."""
+    tbl = ET.Element(f'{{{NS["w"]}}}tbl')
+    tblPr = ET.SubElement(tbl, f'{{{NS["w"]}}}tblPr')
+    tblW = ET.SubElement(tblPr, f'{{{NS["w"]}}}tblW')
+    tblW.set(f'{{{NS["w"]}}}w', '0')
+    tblW.set(f'{{{NS["w"]}}}type', 'auto')
+    
+    tblBorders = ET.SubElement(tblPr, f'{{{NS["w"]}}}tblBorders')
+    for b_name in ['top', 'left', 'bottom', 'right', 'insideH', 'insideV']:
+        b = ET.SubElement(tblBorders, f'{{{NS["w"]}}}{b_name}')
+        b.set(f'{{{NS["w"]}}}val', 'none')
+        
+    tblCellMar = ET.SubElement(tblPr, f'{{{NS["w"]}}}tblCellMar')
+    topM = ET.SubElement(tblCellMar, f'{{{NS["w"]}}}top')
+    topM.set(f'{{{NS["w"]}}}w', '20')
+    topM.set(f'{{{NS["w"]}}}type', 'dxa')
+    botM = ET.SubElement(tblCellMar, f'{{{NS["w"]}}}bottom')
+    botM.set(f'{{{NS["w"]}}}w', '20')
+    botM.set(f'{{{NS["w"]}}}type', 'dxa')
+    
+    rows_data = [
+        ('Lampiran 2', ':', f'Surat Pengantar Kepala {nama_sekolah}'),
+        ('Nomor', ':', str(no_surat)),
+        ('Tanggal', ':', str(tgl_surat))
+    ]
+    col_widths = ['1400', '240', '8500']
+    
+    for r_data in rows_data:
+        tr = ET.SubElement(tbl, f'{{{NS["w"]}}}tr')
+        trPr = ET.SubElement(tr, f'{{{NS["w"]}}}trPr')
+        trHeight = ET.SubElement(trPr, f'{{{NS["w"]}}}trHeight')
+        trHeight.set(f'{{{NS["w"]}}}val', '240')
+        trHeight.set(f'{{{NS["w"]}}}hRule', 'atLeast')
+        
+        for col_idx, text_val in enumerate(r_data):
+            tc = ET.SubElement(tr, f'{{{NS["w"]}}}tc')
+            tcPr = ET.SubElement(tc, f'{{{NS["w"]}}}tcPr')
+            tcW = ET.SubElement(tcPr, f'{{{NS["w"]}}}tcW')
+            tcW.set(f'{{{NS["w"]}}}w', col_widths[col_idx])
+            tcW.set(f'{{{NS["w"]}}}type', 'dxa')
+            
+            p = ET.SubElement(tc, f'{{{NS["w"]}}}p')
+            pPr = ET.SubElement(p, f'{{{NS["w"]}}}pPr')
+            sp = ET.SubElement(pPr, f'{{{NS["w"]}}}spacing')
+            sp.set(f'{{{NS["w"]}}}after', '0')
+            sp.set(f'{{{NS["w"]}}}before', '0')
+            
+            r = ET.SubElement(p, f'{{{NS["w"]}}}r')
+            rPr = ET.SubElement(r, f'{{{NS["w"]}}}rPr')
+            rf = ET.SubElement(rPr, f'{{{NS["w"]}}}rFonts')
+            rf.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
+            rf.set(f'{{{NS["w"]}}}hAnsi', 'Bookman Old Style')
+            sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
+            sz.set(f'{{{NS["w"]}}}val', '20')
+            szCs = ET.SubElement(rPr, f'{{{NS["w"]}}}szCs')
+            szCs.set(f'{{{NS["w"]}}}val', '20')
+            
+            t = ET.SubElement(r, f'{{{NS["w"]}}}t')
+            t.text = text_val
+            
+    return tbl
+
+def create_lampiran_title_paragraphs(nama_sekolah, tahun_ajaran):
+    """Membuat paragraf judul Lampiran 2 (Kapital, Tebal, Tengah) persis seperti WYSIWYG."""
+    p1 = ET.Element(f'{{{NS["w"]}}}p')
+    pPr1 = ET.SubElement(p1, f'{{{NS["w"]}}}pPr')
+    jc1 = ET.SubElement(pPr1, f'{{{NS["w"]}}}jc')
+    jc1.set(f'{{{NS["w"]}}}val', 'center')
+    sp1 = ET.SubElement(pPr1, f'{{{NS["w"]}}}spacing')
+    sp1.set(f'{{{NS["w"]}}}before', '160')
+    sp1.set(f'{{{NS["w"]}}}after', '40')
+    r1 = ET.SubElement(p1, f'{{{NS["w"]}}}r')
+    rPr1 = ET.SubElement(r1, f'{{{NS["w"]}}}rPr')
+    rf1 = ET.SubElement(rPr1, f'{{{NS["w"]}}}rFonts')
+    rf1.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
+    rf1.set(f'{{{NS["w"]}}}hAnsi', 'Bookman Old Style')
+    ET.SubElement(rPr1, f'{{{NS["w"]}}}b')
+    sz1 = ET.SubElement(rPr1, f'{{{NS["w"]}}}sz')
+    sz1.set(f'{{{NS["w"]}}}val', '22')
+    szCs1 = ET.SubElement(rPr1, f'{{{NS["w"]}}}szCs')
+    szCs1.set(f'{{{NS["w"]}}}val', '22')
+    t1 = ET.SubElement(r1, f'{{{NS["w"]}}}t')
+    t1.text = 'DAFTAR SISWA/SISWI PRAKTEK KERJA LAPANGAN (PKL)'
+
+    p2 = ET.Element(f'{{{NS["w"]}}}p')
+    pPr2 = ET.SubElement(p2, f'{{{NS["w"]}}}pPr')
+    jc2 = ET.SubElement(pPr2, f'{{{NS["w"]}}}jc')
+    jc2.set(f'{{{NS["w"]}}}val', 'center')
+    sp2 = ET.SubElement(pPr2, f'{{{NS["w"]}}}spacing')
+    sp2.set(f'{{{NS["w"]}}}before', '0')
+    sp2.set(f'{{{NS["w"]}}}after', '180')
+    r2 = ET.SubElement(p2, f'{{{NS["w"]}}}r')
+    rPr2 = ET.SubElement(r2, f'{{{NS["w"]}}}rPr')
+    rf2 = ET.SubElement(rPr2, f'{{{NS["w"]}}}rFonts')
+    rf2.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
+    rf2.set(f'{{{NS["w"]}}}hAnsi', 'Bookman Old Style')
+    ET.SubElement(rPr2, f'{{{NS["w"]}}}b')
+    sz2 = ET.SubElement(rPr2, f'{{{NS["w"]}}}sz')
+    sz2.set(f'{{{NS["w"]}}}val', '22')
+    szCs2 = ET.SubElement(rPr2, f'{{{NS["w"]}}}szCs')
+    szCs2.set(f'{{{NS["w"]}}}val', '22')
+    t2 = ET.SubElement(r2, f'{{{NS["w"]}}}t')
+    t2.text = f'{nama_sekolah.upper()} TAHUN AJARAN {tahun_ajaran}'
+
+    return [p1, p2]
+
 def create_table_row(template_row, no, nama, kelas, tempat):
     new_tr = copy.deepcopy(template_row)
     tcs = new_tr.findall('w:tc', NS)
     
-    def set_cell_text(tc, text):
+    def set_cell_text(tc, text, align="left", bold=False):
         p = tc.find(f'{{{NS["w"]}}}p')
         if p is None:
             p = ET.SubElement(tc, f'{{{NS["w"]}}}p')
+        pPr = p.find(f'{{{NS["w"]}}}pPr')
+        if pPr is None:
+            pPr = ET.SubElement(p, f'{{{NS["w"]}}}pPr')
+        jc = pPr.find(f'{{{NS["w"]}}}jc')
+        if jc is None:
+            jc = ET.SubElement(pPr, f'{{{NS["w"]}}}jc')
+        jc.set(f'{{{NS["w"]}}}val', align)
+        
+        sp = pPr.find(f'{{{NS["w"]}}}spacing')
+        if sp is None:
+            sp = ET.SubElement(pPr, f'{{{NS["w"]}}}spacing')
+        sp.set(f'{{{NS["w"]}}}after', '0')
+        sp.set(f'{{{NS["w"]}}}before', '0')
+
         existing_rPr = p.find(f'.//{{{NS["w"]}}}rPr')
         for child in list(p):
             if child.tag != f'{{{NS["w"]}}}pPr':
@@ -408,15 +565,19 @@ def create_table_row(template_row, no, nama, kelas, tempat):
             rf.set(f'{{{NS["w"]}}}ascii', 'Bookman Old Style')
             rf.set(f'{{{NS["w"]}}}hAnsi', 'Bookman Old Style')
             sz = ET.SubElement(rPr, f'{{{NS["w"]}}}sz')
-            sz.set(f'{{{NS["w"]}}}val', '22')
+            sz.set(f'{{{NS["w"]}}}val', '20')
+            szCs = ET.SubElement(rPr, f'{{{NS["w"]}}}szCs')
+            szCs.set(f'{{{NS["w"]}}}val', '20')
+            if bold:
+                ET.SubElement(rPr, f'{{{NS["w"]}}}b')
         t = ET.SubElement(new_r, f'{{{NS["w"]}}}t')
         t.text = str(text)
     
     if len(tcs) >= 4:
-        set_cell_text(tcs[0], str(no))
-        set_cell_text(tcs[1], nama)
-        set_cell_text(tcs[2], kelas)
-        set_cell_text(tcs[3], tempat)
+        set_cell_text(tcs[0], str(no), align="center")
+        set_cell_text(tcs[1], nama, align="left", bold=False)
+        set_cell_text(tcs[2], kelas, align="center")
+        set_cell_text(tcs[3], tempat, align="left")
         
     return new_tr
 
@@ -486,10 +647,7 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
         text = ''.join(p.itertext()).strip()
         
         # 1. Nomor Surat
-        if 'B.10.000/9546/SMKN1KLK/DIKPORA' in text:
-            for t in p.findall('.//w:t', NS):
-                if 'B.10.000/9546/SMKN1KLK/DIKPORA' in (t.text or ''):
-                    t.text = t.text.replace('B.10.000/9546/SMKN1KLK/DIKPORA', no_surat)
+        replace_in_p(p, 'B.10.000/9546/SMKN1KLK/DIKPORA', no_surat)
                     
         # 2. Tujuan DU/DI (Tempat_PKL & Alamat)
         if 'MERGEFIELD Tempat_PKL' in text and 'di' not in text and 'No' not in text:
@@ -540,55 +698,42 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
 
         # 4.1 Guru Jabatan
         if 'Jabatan :' in text or 'Jabatan:' in text:
-            for t in p.findall('.//w:t', NS):
-                if 'Guru Pembimbing PKL' in (t.text or ''):
-                    t.text = t.text.replace('Guru Pembimbing PKL', guru_jabatan or 'Guru Pembimbing PKL')
+            replace_in_p(p, 'Guru Pembimbing PKL', guru_jabatan or 'Guru Pembimbing PKL')
             
         # 5. Tanggal Surat (Klungkung, ...)
         if 'Klungkung' in text and 'SMK' not in text and 'Nomor' not in text:
+            replace_in_p(p, 'Klungkung,', f'{tempat_surat}, {tgl_surat}')
             for t in p.findall('.//w:t', NS):
-                if 'Klungkung' in (t.text or ''):
-                    t.text = f'{tempat_surat}, {tgl_surat}'
-                elif ',' in (t.text or '') or ' ' in (t.text or ''):
+                if t.text == ',' or t.text == ' ':
                     t.text = ''
                     
         # 6. Tanggal Pelepasan
         if 'Pelepasan siswa/siswi' in text:
-            for t in p.findall('.//w:t', NS):
-                if '13 November 2026' in (t.text or ''):
-                    t.text = t.text.replace('13 November 2026', tgl_pelepasan)
+            replace_in_p(p, '13 November 2026', tgl_pelepasan)
 
         # 7. Periode PKL & Monitoring
         if 'Pelaksanaan & Monitoring PKL' in text:
-            for t in p.findall('.//w:t', NS):
-                if '13 November 2026 sampai dengan 30 April 2027' in (t.text or ''):
-                    t.text = t.text.replace('13 November 2026 sampai dengan 30 April 2027', periode_pkl)
+            replace_in_p(p, '13 November 2026 sampai dengan 30 April 2027', periode_pkl)
                     
         # 8. Tanggal Penarikan
         if 'Penarikan siswa' in text:
-            for t in p.findall('.//w:t', NS):
-                if '30 April 2027' in (t.text or ''):
-                    t.text = t.text.replace('30 April 2027', tgl_penarikan)
+            replace_in_p(p, '30 April 2027', tgl_penarikan)
 
-        # 9. Nama Sekolah & Tahun Ajaran
+        # 9. Nama Sekolah & Tahun Ajaran (Mendukung multi-run text penggantian)
         if 'SMK Negeri 1 Klungkung' in text:
-            for t in p.findall('.//w:t', NS):
-                if 'SMK Negeri 1 Klungkung' in (t.text or ''):
-                    t.text = t.text.replace('SMK Negeri 1 Klungkung', nama_sekolah)
+            replace_in_p(p, 'SMK Negeri 1 Klungkung', nama_sekolah)
+        if 'SMKN 1 FYJ Channel' in text:
+            replace_in_p(p, 'SMKN 1 FYJ Channel', nama_sekolah)
         if '2026/2027' in text and tahun_ajaran:
-            for t in p.findall('.//w:t', NS):
-                if '2026/2027' in (t.text or ''):
-                    t.text = t.text.replace('2026/2027', tahun_ajaran)
+            replace_in_p(p, '2026/2027', tahun_ajaran)
 
         # 10. Data Kepala Sekolah
         if 'Sri Rejeki, S.Pd., M.Pd.' in text and kepsek_nama:
-            for t in p.findall('.//w:t', NS):
-                if 'Sri Rejeki, S.Pd., M.Pd.' in (t.text or ''):
-                    t.text = t.text.replace('Sri Rejeki, S.Pd., M.Pd.', kepsek_nama)
+            replace_in_p(p, 'Sri Rejeki, S.Pd., M.Pd.', kepsek_nama)
         if '19770309 200903 2 010' in text and kepsek_nip:
-            for t in p.findall('.//w:t', NS):
-                if '19770309 200903 2 010' in (t.text or ''):
-                    t.text = t.text.replace('19770309 200903 2 010', kepsek_nip)
+            replace_in_p(p, '19770309 200903 2 010', kepsek_nip)
+        if 'Pembina (IV/a)' in text and kepsek_pangkat:
+            replace_in_p(p, 'Pembina (IV/a)', kepsek_pangkat)
 
         # 11. Custom Paragraf Pembuka
         if paragraf_pembuka and 'Dalam rangka pelaksanaan kegiatan' in text:
@@ -637,9 +782,44 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
                 break
 
         if sig_idx != -1 and len(body_children) > sig_idx + 3:
+            p_sig = body_children[sig_idx]
             p_nama = body_children[sig_idx + 1]
             p_pangkat = body_children[sig_idx + 2]
             p_nip = body_children[sig_idx + 3]
+
+            # Atur dimensi gambar TTD pada OpenXML
+            # TTD Manual (Basah): rasio alami 1.667:1 (1980000 x 1188000 EMUs / ~5.5 cm x 3.3 cm)
+            # TTD Elektronik: rasio kotak QR 3.666:1 (2609850 x 711837 EMUs / ~7.25 cm x 1.98 cm)
+            for extent in p_sig.findall(f'.//{{{NS["wp"]}}}extent'):
+                if not show_ttd:
+                    extent.set('cx', '1980000')
+                    extent.set('cy', '1188000')
+                else:
+                    extent.set('cx', '2609850')
+                    extent.set('cy', '711837')
+                    
+            for ext in p_sig.findall(f'.//{{{NS["a"]}}}ext'):
+                if not show_ttd:
+                    ext.set('cx', '1980000')
+                    ext.set('cy', '1188000')
+                else:
+                    ext.set('cx', '2656266')
+                    ext.set('cy', '724497')
+
+            # Atur indentasi dan spasi paragraf gambar tanda tangan agar pas dengan nama kepala sekolah
+            pPr_sig = p_sig.find(f'{{{NS["w"]}}}pPr')
+            if pPr_sig is None:
+                pPr_sig = ET.SubElement(p_sig, f'{{{NS["w"]}}}pPr')
+            ind_sig = pPr_sig.find(f'{{{NS["w"]}}}ind')
+            if ind_sig is None:
+                ind_sig = ET.SubElement(pPr_sig, f'{{{NS["w"]}}}ind')
+            ind_sig.set(f'{{{NS["w"]}}}left', '5103')
+            
+            sp_sig = pPr_sig.find(f'{{{NS["w"]}}}spacing')
+            if sp_sig is None:
+                sp_sig = ET.SubElement(pPr_sig, f'{{{NS["w"]}}}spacing')
+            sp_sig.set(f'{{{NS["w"]}}}before', '40')
+            sp_sig.set(f'{{{NS["w"]}}}after', '40')
 
             if not show_ttd:
                 # TTD Basah: tampilkan Nama lengkap bergaris bawah tebal, Pangkat, dan NIP
@@ -652,9 +832,46 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
                 set_p_text(p_pangkat, "")
                 set_p_text(p_nip, "")
 
-    # Process Lampiran 2 Table
+    # Process Lampiran 2 Table & Header
     tbl = root.find('.//w:tbl', NS)
-    if tbl is not None:
+    if tbl is not None and body is not None:
+        body_elements = list(body)
+        tbl_pos = body_elements.index(tbl)
+
+        # Hapus paragraf kosong atau header lampiran lama di antara blok TTD dan tabel
+        remove_candidates = []
+        for i in range(tbl_pos - 1, -1, -1):
+            elem = body_elements[i]
+            if elem.tag == f'{{{NS["w"]}}}p':
+                txt = ''.join(elem.itertext()).strip()
+                if elem.findall(f'.//{{{NS["w"]}}}drawing') or '19770309' in txt or (kepsek_nip and kepsek_nip in txt):
+                    break
+                if 'Pembina' in txt or (kepsek_pangkat and kepsek_pangkat in txt):
+                    break
+                if not txt or 'Lampiran' in txt or 'Daftar' in txt:
+                    remove_candidates.append(elem)
+            else:
+                break
+                
+        for elem in remove_candidates:
+            try:
+                body.remove(elem)
+            except Exception:
+                pass
+
+        # Sisipkan Page Break, Tabel Metadata Lampiran 2, dan Judul Terpusat persis WYSIWYG
+        body_elements = list(body)
+        tbl_pos = body_elements.index(tbl)
+        
+        p_br = create_page_break_paragraph()
+        tbl_meta = create_lampiran_meta_table(nama_sekolah, no_surat, tgl_surat)
+        title_paras = create_lampiran_title_paragraphs(nama_sekolah, tahun_ajaran)
+        
+        insert_items = [p_br, tbl_meta] + title_paras
+        for offset, item in enumerate(insert_items):
+            body.insert(tbl_pos + offset, item)
+
+        # Isi data tabel siswa
         rows = tbl.findall('w:tr', NS)
         if len(rows) > 1:
             template_row = rows[1]
@@ -669,6 +886,16 @@ def generate_surat_docx(template_path=None, out_path=None, guru_nama="", guru_ni
                     s.get('tempat', '')
                 )
                 tbl.append(new_row)
+
+        # Hapus sisa paragraf kosong di akhir dokumen agar tidak memicu halaman kosong ketiga
+        body_elements = list(body)
+        tbl_pos_new = body_elements.index(tbl)
+        for elem in body_elements[tbl_pos_new + 1:]:
+            if elem.tag == f'{{{NS["w"]}}}p' and not ''.join(elem.itertext()).strip():
+                try:
+                    body.remove(elem)
+                except Exception:
+                    pass
 
     new_doc_xml = ET.tostring(root, encoding='utf-8', xml_declaration=True)
     

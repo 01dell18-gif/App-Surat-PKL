@@ -1,7 +1,7 @@
 -- ========================================================
 -- Database Schema & Data: Surat Pengantar PKL
 -- Instansi : SMKN 1 FYJ Channel
--- Diperbarui : 2026-11-21 09:01:18
+-- Diperbarui : 2026-11-21 10:04:43
 -- Kompatibel : MySQL, MariaDB, PostgreSQL, SQLite
 -- ========================================================
 
@@ -423,7 +423,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 <div style="font-size: 10pt; line-height: 1.4;">
   <table style="width: 100%; margin-bottom: 10px; font-size: 10pt;">
     <tbody><tr>
-      <td style="width: 90px; vertical-align: top;">Lampiran 2</td>
+      <td style="width: 90px; vertical-align: top;">Lampiran 1</td>
       <td style="width: 15px; vertical-align: top;">:</td>
       <td style="vertical-align: top;">Surat Pengantar Kepala {namaSekolah}</td>
     </tr>
@@ -544,7 +544,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 </p>
 
 {ttdSurat}', 0, 'active');
-INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_pkl_terpadu', 'Suket Pengantar 2 / Fleksibel', '<div style="text-align: center; margin-top: 6px; margin-bottom: 14px;">
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_pkl_terpadu', 'Suket Pengantar PKL 2 / Fleksibel', '<div style="text-align: center; margin-top: 6px; margin-bottom: 14px;">
   <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
   <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
 </div>
@@ -594,7 +594,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 <div style="font-size: 10pt; line-height: 1.4;">
   <table style="width: 100%; margin-bottom: 10px; font-size: 10pt;">
     <tbody><tr>
-      <td style="width: 90px; vertical-align: top;">Lampiran 2</td>
+      <td style="width: 90px; vertical-align: top;">Lampiran 1</td>
       <td style="width: 15px; vertical-align: top;">:</td>
       <td style="vertical-align: top;">Surat Pengantar Kepala {namaSekolah}</td>
     </tr>
