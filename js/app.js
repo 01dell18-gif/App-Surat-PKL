@@ -466,7 +466,7 @@ const DEFAULT_APP_SETTINGS = {
   noSurat: 'B.10.000/9546/SMKN1KLK/DIKPORA',
   kopUrl: '',
   ttdUrl: '',
-  ttdBasahUrl: '',
+  ttdBasahUrl: 'https://drive.google.com/file/d/12KTwz7FbhtOq1SOkN0bJP3HEKxu_qkQS/view?usp=drive_link',
   logoWebUrl: '',
   tempatSurat: 'Klungkung',
   formatTitimangsa: 'auto', // 'auto' | 'standar' | 'ditetapkan' | 'kustom'
@@ -583,6 +583,9 @@ function loadStoredSettings() {
       if (!AppState.appSettings.subJudulSekolah || AppState.appSettings.subJudulSekolah.includes('Klungkung') || AppState.appSettings.subJudulSekolah.includes('SMK FYJ Channel') || AppState.appSettings.subJudulSekolah.includes('SMK Negeri FYJ Channel')) {
         AppState.appSettings.subJudulSekolah = DEFAULT_APP_SETTINGS.subJudulSekolah;
       }
+      if (!AppState.appSettings.ttdBasahUrl || AppState.appSettings.ttdBasahUrl === '' || AppState.appSettings.ttdBasahUrl === 'assets/images/ttd_basah.png') {
+        AppState.appSettings.ttdBasahUrl = DEFAULT_APP_SETTINGS.ttdBasahUrl;
+      }
     } else {
       AppState.appSettings = Object.assign({}, DEFAULT_APP_SETTINGS);
     }
@@ -603,10 +606,23 @@ function saveSettingsToStorage() {
   }
 }
 
+// Helper: Normalisasi tautan gambar (mendukung tautan langsung Google Drive)
+function normalizeImageUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (trimmed.includes('drive.google.com')) {
+    const fileIdMatch = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (fileIdMatch && fileIdMatch[1]) {
+      return `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
+    }
+  }
+  return trimmed;
+}
+
 // Helper: Get Active Kop Surat (Custom or Default Base64/File)
 function getKopSrc() {
   if (AppState.appSettings && AppState.appSettings.kopUrl) {
-    return AppState.appSettings.kopUrl;
+    return normalizeImageUrl(AppState.appSettings.kopUrl);
   }
   return (typeof ASSETS !== 'undefined' && ASSETS.kop) ? ASSETS.kop : 'assets/images/kop_fyj.png';
 }
@@ -614,15 +630,18 @@ function getKopSrc() {
 // Helper: Get Active TTD Elektronik (Custom or Default Base64/File)
 function getTtdSrc() {
   if (AppState.appSettings && AppState.appSettings.ttdUrl) {
-    return AppState.appSettings.ttdUrl;
+    return normalizeImageUrl(AppState.appSettings.ttdUrl);
   }
   return (typeof ASSETS !== 'undefined' && ASSETS.ttd) ? ASSETS.ttd : 'assets/images/ttdelektronik.jpg';
 }
 
-// Helper: Get Active TTD Basah (Custom or Default ttd_basah.png)
+// Helper: Get Active TTD Basah (Custom or Default ttd_basah.png / Google Drive URL)
 function getTtdBasahSrc() {
-  if (AppState.appSettings && AppState.appSettings.ttdBasahUrl) {
-    return AppState.appSettings.ttdBasahUrl;
+  const customUrl = (AppState.appSettings && AppState.appSettings.ttdBasahUrl)
+    ? AppState.appSettings.ttdBasahUrl
+    : DEFAULT_APP_SETTINGS.ttdBasahUrl;
+  if (customUrl) {
+    return normalizeImageUrl(customUrl);
   }
   return (typeof ASSETS !== 'undefined' && ASSETS.ttdBasah) ? ASSETS.ttdBasah : 'assets/images/ttd_basah.png';
 }
@@ -630,7 +649,7 @@ function getTtdBasahSrc() {
 // Helper: Get Active Web Logo (Custom or Default logo_fyj.png)
 function getLogoWebSrc() {
   if (AppState.appSettings && AppState.appSettings.logoWebUrl) {
-    return AppState.appSettings.logoWebUrl;
+    return normalizeImageUrl(AppState.appSettings.logoWebUrl);
   }
   return (typeof ASSETS !== 'undefined' && ASSETS.logo) ? ASSETS.logo : 'assets/images/logo_fyj.png';
 }
@@ -2663,8 +2682,11 @@ function updateSettingsMediaPreviews() {
 
   const ttdBasahBadge = document.getElementById('badgeSettingsTtdBasah');
   if (ttdBasahBadge) {
-    ttdBasahBadge.textContent = AppState.appSettings.ttdBasahUrl ? 'Kustom Aktif' : 'Standar Bawaan (ttd_basah.png)';
-    ttdBasahBadge.className = AppState.appSettings.ttdBasahUrl ? 'px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800' : 'px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600';
+    const isDefaultDrive = AppState.appSettings.ttdBasahUrl === DEFAULT_APP_SETTINGS.ttdBasahUrl;
+    ttdBasahBadge.textContent = AppState.appSettings.ttdBasahUrl
+      ? (isDefaultDrive ? 'Standar Resmi Google Drive' : 'Kustom Aktif')
+      : 'Standar Bawaan (Google Drive)';
+    ttdBasahBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800';
   }
 
   const logoBadge = document.getElementById('badgeSettingsLogoWeb');
@@ -2813,13 +2835,14 @@ function applyTtdBasahUrl() {
 
 async function resetTtdBasahToDefault() {
   await deleteAssetFromServer('ttd_basah');
-  AppState.appSettings.ttdBasahUrl = '';
+  AppState.appSettings.ttdBasahUrl = DEFAULT_APP_SETTINGS.ttdBasahUrl;
   const input = document.getElementById('inputUrlTtdBasah');
-  if (input) input.value = '';
+  if (input) input.value = AppState.appSettings.ttdBasahUrl;
   const fileInput = document.getElementById('inputUploadTtdBasah');
   if (fileInput) fileInput.value = '';
   updateSettingsMediaPreviews();
-  showToast('TTD Basah dikembalikan ke tanda tangan standar awal (ttd_basah.png).');
+  saveAppSettingsToStorage();
+  showToast('TTD Basah dikembalikan ke default resmi Google Drive.');
 }
 
 // Logo Web Handlers
