@@ -179,13 +179,15 @@
 
     /* Mobile Responsive Document Viewport (Scaling, Zooming, and Panning) */
     @media (max-width: 1023px) {
+      #mainDocumentPreviewArea {
+        overflow-x: visible !important;
+      }
       #mobileDocViewport {
         width: 100%;
         position: relative;
-        overflow: hidden;
-        user-select: none;
+        overflow: visible;
+        user-select: text;
         touch-action: pan-y;
-        cursor: grab;
       }
       #mobileDocCanvas {
         transform-origin: top center;
@@ -777,7 +779,7 @@
       </div>
 
       <!-- VIEWPORT WRAPPER FOR MOBILE SCALING & PANNING -->
-      <div id="mobileDocViewport" class="w-full relative overflow-hidden flex justify-center pb-6">
+      <div id="mobileDocViewport" class="w-full relative overflow-visible flex justify-center pb-6">
         <div id="mobileDocCanvas" class="w-full flex justify-center origin-top transition-transform duration-75">
           <!-- DOCUMENT CONTAINER -->
           <div id="documentTemplate" class="doc-page paper-f4 shrink-0 shadow-lg select-text">

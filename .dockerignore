@@ -1,0 +1,12 @@
+.git
+.gitignore
+.gemini
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+scratch
+.vscode
+.idea
+node_modules
+*.log

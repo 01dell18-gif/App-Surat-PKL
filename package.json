@@ -1,0 +1,21 @@
+{
+  "name": "app-surat-pkl",
+  "version": "2.4.0",
+  "description": "Aplikasi Surat Pengantar PKL SMKN 1 FYJ Channel (Multi-Page Application & Database SQLite)",
+  "main": "server.bun.js",
+  "scripts": {
+    "start": "bun server.bun.js",
+    "dev": "bun --watch server.bun.js",
+    "serve": "bun server.bun.js --port 8000"
+  },
+  "keywords": [
+    "surat-pkl",
+    "smkn1-fyj",
+    "bun",
+    "sqlite",
+    "docker",
+    "laravel"
+  ],
+  "author": "SMKN 1 FYJ Channel",
+  "license": "MIT"
+}

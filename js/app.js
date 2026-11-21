@@ -5471,26 +5471,36 @@ function applyMobileDocTransform(withTransition = false) {
     return;
   }
 
+  const isFit = Math.abs(MobileDocState.currentScale - MobileDocState.fitScale) < 0.03 || !MobileDocState.isUserZoomed;
+  if (isFit) {
+    MobileDocState.panX = 0;
+    MobileDocState.panY = 0;
+  }
+
   const scale = MobileDocState.currentScale;
   const panX = MobileDocState.panX;
   const panY = MobileDocState.panY;
 
   canvas.style.transition = withTransition ? 'transform 0.22s cubic-bezier(0.2, 0, 0, 1)' : 'none';
   canvas.style.transformOrigin = 'top center';
-  canvas.style.transform = `translate3d(${panX}px, ${panY}px, 0) scale(${scale})`;
+  
+  if (isFit) {
+    canvas.style.transform = `scale(${scale})`;
+  } else {
+    canvas.style.transform = `translate3d(${panX}px, ${panY}px, 0) scale(${scale})`;
+  }
 
   // Sesuaikan tinggi container viewport agar pas dengan tinggi visual surat yang diskala
   if (viewport) {
     const docHeight = doc.offsetHeight || 1300;
-    const scaledHeight = (docHeight * scale) + Math.max(0, panY);
-    viewport.style.height = `${Math.ceil(scaledHeight + 20)}px`;
-    viewport.style.overflow = 'hidden';
+    const scaledHeight = Math.ceil(docHeight * scale);
+    viewport.style.height = `${scaledHeight + 30}px`;
+    viewport.style.overflow = isFit ? 'visible' : 'hidden';
   }
 
   // Update badge persentase / status zoom di toolbar mobile
   if (badge) {
     const pct = Math.round(scale * 100);
-    const isFit = Math.abs(scale - MobileDocState.fitScale) < 0.03;
     badge.textContent = isFit ? `Pas (${pct}%)` : `${pct}%`;
     badge.title = isFit ? 'Mode Pas Layar HP aktif. Klik untuk beralih ke 100%' : 'Skala kustom. Klik untuk Pas Layar';
   }
@@ -5559,13 +5569,13 @@ function clampPan(x, y) {
   const scaledWidth = paperWidth * MobileDocState.currentScale;
   const viewWidth = viewport.clientWidth;
   
-  const maxPanX = Math.max(60, (scaledWidth - viewWidth) / 2 + 100);
+  const maxPanX = Math.max(20, (scaledWidth - viewWidth) / 2 + 60);
   const clampedX = Math.max(-maxPanX, Math.min(maxPanX, x));
 
   const docHeight = doc.offsetHeight || 1300;
   const scaledHeight = docHeight * MobileDocState.currentScale;
-  const maxPanY = Math.max(100, scaledHeight * 0.8);
-  const clampedY = Math.max(-maxPanY, Math.min(100, y));
+  const maxPanY = Math.max(0, scaledHeight - viewport.clientHeight + 80);
+  const clampedY = Math.max(-maxPanY, Math.min(60, y));
 
   return { x: clampedX, y: clampedY };
 }
@@ -5643,18 +5653,17 @@ function initMobileDocViewer() {
       }
       if (e.cancelable) e.preventDefault();
     } else if (MobileDocState.isDragging && e.touches.length === 1) {
-      const dx = e.touches[0].clientX - MobileDocState.dragStartX;
-      const dy = e.touches[0].clientY - MobileDocState.dragStartY;
-      
-      const isZoomed = MobileDocState.currentScale > (MobileDocState.fitScale + 0.05);
-      if (isZoomed || Math.abs(dx) > Math.abs(dy)) {
+      const isZoomed = MobileDocState.currentScale > (MobileDocState.fitScale + 0.04);
+      if (isZoomed) {
+        const dx = e.touches[0].clientX - MobileDocState.dragStartX;
+        const dy = e.touches[0].clientY - MobileDocState.dragStartY;
         const targetX = MobileDocState.startPanX + dx;
         const targetY = MobileDocState.startPanY + dy;
         const clamped = clampPan(targetX, targetY);
         MobileDocState.panX = clamped.x;
         MobileDocState.panY = clamped.y;
         applyMobileDocTransform(false);
-        if (e.cancelable && (isZoomed || Math.abs(dx) > 10)) {
+        if (e.cancelable) {
           e.preventDefault();
         }
       }

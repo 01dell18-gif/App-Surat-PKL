@@ -1,0 +1,28 @@
+version: '3.8'
+
+# ========================================================
+# Docker Compose: Aplikasi Surat Pengantar PKL
+# SMKN 1 FYJ Channel
+# Usage: docker compose up -d
+# ========================================================
+
+services:
+  app-surat-pkl:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app-surat-pkl
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./database:/app/database
+      - ./assets:/app/assets
+    environment:
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/status"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
