@@ -709,15 +709,17 @@ function getTtdHtml(ds, dOpt) {
       `;
     }
   } else {
-    // 2. TTD Basah (ttd_basah.png) + Nama & NIP
+    // 2. TTD Basah & Stempel (Tata Letak Otentik Overlap Menimpa Teks Sesuai Standar Kedinasan)
     const ttdBasahSrc = getTtdBasahSrc();
     return `
-      <div style="margin: 4px 0 6px 0; text-align: left;">
-        <img src="${ttdBasahSrc}" alt="TTD Basah Kepala Sekolah" style="width: 175px; height: auto; display: block;">
+      <div style="position: relative; height: 65px; margin-top: 2px; margin-bottom: 4px;">
+        <img src="${ttdBasahSrc}" 
+             alt="TTD Basah & Stempel Kepala Sekolah" 
+             style="position: absolute; left: -32px; top: -36px; width: 195px; max-width: none; pointer-events: none; z-index: 10; mix-blend-mode: multiply;" 
+             onerror="this.src='assets/images/ttd_basah.png'">
       </div>
-      <div style="font-weight: bold; text-decoration: underline; font-size: 11pt;">${escapeXml(ds.kepsekNama)}</div>
-      <div style="font-size: 10pt;">${escapeXml(ds.kepsekPangkat)}</div>
-      <div style="font-size: 10pt;">NIP. ${escapeXml(ds.kepsekNip)}</div>
+      <div style="position: relative; z-index: 1; font-weight: bold; text-decoration: underline; font-size: 11pt;">${escapeXml(ds.kepsekNama)}</div>
+      <div style="position: relative; z-index: 1; font-size: 10.5pt; margin-top: 1px;">NIP. ${escapeXml(ds.kepsekNip)}</div>
     `;
   }
 }
