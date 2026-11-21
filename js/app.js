@@ -211,8 +211,14 @@ const DEFAULT_TEMPLATES = [
 
 {ttdSurat}
 
-<div class="page-break" style="page-break-before: always; border-top: 2px dashed #cbd5e1; margin: 28px 0; padding-top: 16px;">
-  <span class="no-print" style="display: block; text-align: center; font-size: 8.5pt; color: #94a3b8; font-style: italic; margin-bottom: 12px;">--- Batas Halaman 2 (Lampiran 2 Daftar Siswa) ---</span>
+<div class="page-break" style="page-break-before: always; margin: 30px 0 24px 0;">
+  <div class="page-break-sheet-divider no-print" style="margin: 20px 0; padding: 10px 16px; background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%); border-top: 1px solid #cbd5e1; border-bottom: 2px dashed #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: #475569;">
+    <span style="display: flex; align-items: center; gap: 6px;">
+      <span>📄</span>
+      <span>LEMBAR 2: LAMPIRAN DAFTAR SISWA</span>
+    </span>
+    <span style="font-size: 10px; font-weight: 600; color: #4f46e5; background: #e0e7ff; padding: 2px 8px; border-radius: 9999px;">Halaman 2 dari 2</span>
+  </div>
 </div>
 <div style="font-size: 10pt; line-height: 1.4;">
   <table style="width: 100%; margin-bottom: 10px; font-size: 10pt;">
@@ -306,8 +312,14 @@ const DEFAULT_TEMPLATES = [
 
 {ttdSurat}
 
-<div class="page-break" style="page-break-before: always; border-top: 2px dashed #cbd5e1; margin: 28px 0; padding-top: 16px;">
-  <span class="no-print" style="display: block; text-align: center; font-size: 8.5pt; color: #94a3b8; font-style: italic; margin-bottom: 12px;">--- Batas Halaman 2 (Lampiran 2 Daftar Siswa) ---</span>
+<div class="page-break" style="page-break-before: always; margin: 30px 0 24px 0;">
+  <div class="page-break-sheet-divider no-print" style="margin: 20px 0; padding: 10px 16px; background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%); border-top: 1px solid #cbd5e1; border-bottom: 2px dashed #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: #475569;">
+    <span style="display: flex; align-items: center; gap: 6px;">
+      <span>📄</span>
+      <span>LEMBAR 2: LAMPIRAN DAFTAR SISWA</span>
+    </span>
+    <span style="font-size: 10px; font-weight: 600; color: #4f46e5; background: #e0e7ff; padding: 2px 8px; border-radius: 9999px;">Halaman 2 dari 2</span>
+  </div>
 </div>
 <div style="font-size: 10pt; line-height: 1.4;">
   <table style="width: 100%; margin-bottom: 10px; font-size: 10pt;">
@@ -505,9 +517,11 @@ const AppState = {
     zoom: 100
   },
 
-  // Filter & Search in Database view
+  // Filter & Search & Pagination in Database view
   dbSearchQuery: '',
   dbFilterKelas: 'all',
+  dbCurrentPage: 1,
+  dbPageSize: 10,
   isDatabaseConnected: false
 };
 
@@ -4615,14 +4629,14 @@ function closeDatabaseModal() {
   }
 }
 
-// Render Database Table in Manager Modal
+// Render Database Table in Manager Modal & Kelola Data Page with Pagination
 function renderDatabaseTable() {
   const tbody = document.getElementById('dbTableBody');
   const totalCount = document.getElementById('dbTotalRows');
   if (!tbody) return;
 
-  const q = AppState.dbSearchQuery.toLowerCase();
-  const fKelas = AppState.dbFilterKelas;
+  const q = (AppState.dbSearchQuery || '').toLowerCase();
+  const fKelas = AppState.dbFilterKelas || 'all';
 
   const filtered = AppState.records.filter(r => {
     const matchSearch = !q || 
@@ -4632,16 +4646,39 @@ function renderDatabaseTable() {
       (r.nisn && r.nisn.toLowerCase().includes(q)) ||
       (r.kelas && r.kelas.toLowerCase().includes(q)) ||
       (r.jurusan && r.jurusan.toLowerCase().includes(q)) ||
-      (r.tempat && r.tempat.toLowerCase().includes(q));
+      (r.tempat && r.tempat.toLowerCase().includes(q)) ||
+      (r.alamat && r.alamat.toLowerCase().includes(q));
     const matchKelas = fKelas === 'all' || r.kelas === fKelas;
     return matchSearch && matchKelas;
   });
 
-  if (totalCount) totalCount.textContent = `${filtered.length} / ${AppState.records.length}`;
+  const totalRows = filtered.length;
+  const pageSizeVal = AppState.dbPageSize;
+  const isAll = pageSizeVal === 'all' || pageSizeVal === 0;
+  const pageSize = isAll ? totalRows : parseInt(pageSizeVal, 10);
+  const totalPages = isAll ? 1 : Math.max(1, Math.ceil(totalRows / (pageSize || 1)));
+
+  // Clamp current page
+  if (AppState.dbCurrentPage > totalPages) {
+    AppState.dbCurrentPage = totalPages;
+  }
+  if (AppState.dbCurrentPage < 1) {
+    AppState.dbCurrentPage = 1;
+  }
+
+  const currentPage = AppState.dbCurrentPage;
+  const startIdx = isAll ? 0 : (currentPage - 1) * pageSize;
+  const endIdx = isAll ? totalRows : Math.min(startIdx + pageSize, totalRows);
+  const pagedRecords = filtered.slice(startIdx, endIdx);
+
+  if (totalCount) {
+    totalCount.textContent = `${filtered.length} / ${AppState.records.length}`;
+  }
 
   tbody.innerHTML = '';
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-slate-400 text-xs">Tidak ada data siswa ditemukan.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" class="p-8 text-center text-slate-400 text-xs font-medium">Tidak ada data siswa ditemukan untuk kriteria pencarian ini.</td></tr>`;
+    renderDatabasePagination(0, 0, 0, 1, 1);
     return;
   }
 
@@ -4657,29 +4694,30 @@ function renderDatabaseTable() {
     });
   }
 
-  filtered.slice(0, 100).forEach((r, idx) => {
+  pagedRecords.forEach((r, idx) => {
+    const rowNum = startIdx + idx + 1;
     const tr = document.createElement('tr');
     tr.className = "hover:bg-slate-50 border-b border-slate-100 text-xs text-slate-700 transition";
     tr.innerHTML = `
-      <td class="p-2.5 text-center font-medium">${idx + 1}</td>
-      <td class="p-2.5 font-semibold text-slate-900">${r.siswa || ''}</td>
+      <td class="p-2.5 text-center font-medium">${rowNum}</td>
+      <td class="p-2.5 font-semibold text-slate-900">${escapeXml(r.siswa || '')}</td>
       <td class="p-2.5 text-center font-mono text-[11px] text-slate-600">${formatNis(r.nis) || '-'}</td>
       <td class="p-2.5 text-center font-mono text-[11px] text-slate-600">${formatNisn(r.nisn) || r.nisn || '-'}</td>
-      <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[11px]">${r.kelas || ''}</span></td>
-      <td class="p-2.5 text-slate-700 text-[11px]">${r.jurusan || getJurusanFromKelas(r.kelas) || '-'}</td>
+      <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono text-[11px]">${escapeXml(r.kelas || '')}</span></td>
+      <td class="p-2.5 text-slate-700 text-[11px]">${escapeXml(r.jurusan || getJurusanFromKelas(r.kelas) || '-')}</td>
       <td class="p-2.5">
         <div class="font-medium text-slate-900">${escapeXml(r.guru || '-')}</div>
         ${r.nip ? `<div class="text-[10px] text-slate-400 font-mono">NIP: ${escapeXml(r.nip)}</div>` : ''}
         ${(r.guru_pangkat || r.guru_jabatan) ? `<div class="text-[9.5px] text-indigo-700">${escapeXml(r.guru_pangkat || '')}${r.guru_pangkat && r.guru_jabatan ? ' • ' : ''}${escapeXml(r.guru_jabatan || '')}</div>` : ''}
       </td>
-      <td class="p-2.5 font-medium text-indigo-700">${r.tempat || ''}</td>
-      <td class="p-2.5 text-slate-500 max-w-xs truncate" title="${r.alamat || ''}">${r.alamat || '-'}</td>
+      <td class="p-2.5 font-medium text-indigo-700">${escapeXml(r.tempat || '')}</td>
+      <td class="p-2.5 text-slate-500 max-w-xs truncate" title="${escapeXml(r.alamat || '')}">${escapeXml(r.alamat || '-')}</td>
       <td class="p-2.5 text-center">
         <div class="flex items-center justify-center gap-1">
-          <button onclick="openStudentModal('edit', ${r.no})" class="text-indigo-600 hover:text-indigo-800 p-1 rounded hover:bg-indigo-50 transition" title="Edit Data Siswa">
+          <button onclick="openStudentModal('edit', ${r.no})" class="text-indigo-600 hover:text-indigo-800 p-1 rounded hover:bg-indigo-50 transition cursor-pointer" title="Edit Data Siswa">
             <i data-lucide="edit-3" class="w-4 h-4"></i>
           </button>
-          <button onclick="deleteRecord(${r.no})" class="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition" title="Hapus Data Siswa">
+          <button onclick="deleteRecord(${r.no})" class="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition cursor-pointer" title="Hapus Data Siswa">
             <i data-lucide="trash-2" class="w-4 h-4"></i>
           </button>
         </div>
@@ -4688,7 +4726,152 @@ function renderDatabaseTable() {
     tbody.appendChild(tr);
   });
 
+  renderDatabasePagination(totalRows, startIdx, endIdx, totalPages, currentPage);
+
   if (window.lucide) lucide.createIcons();
+}
+
+// Render Database Pagination Navigation Controls
+function renderDatabasePagination(totalRows, startIdx, endIdx, totalPages, currentPage) {
+  const container = document.getElementById('dbPaginationContainer');
+  if (!container) return;
+
+  const displayRange = totalRows === 0 ? '0' : `${startIdx + 1} - ${endIdx}`;
+
+  // Generate page numbers with smart sliding window
+  let pageButtonsHtml = '';
+  if (totalPages > 1) {
+    let pagesToShow = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pagesToShow.push(i);
+    } else {
+      pagesToShow.push(1);
+      if (currentPage > 3) pagesToShow.push('...');
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      for (let i = start; i <= end; i++) {
+        if (!pagesToShow.includes(i)) pagesToShow.push(i);
+      }
+      if (currentPage < totalPages - 2) pagesToShow.push('...');
+      if (!pagesToShow.includes(totalPages)) pagesToShow.push(totalPages);
+    }
+
+    pageButtonsHtml = pagesToShow.map(p => {
+      if (p === '...') {
+        return `<span class="px-1.5 py-1 text-slate-400 text-xs select-none">...</span>`;
+      }
+      const isActive = p === currentPage;
+      return `
+        <button type="button" 
+                onclick="setDbPage(${p})" 
+                class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-xs font-semibold flex items-center justify-center transition cursor-pointer ${
+                  isActive 
+                    ? 'bg-sky-600 text-white shadow-xs font-bold' 
+                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                }">
+          ${p}
+        </button>
+      `;
+    }).join('');
+  }
+
+  const isFirstDisabled = currentPage <= 1;
+  const isLastDisabled = currentPage >= totalPages;
+
+  const isDataPage = window.location.pathname.toLowerCase().includes('data.html') || !!document.getElementById('dataPageRoot');
+  const actionBtnHtml = isDataPage
+    ? `<a href="index.html" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-lg text-xs transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap">
+         <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+         <span>Kembali ke Surat</span>
+       </a>`
+    : `<button type="button" onclick="closeDatabaseModal()" class="px-4 py-1.5 bg-slate-800 text-white font-medium rounded-lg hover:bg-slate-700 text-xs transition cursor-pointer whitespace-nowrap">
+         Tutup
+       </button>`;
+
+  container.innerHTML = `
+    <!-- Sisi Kiri: Informasi Range & Pilihan Baris Per Halaman -->
+    <div class="flex items-center gap-3 flex-wrap">
+      <div class="text-xs text-slate-600">
+        Menampilkan <strong class="text-slate-900 font-bold">${displayRange}</strong> dari <strong class="text-slate-900 font-bold">${totalRows}</strong> siswa
+        <span class="text-slate-400 text-[11px]">(Total: ${AppState.records.length})</span>
+      </div>
+      <div class="flex items-center gap-1.5 text-xs">
+        <label for="dbPageSizeSelect" class="text-slate-500 text-[11px] whitespace-nowrap">Baris per hal:</label>
+        <select id="dbPageSizeSelect" onchange="setDbPageSize(this.value)" class="p-1 px-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer">
+          <option value="10" ${AppState.dbPageSize === 10 ? 'selected' : ''}>10</option>
+          <option value="25" ${AppState.dbPageSize === 25 ? 'selected' : ''}>25</option>
+          <option value="50" ${AppState.dbPageSize === 50 ? 'selected' : ''}>50</option>
+          <option value="100" ${AppState.dbPageSize === 100 ? 'selected' : ''}>100</option>
+          <option value="all" ${AppState.dbPageSize === 'all' ? 'selected' : ''}>Semua</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Sisi Kanan: Navigasi Tombol Pagination & Tombol Aksi -->
+    <div class="flex items-center gap-2 flex-wrap justify-end">
+      ${totalPages > 1 ? `
+        <div class="flex items-center gap-1">
+          <!-- Tombol Pertama -->
+          <button type="button" 
+                  onclick="setDbPage(1)" 
+                  ${isFirstDisabled ? 'disabled' : ''} 
+                  class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition cursor-pointer"
+                  title="Halaman Pertama">
+            <i data-lucide="chevrons-left" class="w-3.5 h-3.5"></i>
+          </button>
+          <!-- Tombol Sebelumnya -->
+          <button type="button" 
+                  onclick="setDbPage(${currentPage - 1})" 
+                  ${isFirstDisabled ? 'disabled' : ''} 
+                  class="px-2 h-7 sm:h-8 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-medium flex items-center gap-1 transition cursor-pointer"
+                  title="Halaman Sebelumnya">
+            <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Prev</span>
+          </button>
+
+          <!-- Deretan Angka Halaman -->
+          <div class="flex items-center gap-1">
+            ${pageButtonsHtml}
+          </div>
+
+          <!-- Tombol Selanjutnya -->
+          <button type="button" 
+                  onclick="setDbPage(${currentPage + 1})" 
+                  ${isLastDisabled ? 'disabled' : ''} 
+                  class="px-2 h-7 sm:h-8 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-medium flex items-center gap-1 transition cursor-pointer"
+                  title="Halaman Selanjutnya">
+            <span class="hidden sm:inline">Next</span>
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+          </button>
+          <!-- Tombol Terakhir -->
+          <button type="button" 
+                  onclick="setDbPage(${totalPages})" 
+                  ${isLastDisabled ? 'disabled' : ''} 
+                  class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition cursor-pointer"
+                  title="Halaman Terakhir (${totalPages})">
+            <i data-lucide="chevrons-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      ` : ''}
+
+      <div class="ml-1 sm:ml-2">
+        ${actionBtnHtml}
+      </div>
+    </div>
+  `;
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function setDbPage(page) {
+  AppState.dbCurrentPage = page;
+  renderDatabaseTable();
+}
+
+function setDbPageSize(size) {
+  AppState.dbPageSize = (size === 'all') ? 'all' : parseInt(size, 10);
+  AppState.dbCurrentPage = 1;
+  renderDatabaseTable();
 }
 
 // Open Student Modal (Add or Edit)
@@ -5492,9 +5675,9 @@ function applyMobileDocTransform(withTransition = false) {
 
   // Sesuaikan tinggi container viewport agar pas dengan tinggi visual surat yang diskala
   if (viewport) {
-    const docHeight = doc.offsetHeight || 1300;
+    const docHeight = Math.max(doc.scrollHeight, doc.offsetHeight, 1300);
     const scaledHeight = Math.ceil(docHeight * scale);
-    viewport.style.height = `${scaledHeight + 30}px`;
+    viewport.style.height = `${scaledHeight + 60}px`;
     viewport.style.overflow = isFit ? 'visible' : 'hidden';
   }
 
@@ -5572,12 +5755,39 @@ function clampPan(x, y) {
   const maxPanX = Math.max(20, (scaledWidth - viewWidth) / 2 + 60);
   const clampedX = Math.max(-maxPanX, Math.min(maxPanX, x));
 
-  const docHeight = doc.offsetHeight || 1300;
+  const docHeight = Math.max(doc.scrollHeight, doc.offsetHeight, 1300);
   const scaledHeight = docHeight * MobileDocState.currentScale;
   const maxPanY = Math.max(0, scaledHeight - viewport.clientHeight + 80);
   const clampedY = Math.max(-maxPanY, Math.min(60, y));
 
   return { x: clampedX, y: clampedY };
+}
+
+// Lompat Cepat Antar Lembar Dokumen di Mode Mobile
+function scrollMobileDocToPage(pageNum) {
+  const doc = document.getElementById('documentTemplate');
+  const toolbar = document.getElementById('mobileDocToolbar');
+  if (!doc) return;
+
+  if (!MobileDocState.isUserZoomed) {
+    MobileDocState.panX = 0;
+    MobileDocState.panY = 0;
+    applyMobileDocTransform(false);
+  }
+
+  if (pageNum === 1) {
+    const kop = document.getElementById('docKopContainer') || doc;
+    const yOffset = toolbar ? -70 : -20;
+    const y = kop.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+  } else if (pageNum === 2) {
+    const pageBreak = doc.querySelector('.page-break') || doc.querySelector('.page-break-sheet-divider') || doc.querySelector('.page-break-divider') || document.getElementById('pageLampiran');
+    if (pageBreak) {
+      const yOffset = toolbar ? -70 : -20;
+      const y = pageBreak.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+    }
+  }
 }
 
 // Inisialisasi Pengendali Mobile Viewer (Gestur Sentuh, Cubit / Pinch-to-zoom, Drag & Mouse)
