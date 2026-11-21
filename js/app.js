@@ -832,7 +832,7 @@ function loadStoredTemplates() {
       // Sinkronkan template bawaan baru jika belum ada di cache browser pengguna
       // Sinkronkan selalu nama & isi template keterangan bawaan ke versi terbaru
       AppState.templates.forEach(t => {
-        if (t.id === 'tpl_surat_keterangan_pkl' || t.name === 'Surat Keterangan PKL (Contoh Surat Keterangan PKL.docx)') {
+        if (t.name === 'Surat Keterangan PKL (Contoh Surat Keterangan PKL.docx)') {
           t.name = 'Surat Keterangan PKL';
           needsSave = true;
         }
@@ -874,10 +874,11 @@ function loadStoredTemplates() {
           AppState.templates.push(JSON.parse(JSON.stringify(defTpl)));
           needsSave = true;
         } else {
-          // Perbarui nama dan isi html template bawaan ke versi terbaru
-          found.name = defTpl.name;
-          found.htmlContent = defTpl.htmlContent;
-          needsSave = true;
+          // PERHATIAN: Jangan menimpa found.name jika pengguna telah mengubah judul template!
+          if (!found.name) {
+            found.name = defTpl.name;
+            needsSave = true;
+          }
         }
       });
     } else {
@@ -1288,6 +1289,10 @@ function setupEventListeners() {
       AppState.displayOptions.showAlamat = e.target.checked;
       renderPreview();
       saveDisplayOptions();
+      const letter = getCurrentLetterData();
+      if (!letter.isSpecificTempat && e.target.checked) {
+        showToast('Info: Pilih nama DU/DI pada "Filter Tempat PKL" atau gunakan Mode Per DU/DI untuk menampilkan alamat tujuan.', 'info');
+      }
     });
   }
 
@@ -1742,24 +1747,20 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
   if (studentsLampiran.length > 0) {
     const rowsHtml = studentsLampiran.map((st, idx) => `
       <tr>
-        <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${idx + 1}</td>
-        <td style="border: 1px solid #000; padding: 4px 8px; text-align: left; font-weight: 500;">${escapeXml(st.siswa || st.nama || '-')}</td>
-        <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${escapeXml(formatNis(st.nis) || '-')}</td>
-        <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${escapeXml(formatNisn(st.nisn) || '-')}</td>
-        <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${escapeXml(st.kelas || '-')}</td>
-        <td style="border: 1px solid #000; padding: 4px 8px; text-align: left;">${escapeXml(st.tempat || letter.tempatPkl || '-')}</td>
+        <td style="border: 1px solid #000; padding: 5px 6px; text-align: center;">${idx + 1}</td>
+        <td style="border: 1px solid #000; padding: 5px 8px; text-align: left; font-weight: 500;">${escapeXml(st.siswa || st.nama || '-')}</td>
+        <td style="border: 1px solid #000; padding: 5px 6px; text-align: center;">${escapeXml(st.kelas || '-')}</td>
+        <td style="border: 1px solid #000; padding: 5px 8px; text-align: left;">${escapeXml(st.tempat || letter.tempatPkl || '-')}</td>
       </tr>
     `).join('');
     tabelDaftarSiswaLampiran = `
       <table style="width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 12px; font-size: 10pt; font-family: 'Bookman Old Style', 'Georgia', serif;">
         <thead>
           <tr style="background-color: #f1f5f9; text-align: center; font-weight: bold;">
-            <th style="border: 1px solid #000; padding: 5px 6px; width: 40px;">No</th>
-            <th style="border: 1px solid #000; padding: 5px 8px; text-align: left;">Nama Siswa</th>
-            <th style="border: 1px solid #000; padding: 5px 6px; width: 85px;">NIS</th>
-            <th style="border: 1px solid #000; padding: 5px 6px; width: 105px;">NISN</th>
-            <th style="border: 1px solid #000; padding: 5px 6px; width: 90px;">Kelas</th>
-            <th style="border: 1px solid #000; padding: 5px 8px; text-align: left;">Tempat PKL</th>
+            <th style="border: 1px solid #000; padding: 6px; width: 45px;">No</th>
+            <th style="border: 1px solid #000; padding: 6px 10px; text-align: left;">Nama Siswa</th>
+            <th style="border: 1px solid #000; padding: 6px 8px; width: 110px;">Kelas</th>
+            <th style="border: 1px solid #000; padding: 6px 10px; text-align: left;">Tempat PKL</th>
           </tr>
         </thead>
         <tbody>
@@ -1854,16 +1855,22 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
   // Penanganan variabel {tempatPkl} & {alamatPkl} pada blok tujuan surat yang dijabarkan
   if (!letter.isSpecificTempat) {
     rendered = rendered
-      .replace(/<div style="font-weight: bold;">\s*\{tempatPkl\}\s*<\/div>/g, '')
-      .replace(/<div style="font-size: 10pt; color: #333;">\s*\{alamatPkl\}\s*<\/div>/g, '')
-      .replace(/{tempatPkl}/g, escapeXml(tempatPkl))
+      .replace(/<div[^>]*>\s*\{tempatPkl\}\s*<\/div>/gi, '')
+      .replace(/<p[^>]*>\s*\{tempatPkl\}\s*<\/p>/gi, '')
+      .replace(/<div[^>]*>\s*\{alamatPkl\}\s*<\/div>/gi, '')
+      .replace(/<p[^>]*>\s*\{alamatPkl\}\s*<\/p>/gi, '')
+      .replace(/{tempatPkl}/g, '')
       .replace(/{alamatPkl}/g, '');
   } else {
-    rendered = rendered
-      .replace(/{tempatPkl}/g, escapeXml(letter.tempatPkl || tempatPkl))
-      .replace(/{alamatPkl}/g, (showAlamat && letter.alamatPkl) ? escapeXml(letter.alamatPkl) : '');
-    if (!showAlamat || !letter.alamatPkl) {
-      rendered = rendered.replace(/<div style="font-size: 10pt; color: #333;">\s*<\/div>/g, '');
+    rendered = rendered.replace(/{tempatPkl}/g, escapeXml(letter.tempatPkl || tempatPkl));
+    if (showAlamat && letter.alamatPkl) {
+      rendered = rendered.replace(/{alamatPkl}/g, escapeXml(letter.alamatPkl));
+    } else {
+      rendered = rendered
+        .replace(/<div[^>]*>\s*\{alamatPkl\}\s*<\/div>/gi, '')
+        .replace(/<p[^>]*>\s*\{alamatPkl\}\s*<\/p>/gi, '')
+        .replace(/<span[^>]*>\s*\{alamatPkl\}\s*<\/span>/gi, '')
+        .replace(/{alamatPkl}/g, '');
     }
   }
 

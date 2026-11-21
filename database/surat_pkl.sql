@@ -1,7 +1,7 @@
 -- ========================================================
 -- Database Schema & Data: Surat Pengantar PKL
 -- Instansi : SMKN 1 FYJ Channel
--- Diperbarui : 2026-11-20 10:13:57
+-- Diperbarui : 2026-11-21 09:01:18
 -- Kompatibel : MySQL, MariaDB, PostgreSQL, SQLite
 -- ========================================================
 
@@ -356,10 +356,27 @@ CREATE TABLE `template_surat` (
 
 -- Data Template Surat Resmi
 LOCK TABLES `template_surat` WRITE;
-INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_standar_resmi', 'Template Standar Resmi SMKN 1 FYJ Channel', '<div style="text-align: center; margin-top: 6px; margin-bottom: 14px;">
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_standar_resmi', 'Suket Pengantar PKL', '<div style="text-align: center; margin-top: 6px; margin-bottom: 14px;">
   <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
   <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
 </div>
+
+<table style="width: 100%; margin-top: 4px; margin-bottom: 14px;">
+  <tbody><tr>
+    <td style="width: 10%; vertical-align: top;">Kepada:</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Yth.</td>
+    <td>
+      <div style="font-weight: bold;">Pimpinan DU/DI</div>
+      <div style="font-weight: bold;">{tempatPkl}</div>
+      <div style="font-size: 10pt; color: #333;">{alamatPkl}</div>
+      <div>di -</div>
+      <div style="text-indent: 20px;">Tempat</div>
+    </td>
+  </tr>
+</tbody></table>
 
 <p style="margin-bottom: 8px;">Dengan hormat,</p>
 <p style="text-indent: 30px; margin-bottom: 8px; text-align: justify;">
@@ -367,7 +384,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 </p>
 <p style="margin-bottom: 4px;">Adapun identitas Guru Pembimbing yang ditugaskan adalah sebagai berikut:</p>
 <table style="width: 100%; margin-left: 20px; margin-bottom: 10px;">
-  <tr>
+  <tbody><tr>
     <td style="width: 110px;">Nama</td>
     <td style="width: 15px;">:</td>
     <td style="font-weight: bold;">{guruNama}</td>
@@ -387,7 +404,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
     <td>:</td>
     <td>{guruJabatan}</td>
   </tr>
-</table>
+</tbody></table>
 <p style="margin-bottom: 4px;">Sehubungan dengan hal tersebut, berikut kami sampaikan beberapa informasi terkait teknis pelaksanaan PKL:</p>
 <ol style="margin-left: 20px; margin-bottom: 10px; list-style-type: decimal;">
   <li style="padding-left: 4px;">Pelepasan siswa/siswi PKL dilaksanakan pada tanggal <strong>{tglPelepasan}</strong>.</li>
@@ -405,7 +422,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 </div>
 <div style="font-size: 10pt; line-height: 1.4;">
   <table style="width: 100%; margin-bottom: 10px; font-size: 10pt;">
-    <tr>
+    <tbody><tr>
       <td style="width: 90px; vertical-align: top;">Lampiran 2</td>
       <td style="width: 15px; vertical-align: top;">:</td>
       <td style="vertical-align: top;">Surat Pengantar Kepala {namaSekolah}</td>
@@ -420,7 +437,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
       <td style="vertical-align: top;">:</td>
       <td style="vertical-align: top;">{tglSurat}</td>
     </tr>
-  </table>
+  </tbody></table>
   <div style="text-align: center; font-weight: bold; font-size: 11pt; margin-bottom: 12px; text-transform: uppercase;">
     DAFTAR SISWA/SISWI PRAKTEK KERJA LAPANGAN (PKL)<br>
     {namaSekolah} TAHUN AJARAN {tahunAjaran}
@@ -527,7 +544,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 </p>
 
 {ttdSurat}', 0, 'active');
-INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_pkl_terpadu', 'Template PKL Model Terpadu / Fleksibel', '<div style="text-align: center; margin-top: 6px; margin-bottom: 14px;">
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_pkl_terpadu', 'Suket Pengantar 2 / Fleksibel', '<div style="text-align: center; margin-top: 6px; margin-bottom: 14px;">
   <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT PENGANTAR</div>
   <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
 </div>
@@ -538,7 +555,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 </p>
 <p style="margin-bottom: 4px;">Bersama surat ini, kami menugaskan guru pembimbing sebagai narahubung resmi:</p>
 <table style="width: 100%; margin-left: 20px; margin-bottom: 10px;">
-  <tr>
+  <tbody><tr>
     <td style="width: 110px;">Nama</td>
     <td style="width: 15px;">:</td>
     <td style="font-weight: bold;">{guruNama}</td>
@@ -558,7 +575,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
     <td>:</td>
     <td>{guruJabatan}</td>
   </tr>
-</table>
+</tbody></table>
 <p style="margin-bottom: 4px;">Adapun rincian jadwal pelaksanaan program PKL adalah sebagai berikut:</p>
 <ol style="margin-left: 20px; margin-bottom: 10px; list-style-type: decimal;">
   <li style="padding-left: 4px;">Pelepasan siswa/siswi PKL: <strong>{tglPelepasan}</strong>.</li>
@@ -576,7 +593,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 </div>
 <div style="font-size: 10pt; line-height: 1.4;">
   <table style="width: 100%; margin-bottom: 10px; font-size: 10pt;">
-    <tr>
+    <tbody><tr>
       <td style="width: 90px; vertical-align: top;">Lampiran 2</td>
       <td style="width: 15px; vertical-align: top;">:</td>
       <td style="vertical-align: top;">Surat Pengantar Kepala {namaSekolah}</td>
@@ -591,7 +608,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
       <td style="vertical-align: top;">:</td>
       <td style="vertical-align: top;">{tglSurat}</td>
     </tr>
-  </table>
+  </tbody></table>
   <div style="text-align: center; font-weight: bold; font-size: 11pt; margin-bottom: 12px; text-transform: uppercase;">
     DAFTAR SISWA/SISWI PRAKTEK KERJA LAPANGAN (PKL)<br>
     {namaSekolah} TAHUN AJARAN {tahunAjaran}
