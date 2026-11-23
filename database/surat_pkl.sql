@@ -301,6 +301,83 @@ INSERT INTO `siswa_pkl` (`no_urut`, `guru`, `nip`, `guru_pangkat`, `guru_jabatan
 (256, 'Luh Gd. Karisma Widiantari, S.Farm.Apt.', '-', '', 'Guru Pembimbing PKL', 'Ni Kadek Ayu Arsani', '', '', 'XII LPKKK 1', 'Layanan Kefarmasian Klinis dan Komunitas', 'Apotek Karisma', 'Jln. Bima Sampalan Tengah Kab. Klungkung'),
 (257, 'Luh Gd. Karisma Widiantari, S.Farm.Apt.', '-', '', 'Guru Pembimbing PKL', 'Ni Kadek Diah Dwi Adnyani', '', '', 'XII LPKKK 1', 'Layanan Kefarmasian Klinis dan Komunitas', 'Apotek Karisma', 'Jln. Bima Sampalan Tengah kab. Klungkung'),
 (258, 'Luh Gd. Karisma Widiantari, S.Farm.Apt.', '-', '', 'Guru Pembimbing PKL', 'Ni Made Shita Wulandari', '', '', 'XII LPKKK 1', 'Layanan Kefarmasian Klinis dan Komunitas', 'Apotek Karisma', 'Jln. Bima Sampalan Tengah Kab. Klungkung');
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_suket_monitoring_pkl', 'Suket Monitoring PKL', '<div style="text-align: center; margin-top: 6px; margin-bottom: 16px;">
+  <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT TUGAS</div>
+  <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
+</div>
+
+<p style="margin-bottom: 8px;">Yang bertandatangan dibawah ini, Kepala {namaSekolah} :</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{kepsekNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIP</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekNip}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Pangkat/Gol</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekPangkat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jabatan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">Kepala Sekolah</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Unit Kerja</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{namaSekolah}</td>
+  </tr>
+</table>
+
+<p style="margin-bottom: 8px;">Dengan ini menugaskan Guru atas nama :</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{guruNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIP</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{guruNip}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Pangkat/Gol</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{guruPangkat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jabatan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{guruJabatan}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Unit Kerja</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{namaSekolah}</td>
+  </tr>
+</table>
+
+<p style="text-indent: 30px; margin-bottom: 10px; text-align: justify; line-height: 1.5;">
+  Menugaskan guru pembimbing untuk melaksanakan kegiatan pembimbingan dan pemantauan (monitoring) Praktik Kerja Lapangan (PKL) Tahun Ajaran {tahunAjaran} yang berlangsung pada tanggal {periodePkl}, secara berkala setiap seminggu sekali di lokasi DUDI berikut :
+</p>
+
+<ol style="margin-left: 25px; margin-bottom: 12px; font-weight: bold; list-style-type: decimal;">
+  {daftarTempatMonitoring}
+</ol>
+
+<p style="text-indent: 30px; margin-bottom: 14px; text-align: justify; line-height: 1.5;">
+  Demikian surat tugas ini dibuat untuk dilaksanakan dengan penuh rasa tanggung jawab.
+</p>
+
+{ttdSurat}', 0, 'active');
+
 UNLOCK TABLES;
 
 -- --------------------------------------------------------
@@ -506,7 +583,7 @@ INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `statu
 </p>
 
 {ttdSurat}', 0, 'active');
-INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_surat_permohonan_pkl_murid', 'Surat Permohonan PKL Murid', '<table style="width: 100%; margin-bottom: 12px; font-size: 11pt; border-collapse: collapse; font-family: ''Arial Narrow'', Arial, sans-serif;">
+INSERT INTO `template_surat` (`id`, `nama`, `html_content`, `is_default`, `status`) VALUES ('tpl_permohonan_penerimaan_murid', 'Permohonan Penerimaan Murid', '<table style="width: 100%; margin-bottom: 12px; font-size: 11pt; border-collapse: collapse; font-family: ''Arial Narrow'', Arial, sans-serif;">
   <tr>
     <td style="width: 80px; vertical-align: top;">Nomor</td>
     <td style="width: 15px; vertical-align: top;">:</td>

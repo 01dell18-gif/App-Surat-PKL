@@ -483,7 +483,7 @@ class PKLRequestHandler(SimpleHTTPRequestHandler):
                 guru_jabatan = req_data.get('guru_jabatan', 'Guru Pembimbing PKL')
 
                 is_keterangan = (template_id == 'tpl_surat_keterangan_pkl' or doc_type == 'keterangan')
-                is_permohonan = (template_id == 'tpl_surat_permohonan_pkl_murid' or doc_type == 'permohonan')
+                is_permohonan = (template_id in ('tpl_surat_permohonan_pkl_murid', 'tpl_permohonan_penerimaan_murid') or doc_type == 'permohonan')
 
                 if is_permohonan:
                     file_bytes = generate_permohonan_murid_docx(

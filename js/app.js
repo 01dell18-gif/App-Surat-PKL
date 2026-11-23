@@ -416,11 +416,11 @@ const DEFAULT_TEMPLATES = [
 {ttdSurat}`
   },
   {
-    id: 'tpl_surat_permohonan_pkl_murid',
-    name: 'Surat Permohonan PKL Murid',
+    id: 'tpl_permohonan_penerimaan_murid',
+    name: 'Permohonan Penerimaan Murid',
     isDefault: false,
     status: 'active',
-    createdAt: '2026-11-05',
+    createdAt: '2026-11-23',
     htmlContent: `<table style="width: 100%; margin-bottom: 12px; font-size: 11pt; border-collapse: collapse; font-family: 'Arial Narrow', Arial, sans-serif;">
   <tr>
     <td style="width: 80px; vertical-align: top;">Nomor</td>
@@ -456,6 +456,89 @@ const DEFAULT_TEMPLATES = [
 
 <p style="text-indent: 30px; margin-top: 10px; margin-bottom: 12px; text-align: justify; line-height: 1.4; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
   Demikian yang dapat kami sampaikan atas kerjasama Bapak/Ibu kami ucapkan terimakasih.
+</p>
+
+{ttdSurat}`
+  },
+  {
+    id: 'tpl_suket_monitoring_pkl',
+    name: 'Suket Monitoring PKL',
+    isDefault: false,
+    status: 'active',
+    createdAt: '2026-11-23',
+    htmlContent: `<div style="text-align: center; margin-top: 6px; margin-bottom: 16px;">
+  <div style="font-size: 13pt; font-weight: bold; text-decoration: underline; letter-spacing: 1px;">SURAT TUGAS</div>
+  <div style="font-size: 10.5pt; margin-top: 2px;">Nomor: {noSurat}</div>
+</div>
+
+<p style="margin-bottom: 8px;">Yang bertandatangan dibawah ini, Kepala {namaSekolah} :</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{kepsekNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIP</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekNip}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Pangkat/Gol</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{kepsekPangkat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jabatan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">Kepala Sekolah</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Unit Kerja</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{namaSekolah}</td>
+  </tr>
+</table>
+
+<p style="margin-bottom: 8px;">Dengan ini menugaskan Guru atas nama :</p>
+<table style="width: 100%; margin-left: 20px; margin-bottom: 12px; font-size: 11pt;">
+  <tr>
+    <td style="width: 130px; vertical-align: top;">Nama</td>
+    <td style="width: 15px; vertical-align: top;">:</td>
+    <td style="font-weight: bold; vertical-align: top;">{guruNama}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">NIP</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{guruNip}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Pangkat/Gol</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{guruPangkat}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Jabatan</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{guruJabatan}</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">Unit Kerja</td>
+    <td style="vertical-align: top;">:</td>
+    <td style="vertical-align: top;">{namaSekolah}</td>
+  </tr>
+</table>
+
+<p style="text-indent: 30px; margin-bottom: 10px; text-align: justify; line-height: 1.5;">
+  Menugaskan guru pembimbing untuk melaksanakan kegiatan pembimbingan dan pemantauan (monitoring) Praktik Kerja Lapangan (PKL) Tahun Ajaran {tahunAjaran} yang berlangsung pada tanggal {periodePkl}, secara berkala setiap seminggu sekali di lokasi DUDI berikut :
+</p>
+
+<ol style="margin-left: 25px; margin-bottom: 12px; font-weight: bold; list-style-type: decimal;">
+  {daftarTempatMonitoring}
+</ol>
+
+<p style="text-indent: 30px; margin-bottom: 14px; text-align: justify; line-height: 1.5;">
+  Demikian surat tugas ini dibuat untuk dilaksanakan dengan penuh rasa tanggung jawab.
 </p>
 
 {ttdSurat}`
@@ -683,13 +766,20 @@ function getTitimangsaHtml(ds, activeTpl) {
     const custom = (s.titimangsaKustom || `${tempat}, ${tgl}`).trim();
     return `<div>${escapeXml(custom).replace(/\n/g, '<br>')}</div>`;
   } else {
-    // auto: format penetapan untuk permohonan & keterangan, standar untuk pengantar
+    // auto: format penetapan untuk permohonan & keterangan, dikeluarkan untuk surat tugas/monitoring, standar untuk pengantar
+    const isMonitoring = activeTpl && (
+      (activeTpl.id === 'tpl_suket_monitoring_pkl') ||
+      (activeTpl.name && (activeTpl.name.toLowerCase().includes('monitoring') || activeTpl.name.toLowerCase().includes('tugas')))
+    );
     const isKetOrPerm = activeTpl && (
       (activeTpl.id === 'tpl_surat_keterangan_pkl') ||
+      (activeTpl.id === 'tpl_permohonan_penerimaan_murid') ||
       (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') ||
       (activeTpl.name && (activeTpl.name.toLowerCase().includes('keterangan') || activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')))
     );
-    if (isKetOrPerm) {
+    if (isMonitoring) {
+      return `<div>Dikeluarkan di ${escapeXml(tempat)}</div><div>Pada Tanggal, <span id="docTglSurat">${escapeXml(tgl)}</span></div>`;
+    } else if (isKetOrPerm) {
       return `<div>Ditetapkan di ${escapeXml(tempat)}</div><div>Pada Tanggal <span id="docTglSurat">${escapeXml(tgl)}</span></div>`;
     } else {
       return `<div>${escapeXml(tempat)}, <span id="docTglSurat">${escapeXml(tgl)}</span></div>`;
@@ -882,14 +972,26 @@ function loadStoredTemplates() {
         ketTpl.htmlContent = defKet.htmlContent;
         needsSave = true;
       }
+      // Migrasikan ID & nama template permohonan lama jika ada
+      const oldPerm = AppState.templates.find(t => t.id === 'tpl_surat_permohonan_pkl_murid');
+      if (oldPerm) {
+        oldPerm.id = 'tpl_permohonan_penerimaan_murid';
+        oldPerm.name = 'Permohonan Penerimaan Murid';
+        const defPerm = DEFAULT_TEMPLATES.find(t => t.id === 'tpl_permohonan_penerimaan_murid');
+        if (defPerm) oldPerm.htmlContent = defPerm.htmlContent;
+        needsSave = true;
+      }
       DEFAULT_TEMPLATES.forEach(defTpl => {
         const found = AppState.templates.find(t => t.id === defTpl.id);
         if (!found) {
           AppState.templates.push(JSON.parse(JSON.stringify(defTpl)));
           needsSave = true;
         } else {
-          // PERHATIAN: Jangan menimpa found.name jika pengguna telah mengubah judul template!
-          if (!found.name) {
+          if (defTpl.id === 'tpl_permohonan_penerimaan_murid' || defTpl.id === 'tpl_suket_monitoring_pkl') {
+            found.htmlContent = defTpl.htmlContent;
+            found.name = defTpl.name;
+            needsSave = true;
+          } else if (!found.name) {
             found.name = defTpl.name;
             needsSave = true;
           }
@@ -1634,7 +1736,10 @@ function updateUIFromState() {
   const bZipDesc = document.getElementById('navbarBatchZipDesc');
 
   const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                       (activeTpl.id === 'tpl_permohonan_penerimaan_murid') ||
                        (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
+  const isMonitoring = (activeTpl.id === 'tpl_suket_monitoring_pkl') ||
+                       (activeTpl.name && (activeTpl.name.toLowerCase().includes('monitoring') || activeTpl.name.toLowerCase().includes('tugas')));
 
   updatePaperSizeClass();
 
@@ -1645,6 +1750,13 @@ function updateUIFromState() {
     if (cPrintDesc) cPrintDesc.textContent = 'Cetak 1 surat permohonan murid aktif';
     if (bZipTitle) bZipTitle.textContent = 'Unduh Semua DU/DI (.ZIP)';
     if (bZipDesc) bZipDesc.textContent = 'Arsip .docx surat permohonan DU/DI';
+  } else if (isMonitoring) {
+    if (bPrintTitle) bPrintTitle.textContent = 'Cetak Massal Surat Tugas';
+    if (bPrintDesc) bPrintDesc.textContent = 'Pilih & cetak surat tugas monitoring per guru';
+    const cPrintDesc = document.getElementById('navbarCurrentPrintDesc');
+    if (cPrintDesc) cPrintDesc.textContent = 'Cetak 1 surat tugas monitoring aktif';
+    if (bZipTitle) bZipTitle.textContent = 'Unduh Semua Guru (.ZIP)';
+    if (bZipDesc) bZipDesc.textContent = 'Arsip berkas surat tugas monitoring';
   } else if (isKeterangan) {
     if (bPrintTitle) bPrintTitle.textContent = 'Cetak Massal Surat Keterangan';
     if (bPrintDesc) bPrintDesc.textContent = 'Pilih & cetak surat keterangan siswa';
@@ -1712,23 +1824,43 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
   }
   if (!jurusanPkl) jurusanPkl = 'Bisnis Digital (BD)';
 
-  // Buat HTML tabel siswa untuk Surat Permohonan PKL Murid
+  // Buat HTML tabel siswa untuk Surat Permohonan PKL Murid (5 kolom sesuai contoh PDF Permohonan Penerimaan Murid)
   let tabelSiswaPermohonan = '';
   if (letter.students && letter.students.length > 0) {
-    const rowsHtml = letter.students.map((st, idx) => `
-      <tr>
-        <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${idx + 1}</td>
-        <td style="border: 1px solid #000; padding: 4px 8px; text-align: left;">${escapeXml(st.siswa || st.nama || '-')}</td>
-        <td style="border: 1px solid #000; padding: 4px 8px; text-align: center;">${escapeXml(st.kelas || '-')}</td>
-      </tr>
-    `).join('');
+    const rowsHtml = letter.students.map((st, idx) => {
+      const sNama = st.siswa || st.nama || '-';
+      const sNis = formatNis(st.nis) || '-';
+      const sNisn = formatNisn(st.nisn) || (st.nisn && st.nisn !== '-' ? st.nisn : '-');
+      let stNisNisn = '-';
+      if (sNis !== '-' && sNisn !== '-') {
+        stNisNisn = `${sNis} / ${sNisn}`;
+      } else if (sNis !== '-') {
+        stNisNisn = sNis;
+      } else if (sNisn !== '-') {
+        stNisNisn = sNisn;
+      }
+      const sKelas = st.kelas || '-';
+      const sJurusan = st.jurusan || getJurusanFromKelas(st.kelas) || '-';
+
+      return `
+        <tr>
+          <td style="border: 1px solid #000; padding: 4px 6px; text-align: center;">${idx + 1}</td>
+          <td style="border: 1px solid #000; padding: 4px 8px; text-align: left; font-weight: 500;">${escapeXml(sNama)}</td>
+          <td style="border: 1px solid #000; padding: 4px 8px; text-align: center;">${escapeXml(stNisNisn)}</td>
+          <td style="border: 1px solid #000; padding: 4px 8px; text-align: center;">${escapeXml(sKelas)}</td>
+          <td style="border: 1px solid #000; padding: 4px 8px; text-align: left;">${escapeXml(sJurusan)}</td>
+        </tr>
+      `;
+    }).join('');
     tabelSiswaPermohonan = `
-      <table style="width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
+      <table style="width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; font-size: 10.5pt; font-family: 'Arial Narrow', Arial, sans-serif;">
         <thead>
           <tr style="background-color: #bfbfbf; text-align: center; font-weight: bold;">
-            <th style="border: 1px solid #000; padding: 4px 6px; width: 45px;">No</th>
-            <th style="border: 1px solid #000; padding: 4px 8px; text-align: left;">Nama Siswa</th>
-            <th style="border: 1px solid #000; padding: 4px 8px; width: 220px; text-align: center;">Kelas/ Konsentrasi Keahlian</th>
+            <th style="border: 1px solid #000; padding: 5px 6px; width: 35px;">No</th>
+            <th style="border: 1px solid #000; padding: 5px 8px; text-align: left;">Nama Siswa</th>
+            <th style="border: 1px solid #000; padding: 5px 8px; width: 140px; text-align: center;">NIS/NISN</th>
+            <th style="border: 1px solid #000; padding: 5px 8px; width: 80px; text-align: center;">Kelas</th>
+            <th style="border: 1px solid #000; padding: 5px 8px; text-align: left;">Konsentrasi Keahlian</th>
           </tr>
         </thead>
         <tbody>
@@ -1738,22 +1870,43 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     `;
   } else {
     tabelSiswaPermohonan = `
-      <table style="width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; font-size: 11pt; font-family: 'Arial Narrow', Arial, sans-serif;">
+      <table style="width: 100%; border-collapse: collapse; margin-top: 6px; margin-bottom: 8px; font-size: 10.5pt; font-family: 'Arial Narrow', Arial, sans-serif;">
         <thead>
           <tr style="background-color: #bfbfbf; text-align: center; font-weight: bold;">
-            <th style="border: 1px solid #000; padding: 4px 6px; width: 45px;">No</th>
-            <th style="border: 1px solid #000; padding: 4px 8px; text-align: left;">Nama Siswa</th>
-            <th style="border: 1px solid #000; padding: 4px 8px; width: 220px; text-align: center;">Kelas/ Konsentrasi Keahlian</th>
+            <th style="border: 1px solid #000; padding: 5px 6px; width: 35px;">No</th>
+            <th style="border: 1px solid #000; padding: 5px 8px; text-align: left;">Nama Siswa</th>
+            <th style="border: 1px solid #000; padding: 5px 8px; width: 140px; text-align: center;">NIS/NISN</th>
+            <th style="border: 1px solid #000; padding: 5px 8px; width: 80px; text-align: center;">Kelas</th>
+            <th style="border: 1px solid #000; padding: 5px 8px; text-align: left;">Konsentrasi Keahlian</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colspan="3" style="border: 1px solid #000; padding: 8px; text-align: center; color: #888;">Belum ada siswa yang ditugaskan pada tempat ini.</td>
+            <td colspan="5" style="border: 1px solid #000; padding: 8px; text-align: center; color: #888;">Belum ada siswa yang ditugaskan pada tempat ini.</td>
           </tr>
         </tbody>
       </table>
     `;
   }
+
+  // Daftar tempat monitoring untuk Suket Monitoring PKL
+  let placesList = [];
+  if (letter.students && letter.students.length > 0) {
+    const seen = new Set();
+    letter.students.forEach(st => {
+      const pl = (st.tempat || letter.tempatPkl || '').trim();
+      if (pl && !seen.has(pl.toLowerCase())) {
+        seen.add(pl.toLowerCase());
+        placesList.push(pl);
+      }
+    });
+  } else if (letter.tempatPkl) {
+    placesList.push(letter.tempatPkl);
+  }
+  if (placesList.length === 0) {
+    placesList.push('Lokasi DU/DI Terkait');
+  }
+  const daftarTempatMonitoring = placesList.map(p => `<li>${escapeXml(p)}</li>`).join('\n  ');
 
   // Buat HTML tabel siswa untuk Lampiran 2 (Multi-lembar dokumen)
   let tabelDaftarSiswaLampiran = '';
@@ -1837,6 +1990,7 @@ function resolveTemplateVariables(templateHtml, letter, ds) {
     .replace(/{jurusanPkl}/g, jurusanPkl)
     .replace(/{tabelSiswaPermohonan}/g, tabelSiswaPermohonan)
     .replace(/{tabelDaftarSiswaLampiran}/g, tabelDaftarSiswaLampiran)
+    .replace(/{daftarTempatMonitoring}/g, daftarTempatMonitoring)
     .replace(/{tahunAjaran}/g, s.tahunAjaran)
     .replace(/{namaSekolah}/g, s.namaSekolah)
     .replace(/{sekolah}/g, s.namaSekolah)
@@ -1922,7 +2076,10 @@ function renderPreview() {
   const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                        (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
   const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                       (activeTpl.id === 'tpl_permohonan_penerimaan_murid') ||
                        (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
+  const isMonitoring = (activeTpl.id === 'tpl_suket_monitoring_pkl') ||
+                       (activeTpl.name && (activeTpl.name.toLowerCase().includes('monitoring') || activeTpl.name.toLowerCase().includes('tugas')));
 
   updatePaperSizeClass();
 
@@ -1951,7 +2108,7 @@ function renderPreview() {
 
   const docJudulSurat = document.getElementById('docJudulSurat');
   if (docJudulSurat) {
-    docJudulSurat.textContent = isKeterangan ? 'SURAT KETERANGAN' : 'SURAT PENGANTAR';
+    docJudulSurat.textContent = isMonitoring ? 'SURAT TUGAS' : (isKeterangan ? 'SURAT KETERANGAN' : 'SURAT PENGANTAR');
   }
 
   const docNoSurat = document.getElementById('docNoSurat');
@@ -1965,7 +2122,7 @@ function renderPreview() {
 
   const docNamaTempat = document.getElementById('docNamaTempat');
   if (docNamaTempat) {
-    if (!isKeterangan && letter.isSpecificTempat && letter.tempatPkl) {
+    if (!isKeterangan && !isMonitoring && letter.isSpecificTempat && letter.tempatPkl) {
       docNamaTempat.textContent = letter.tempatPkl;
       docNamaTempat.style.display = 'block';
     } else {
@@ -1976,7 +2133,7 @@ function renderPreview() {
 
   const docAlamatTempat = document.getElementById('docAlamatTempat');
   if (docAlamatTempat) {
-    if (!isKeterangan && letter.isSpecificTempat && dOpt.showAlamat && letter.alamatPkl) {
+    if (!isKeterangan && !isMonitoring && letter.isSpecificTempat && dOpt.showAlamat && letter.alamatPkl) {
       docAlamatTempat.textContent = letter.alamatPkl;
       docAlamatTempat.style.display = 'block';
     } else {
@@ -2014,11 +2171,11 @@ function renderPreview() {
     docTtdArea.innerHTML = getTtdHtml(ds, dOpt);
   }
 
-  // 6. Lampiran 2 Tabel Siswa (Disembunyikan jika ada di template, atau surat keterangan / permohonan)
+  // 6. Lampiran 2 Tabel Siswa (Disembunyikan jika ada di template, atau surat keterangan / permohonan / monitoring)
   const pageLampiran = document.getElementById('pageLampiran');
   const pageDividers = document.querySelectorAll('.page-break-divider');
   const templateHasLampiran = activeTpl && activeTpl.htmlContent && activeTpl.htmlContent.includes('{tabelDaftarSiswaLampiran}');
-  const hideSeparateLampiran = isKeterangan || isPermohonan || templateHasLampiran;
+  const hideSeparateLampiran = isKeterangan || isPermohonan || isMonitoring || templateHasLampiran;
   if (pageLampiran) {
     pageLampiran.style.display = hideSeparateLampiran ? 'none' : 'block';
   }
@@ -2027,7 +2184,7 @@ function renderPreview() {
   });
 
   const tbody = document.getElementById('docTbodySiswa');
-  if (tbody && !isKeterangan && !isPermohonan) {
+  if (tbody && !isKeterangan && !isPermohonan && !isMonitoring) {
     tbody.innerHTML = '';
     if (letter.students.length === 0) {
       const tr = document.createElement('tr');
@@ -3099,14 +3256,17 @@ async function downloadDocxClient() {
     const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                          (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
     const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                         (activeTpl.id === 'tpl_permohonan_penerimaan_murid') ||
                          (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
+    const isMonitoring = (activeTpl.id === 'tpl_suket_monitoring_pkl') ||
+                         (activeTpl.name && (activeTpl.name.toLowerCase().includes('monitoring') || activeTpl.name.toLowerCase().includes('tugas')));
 
     // 1. Coba unduh via backend Python API (jika server start.bat / app.py aktif)
     let downloadedViaBackend = false;
     try {
       const payload = {
         template_id: activeTpl.id || '',
-        doc_type: isPermohonan ? 'permohonan' : (isKeterangan ? 'keterangan' : 'pengantar'),
+        doc_type: isMonitoring ? 'monitoring' : (isPermohonan ? 'permohonan' : (isKeterangan ? 'keterangan' : 'pengantar')),
         guru_nama: letter.guruNama || '',
         guru_nip: letter.guruNip || '',
         tempat_pkl: (letter.isSpecificTempat && letter.tempatPkl) ? letter.tempatPkl : '',
@@ -3578,13 +3738,16 @@ async function downloadBatchZipClient() {
     const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                          (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
     const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                         (activeTpl.id === 'tpl_permohonan_penerimaan_murid') ||
                          (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
+    const isMonitoring = (activeTpl.id === 'tpl_suket_monitoring_pkl') ||
+                         (activeTpl.name && (activeTpl.name.toLowerCase().includes('monitoring') || activeTpl.name.toLowerCase().includes('tugas')));
 
     // 1. Coba unduh via backend Python API jika aktif
     let downloadedViaBackend = false;
     try {
       const payload = {
-        doc_type: isPermohonan ? 'permohonan' : (isKeterangan ? 'keterangan' : 'pengantar'),
+        doc_type: isMonitoring ? 'monitoring' : (isPermohonan ? 'permohonan' : (isKeterangan ? 'keterangan' : 'pengantar')),
         records: isKeterangan ? getActiveBatchStudents() : (isPermohonan ? AppState.records : []),
         no_surat: ds.noSurat || 'B.10.000/9546/SMKN1KLK/DIKPORA',
         tgl_surat: ds.tglSurat || '06 Oktober 2026',
@@ -4039,7 +4202,10 @@ function openBatchPrintModal() {
   const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                        (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
   const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                       (activeTpl.id === 'tpl_permohonan_penerimaan_murid') ||
                        (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
+  const isMonitoring = (activeTpl.id === 'tpl_suket_monitoring_pkl') ||
+                       (activeTpl.name && (activeTpl.name.toLowerCase().includes('monitoring') || activeTpl.name.toLowerCase().includes('tugas')));
 
   updatePaperSizeClass();
 
@@ -4049,8 +4215,8 @@ function openBatchPrintModal() {
   container.innerHTML = '';
 
   if (isPermohonan) {
-    if (modalTitle) modalTitle.textContent = 'Cetak Massal Surat Permohonan PKL Murid';
-    if (modalSub) modalSub.textContent = 'Pilih DU/DI untuk dicetak Surat Permohonan Penerimaan Murid PKL (1 surat per DU/DI dengan daftar murid).';
+    if (modalTitle) modalTitle.textContent = 'Cetak Massal Surat Permohonan Penerimaan Murid';
+    if (modalSub) modalSub.textContent = 'Pilih DU/DI untuk dicetak Surat Permohonan Penerimaan Murid PKL (1 surat per DU/DI dengan tabel murid).';
 
     const placesList = (AppState.places && AppState.places.length > 0) ? AppState.places : (AppState.duDis || []);
     placesList.forEach((d, idx) => {
@@ -4080,8 +4246,8 @@ function openBatchPrintModal() {
       container.appendChild(label);
     });
   } else {
-    if (modalTitle) modalTitle.textContent = 'Cetak Massal Surat Pengantar PKL';
-    if (modalSub) modalSub.textContent = 'Pilih guru pembimbing untuk dicetak Surat Pengantar PKL & Lampiran 2.';
+    if (modalTitle) modalTitle.textContent = isMonitoring ? 'Cetak Massal Surat Tugas Monitoring' : 'Cetak Massal Surat Pengantar PKL';
+    if (modalSub) modalSub.textContent = isMonitoring ? 'Pilih guru pembimbing untuk dicetak Surat Tugas Monitoring PKL (1 lembar per guru).' : 'Pilih guru pembimbing untuk dicetak Surat Pengantar PKL & Lampiran 2.';
 
     AppState.gurus.forEach((g, idx) => {
       const label = document.createElement('label');
@@ -4134,7 +4300,10 @@ function executeBatchPrint() {
   const isKeterangan = (activeTpl.id === 'tpl_surat_keterangan_pkl') || 
                        (activeTpl.name && activeTpl.name.toLowerCase().includes('keterangan'));
   const isPermohonan = (activeTpl.id === 'tpl_surat_permohonan_pkl_murid') || 
+                       (activeTpl.id === 'tpl_permohonan_penerimaan_murid') ||
                        (activeTpl.name && (activeTpl.name.toLowerCase().includes('permohonan') || activeTpl.name.toLowerCase().includes('murid')));
+  const isMonitoring = (activeTpl.id === 'tpl_suket_monitoring_pkl') ||
+                       (activeTpl.name && (activeTpl.name.toLowerCase().includes('monitoring') || activeTpl.name.toLowerCase().includes('tugas')));
   const templateHasTtd = activeTpl && activeTpl.htmlContent && activeTpl.htmlContent.includes('{ttdSurat}');
   const templateHasLampiran = activeTpl && activeTpl.htmlContent && activeTpl.htmlContent.includes('{tabelDaftarSiswaLampiran}');
   const templateHasTitle = activeTpl && activeTpl.htmlContent && (activeTpl.htmlContent.includes('SURAT PENGANTAR') || activeTpl.htmlContent.includes('SURAT KETERANGAN') || activeTpl.htmlContent.includes('{noSurat}'));
@@ -4322,7 +4491,7 @@ function executeBatchPrint() {
           </div>
         ` : ''}
 
-        ${!templateHasLampiran ? `
+        ${(!templateHasLampiran && !isMonitoring) ? `
           <!-- Lampiran 2 -->
           <div style="page-break-before: always; margin-top: 30px;">
             <div style="font-weight: bold; margin-bottom: 10px;">
